@@ -47,8 +47,8 @@ public class NetworkClient {
     
     
     public NetworkClient(String ipAddress, int port, UUID clientID, final ResponseFromServerMessageHandler responseFromServerMessageHandler) {
-        Executor bossPool = Executors.newFixedThreadPool(1);
-        Executor workerPool = Executors.newFixedThreadPool(2);
+        Executor bossPool = Executors.newCachedThreadPool();
+        Executor workerPool = Executors.newCachedThreadPool();
         ChannelFactory channelFactory = new NioClientSocketChannelFactory(bossPool, workerPool);
         ChannelPipelineFactory pipelineFactory = new ChannelPipelineFactory() {
             public ChannelPipeline getPipeline() throws Exception {
