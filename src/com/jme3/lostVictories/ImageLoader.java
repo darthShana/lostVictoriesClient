@@ -1,0 +1,22 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.jme3.lostVictories;
+
+import com.jme3.asset.AssetInfo;
+import com.jme3.asset.AssetLoader;
+import java.io.IOException;
+import javax.imageio.ImageIO;
+
+/**
+ *
+ * @author dharshanar
+ */
+public class ImageLoader implements AssetLoader{
+
+    public Object load(AssetInfo ai) throws IOException {
+        return ImageIO.read(ai.openStream());
+    }
+    
+}

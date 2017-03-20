@@ -1,0 +1,16 @@
+Material Daisy : Resources/MatDefs/Grass/grassBillboardBase.j3md {
+     MaterialParameters {
+        ColorMap : Resources/Textures/Grass/grass.png
+        AlphaNoiseMap : Resources/Textures/Grass/noise.png
+        NumLights : 1
+        VertexLighting : true
+        Swaying : true
+     }
+    AdditionalRenderState {
+      ColorWrite On
+      Blend Alpha
+      DepthWrite On
+      DepthTest On
+      FaceCull Back
+    }
+}

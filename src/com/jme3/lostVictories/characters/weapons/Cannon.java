@@ -1,0 +1,115 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.jme3.lostVictories.characters.weapons;
+
+import com.jme3.lostVictories.characters.GameAnimChannel;
+import com.jme3.math.FastMath;
+import com.jme3.math.Quaternion;
+import com.jme3.math.Vector3f;
+import com.jme3.scene.Node;
+
+/**
+ *
+ * @author dharshanar
+ */
+public class Cannon extends Weapon{
+
+    public Quaternion setupRotation = new Quaternion().fromAngleAxis(FastMath.HALF_PI, Vector3f.UNIT_X);
+    
+    public Cannon(String... firingSequence) {
+        super("cannon_loadAction", "cannon_shootAction", "cannon_standByAction");
+    }
+    
+    @Override
+    public float getMaxRange() {
+        return 200;
+    }
+
+    @Override
+    public float getPartiplesPerSecond() {
+        return 0;
+    }
+
+    @Override
+    public Vector3f getMuzzelLocation() {
+        return new Vector3f(0f, 1.05f, 2.35f);
+    }
+
+    @Override
+    public boolean canMoveDuringSetup() {
+        return false;
+    }
+
+    @Override
+    public boolean isInFiringSequence(String animationName) {
+        return animationName.contains("loadAction") || animationName.contains("shootAction");
+    }
+
+    @Override
+    public boolean isReadyToShoot(String animationName, Vector3f playerDirection, Vector3f aimingDirection) {
+        return isWithinFieldOfVision(playerDirection, aimingDirection);
+    }
+
+    @Override
+    public boolean isAboutToFire(String animName) {
+        return animName!=null && animName.contains("loadAction");
+    }
+    
+    @Override
+    public boolean hasFiredProjectile(String animName) {
+        return animName!=null && animName.contains("loadAction");
+    }
+
+    @Override
+    public String getDieAtion(GameAnimChannel channel) {
+        return "dieStandingAction";
+    }
+
+    @Override
+    public boolean isStanding(GameAnimChannel channel) {
+        return true;
+    }
+
+    @Override
+    public Quaternion getSetupRotation() {
+        return setupRotation;
+    }
+
+    @Override
+    public Vector3f getSetupTranslation() {
+        return new Vector3f(0, .5f, 0);
+    }
+    
+    @Override
+    public float getDefaultFiringSpeend() {
+        return 2;
+    }
+
+    @Override
+    public boolean isProjectileWeapon() {
+        return false;
+    }
+
+    @Override
+    public boolean canShootMultipleTargets() {
+        return false;
+    }
+    
+    public boolean isWithinFieldOfVision(Vector3f playerDirection, Vector3f aimingDirection) {
+        Vector3f v1 = new Vector3f(playerDirection.x, 0, playerDirection.z).normalizeLocal();
+        Vector3f v2 = new Vector3f(aimingDirection.x, 0, aimingDirection.z).normalizeLocal();
+        return v1.angleBetween(v2) < (FastMath.QUARTER_PI / 4);
+    }
+
+    @Override
+    public String getName() {
+        return "cannon";
+    }
+
+    @Override
+    public void removeUnusedWeapons(Node node) {
+    }
+
+}
