@@ -11,6 +11,7 @@ import com.jme3.ai.navmesh.NavigationProvider;
 import com.jme3.lostVictories.WorldMap;
 import com.jme3.lostVictories.actions.AIAction;
 import com.jme3.lostVictories.actions.BreakAction;
+import com.jme3.lostVictories.actions.MoveAction;
 import com.jme3.lostVictories.actions.StearAction;
 import com.jme3.lostVictories.characters.GameCharacterNode;
 import com.jme3.lostVictories.characters.GameVehicleNode;
@@ -53,8 +54,10 @@ public class NavigateObjective extends Objective<GameVehicleNode> implements Obj
             Optional<List<Vector3f>> path = character.getPathFinder().computePath(2.5f, character.getLocalTranslation(), destination);
             if(path.isPresent()){
                 computePath = new AutoDriveAction(character, path.get());
-            }else{
-                isComplete = true;  
+            }else{                   
+                List<Vector3f> linePath = new ArrayList<>();
+                linePath.add(destination);
+                computePath = new AutoDriveAction(character, linePath);
             }
         }
         if(lastKnownPossition==null){
