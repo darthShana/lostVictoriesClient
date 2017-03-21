@@ -263,11 +263,15 @@ public class WorldMap implements Runnable {
         synchronized(this){
             Vector3f localTranslation = c.getLocalTranslation();
             Rectangle.Float rectangle = new Rectangle.Float(localTranslation.x-CHARACTER_SIZE, localTranslation.z-CHARACTER_SIZE, CHARACTER_SIZE*2, CHARACTER_SIZE*2);
-            while(this.characters.getCharacterByBounds(rectangle)!=null){
-                localTranslation = c.getLocalTranslation();
-                c.setLocalTranslation(localTranslation.x+0.01f, localTranslation.y, localTranslation.z+0.01f);
+            int tries = 0;
+            while(this.characters.getCharacterByBounds(rectangle)!=null && tries<20){
+                localTranslation.x += 0.1f;
+                localTranslation.z += 0.1f;
                 rectangle = new Rectangle.Float(localTranslation.x-CHARACTER_SIZE, localTranslation.z-CHARACTER_SIZE, CHARACTER_SIZE*2, CHARACTER_SIZE*2);
+                tries++;
             }
+            c.setLocalTranslation(localTranslation.x, localTranslation.y, localTranslation.z);
+
             this.characters.putCharacter(rectangle, c);
         }
     }
