@@ -218,26 +218,28 @@ public abstract class GameVehicleNode extends AICharacterNode<BetterVehicleContr
     }
 
     public void turnLeft() {
-        if(!"stayLeftAction".equals(channel.getAnimationName()) && !"leftTurnAction".equals(channel.getAnimationName())){
+        if(!"stayLeftAction".equals(channel.getAnimationName()) && !"leftTurnAction".equals(channel.getAnimationName()) && !model.isAboutToFire(channel.getAnimationName())){
            channel.setAnim("leftTurnAction", LoopMode.DontLoop);
         }
         
     }
 
     public void turnRight() {
-        if(!"stayRightAction".equals(channel.getAnimationName()) && !"rightTurnAction".equals(channel.getAnimationName())){
+        if(!"stayRightAction".equals(channel.getAnimationName()) && !"rightTurnAction".equals(channel.getAnimationName()) && !model.isAboutToFire(channel.getAnimationName())){
             channel.setAnim("rightTurnAction", LoopMode.DontLoop);
         }
     }
 
     public void straighten() {
-        if(!"forwardAction".equals(channel.getAnimationName())){           
+        if(!"forwardAction".equals(channel.getAnimationName()) && !model.isAboutToFire(channel.getAnimationName())){           
             channel.setAnim("forwardAction", LoopMode.Loop);
         }
     }
     
     public void stop(){
-        channel.setAnim("mg42_standByAction", LoopMode.DontLoop);
+        if(!model.isAboutToFire(channel.getAnimationName())){
+            channel.setAnim("mg42_standByAction", LoopMode.DontLoop);
+        }
     }
 
     @Override

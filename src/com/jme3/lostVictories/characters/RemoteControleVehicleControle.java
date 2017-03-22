@@ -31,11 +31,7 @@ class RemoteControleVehicleControle {
             playerControl.warp(requiredPossition);
             return;
         }
-        
-//        Vector3f pathStep = requiredPossition.subtract(localTranslation).normalizeLocal().mult(0.016f*100);
-//        if(pathStep.length()>requiredPossition.distance(localTranslation)){
-//            pathStep = requiredPossition.subtract(localTranslation);
-//        }
+
         Vector2f aa = new Vector2f(playerControl.getViewDirection().x, playerControl.getViewDirection().z);
         Vector2f bb = new Vector2f(requiredOrientation.x, requiredOrientation.z);
         if(aa.smallestAngleBetween(bb)>FastMath.QUARTER_PI){

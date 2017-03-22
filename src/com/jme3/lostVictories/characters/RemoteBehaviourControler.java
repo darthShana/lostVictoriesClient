@@ -84,7 +84,7 @@ public class RemoteBehaviourControler implements BehaviorControler {
         
         Shoot shooting = remoteState.isShooting();
         if(shooting!=null){
-            if(shootCommandTime!=shooting.getTime()){
+            if(shootCommandTime<shooting.getTime()){
                 shootCommandTime = shooting.getTime();
                 character.shoot(shooting.getTargets());
             }

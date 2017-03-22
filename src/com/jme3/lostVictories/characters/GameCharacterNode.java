@@ -217,7 +217,7 @@ public abstract class GameCharacterNode<T extends GameCharacterControl> extends 
         }
         
         final Vector3f aimingPosition = getShootingLocation();
-        List<Vector3f> aimingDirections = new ArrayList<Vector3f>();
+        List<Vector3f> aimingDirections = new ArrayList<>();
         for(Vector3f target:targets){
             if(model.isProjectileWeapon()){
                 aimingDirections.add(ProjectilePathPlanner.getAimingDirection(aimingPosition, target));
@@ -257,11 +257,16 @@ public abstract class GameCharacterNode<T extends GameCharacterControl> extends 
                 && !animationName.contains("setupAction");
     }
     
+    @Override
     public void onAnimCycleDone(AnimControl control, AnimChannel channel, String animName) {
+        
+        if("9740bc8a-835d-4fa2-ab2b-6ed8d914e6ef".equals(getIdentity().toString())){
+            System.out.println("Remote3:in here test shooting:"+animName);
+        }
         
         if(model.isAboutToFire(animName)){
             CollisionResults results = new CollisionResults();
-            List<Float> collitionLifes = new ArrayList<Float>();
+            List<Float> collitionLifes = new ArrayList<>();
             
             try{
                 for(Ray ray:rays){
@@ -281,10 +286,11 @@ public abstract class GameCharacterNode<T extends GameCharacterControl> extends 
             if(!rays.isEmpty()){
                 model.doPostSetupEffect(smokeTrail, particleManager, getLocalTranslation(), getPlayerDirection(), rays, collitionLifes);
             }
-            
-            for(CollisionResult result:results){
-                kills.addAll(doRayDamage(result));
-            }            
+            if(isControledLocaly()){
+                for(CollisionResult result:results){
+                    kills.addAll(doRayDamage(result));
+                }            
+            }
             ShotsFiredListener.instance().register(getLocalTranslation());
         } 
         model.transitionFireingSequence(this.channel, muzzelFlash);
@@ -645,9 +651,12 @@ public abstract class GameCharacterNode<T extends GameCharacterControl> extends 
     }
 
     public CharacterMessage toMessage() {
-        Set<Action> actions = new HashSet<Action>();
+        Set<Action> actions = new HashSet<>();
         actions.add(characterAction.toMessage());
         if(model.isAlreadyFiring(channel)){
+            if(getIdentity().toString().equals("9740bc8a-835d-4fa2-ab2b-6ed8d914e6ef")){
+                System.out.println("localCharacte shooting:");
+            }
             actions.add(new Shoot(shootStartTime, currentTargets));
         }else if(isCrouched()){
             actions.add(new Crouch());
@@ -655,7 +664,7 @@ public abstract class GameCharacterNode<T extends GameCharacterControl> extends 
             actions.add(new SetupWeapon());
         }
         
-        Map<String, String> objectives = new HashMap<String, String>();
+        Map<String, String> objectives = new HashMap<>();
         for(Entry<UUID, Objective> entry: getAllObjectives().entrySet()){
             try {
                 final ObjectNode valueToTree = entry.getValue().toJson();
