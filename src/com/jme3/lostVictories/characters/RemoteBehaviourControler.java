@@ -94,6 +94,9 @@ public class RemoteBehaviourControler implements BehaviorControler {
         
         if(character instanceof GameVehicleNode){
             vehicleControle.handleLocationUpdates(requiredPossition, requiredOrientation, (GameVehicleNode) character, rootNode, channel, remoteState);
+            if(character instanceof HalfTrackNode && remoteState.hasEngineDamage() && !((HalfTrackNode)character).hasEngineDamage()){
+                ((HalfTrackNode)character).doEngineDamage();
+            }
         }else{
             if(!WorldMap.isClose(character.getLocalTranslation(), requiredPossition, .5)){
 
