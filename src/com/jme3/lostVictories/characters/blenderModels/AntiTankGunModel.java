@@ -20,7 +20,7 @@ import java.util.List;
 public class AntiTankGunModel extends VehicleBlenderModel{
     private static Vector3f operatorTranslation = new Vector3f(-.2f, -.1f, -1.75f);
     private static Vector3f embarkationPoint = new Vector3f(0, 0, -3f);
-    private static Vector3f modelBounds = new Vector3f(.7f, .5f, 2.25f);
+    private static Vector3f modelBounds = new Vector3f(.9f, .5f, 2.25f);
     private static Vector3f bustTranslation = new Vector3f(0, -1.5f, -6.5f);
 
     public AntiTankGunModel(String modelPath, float walkSpeed, Weapon weapon) {
