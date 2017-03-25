@@ -95,7 +95,7 @@ public class LostVictory extends SimpleApplication implements ActionListener {
                //playerID = "844fd93d-e65a-438a-82c5-dab9ad58e854"; //american 2
             }
             if(serverIP == null){
-                serverIP = "localhost";
+                serverIP = "192.168.20.7";
                 //serverIP = "connect.lostvictories.com";
             }
             gameVersion = "pre_alpha";
