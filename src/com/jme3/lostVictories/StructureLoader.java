@@ -40,23 +40,20 @@ class StructureLoader {
     //private Map<String, Node> structureType = new HashMap<String, Node>();
     private Set<String> structureTypes = new HashSet<String>();
 
-    static StructureLoader instance(Node rootNode, AssetManager assetManager, BulletAppState bulletAppState, NavMeshPathfinder pathfinder) {
+    static StructureLoader instance(Node rootNode, AssetManager assetManager, BulletAppState bulletAppState) {
         if(instance == null){
-            instance = new StructureLoader(rootNode, assetManager, bulletAppState, pathfinder);
+            instance = new StructureLoader(rootNode, assetManager, bulletAppState);
         }
         return instance;
     }
     private final Node rootNode;
     private final AssetManager assetManager;
     private final BulletAppState bulletAppState;
-    private final NavMeshPathfinder pathfinder;
 
-    private StructureLoader(Node rootNode, AssetManager assetManager, BulletAppState bulletAppState, NavMeshPathfinder pathfinder) {
+    private StructureLoader(Node rootNode, AssetManager assetManager, BulletAppState bulletAppState) {
         this.rootNode = rootNode;
         this.assetManager = assetManager;
-        this.bulletAppState = bulletAppState;
-        this.pathfinder = pathfinder;
-        
+        this.bulletAppState = bulletAppState;        
     }
 
 
@@ -148,7 +145,7 @@ class StructureLoader {
         neutralFlag.setLocalScale(.5f);
         neutralFlag.addControl(new HeloControl(assetManager, app));
         
-        GameHouseNode h = new GameHouseNode(house.getId(), house.getType(), n, flags, neutralFlag, this.bulletAppState, new CollisionShapeFactoryProvider(), pathfinder, rootNode);
+        GameHouseNode h = new GameHouseNode(house.getId(), house.getType(), n, flags, neutralFlag, this.bulletAppState, new CollisionShapeFactoryProvider(), rootNode);
         
 //        if(!structures.containsKey(house.getType())){
 //            structures.put(house.getType(), new Node());

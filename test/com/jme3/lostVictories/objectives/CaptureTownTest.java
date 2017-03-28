@@ -213,7 +213,7 @@ public class CaptureTownTest {
         n.setLocalRotation(house.getLocalRotation());
         final BulletAppState mock = mock(BulletAppState.class);
         when(mock.getPhysicsSpace()).thenReturn(mock(PhysicsSpace.class));
-        return new GameHouseNode(house.getId(), house.getType(), n, new HashMap<Country, Node>(), new Node(), mock, new CollisionShapeFactoryProvider(), mock(NavMeshPathfinder.class), new Node());
+        return new GameHouseNode(house.getId(), house.getType(), n, new HashMap<Country, Node>(), new Node(), mock, new CollisionShapeFactoryProvider(), new Node());
         
     }
 }

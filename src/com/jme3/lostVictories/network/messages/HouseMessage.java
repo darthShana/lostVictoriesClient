@@ -30,6 +30,10 @@ public class HouseMessage implements Serializable{
         this.rotation = rotation;
         this.captureStatus = CaptureStatus.NONE;
     }
+
+    public HouseMessage() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     
     public UUID getId(){
         return id;
@@ -50,6 +54,10 @@ public class HouseMessage implements Serializable{
     public CaptureStatus getCaptureStatus() {
         return captureStatus;
     }
+    
+    public void setCaptureStatus(CaptureStatus captureStatus){
+        this.captureStatus = captureStatus;
+    }
 
     public Country getContestingOwner() {
         return contestingOwner;
@@ -57,6 +65,10 @@ public class HouseMessage implements Serializable{
 
     public Country getOwner() {
         return owner;
+    }
+    
+    public void setOwner(Country owner){
+        this.owner = owner;
     }
     
     
