@@ -64,7 +64,7 @@ public class LostVictory extends SimpleApplication implements ActionListener {
             
         String playerID, serverIP, gameVersion;
         int port = 5055;
-//        args = new String[]{"lostvic://lostVictoriesLauncher/game=eyJpZCI6Im5vcndlZ2lhbl9jYW1wYWlnbiIsIm5hbWUiOiJOb3J3ZWdpYW4gQ2FtcGFpZ24iLCJob3N0IjoiY29ubmVjdC5sb3N0dmljdG9yaWVzLmNvbSIsInBvcnQiOiI1MDU1Iiwic3RhcnREYXRlIjoxNDg5MDgwOTg5MjAxLCJqb2luZWQiOnRydWUsImF2YXRhcklEIjoiNDUyZDNlYjItNzc3ZS00MDJjLTkyODctZDM4ZWEyNzI0NWZlIiwiZ2FtZVZlcnNpb24iOiJwcmVfYWxwaGEiLCJnYW1lU3RhdHVzIjoiaW5Qcm9ncmVzcyIsInZpY3RvciI6bnVsbCwiZW5kRGF0ZSI6bnVsbCwiY291bnRyeSI6IkFNRVJJQ0FOIn0="};
+//        args = new String[]{"lostvic://lostVictoriesLauncher/game=eyJpZCI6ImJhdHRsZV9vZl90aGVfbmV0aGVybGFuZHMiLCJuYW1lIjoiQmF0dGxlIG9mIHRoZSBOZXRoZXJsYW5kcyIsImhvc3QiOiJjb25uZWN0Lmxvc3R2aWN0b3JpZXMuY29tIiwicG9ydCI6IjUwNTUiLCJzdGFydERhdGUiOjE0OTEyNDAwMjc5MzksImpvaW5lZCI6dHJ1ZSwiYXZhdGFySUQiOiI3ZGI5YjMzNy0wZGY4LTRkOWUtODg2Ni1iMTg0ZDg5OTg0ZDYiLCJnYW1lVmVyc2lvbiI6InByZV9hbHBoYSIsImdhbWVTdGF0dXMiOiJpblByb2dyZXNzIiwidmljdG9yIjpudWxsLCJlbmREYXRlIjpudWxsLCJjb3VudHJ5IjoiR0VSTUFOIn0="};
         if(args.length>0){    
 //            JOptionPane.showOptionDialog(null, args[0], "Warning", JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[0]);         
 //            if(args.length>1){

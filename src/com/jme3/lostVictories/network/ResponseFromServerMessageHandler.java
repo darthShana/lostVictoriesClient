@@ -26,6 +26,7 @@ import com.jme3.lostVictories.effects.ParticleManager;
 import com.jme3.lostVictories.network.messages.CharacterMessage;
 import com.jme3.lostVictories.network.messages.CharacterType;
 import com.jme3.lostVictories.network.messages.HouseMessage;
+import com.jme3.lostVictories.network.messages.LostVictoryDictionary;
 import com.jme3.lostVictories.network.messages.wrapper.LostVictoryMessage;
 import com.jme3.lostVictories.network.messages.UnClaimedEquipmentMessage;
 import com.jme3.lostVictories.structures.UnclaimedEquipmentNode;
@@ -63,6 +64,7 @@ public class ResponseFromServerMessageHandler extends SimpleChannelInboundHandle
     private final ParticleManager particleManager;
     private final HeadsUpDisplayAppState hud;
     private final ServerMessageAssembler serverMessageAssembler;
+    private LostVictoryDictionary dictionary = new LostVictoryDictionary();
     
     public ResponseFromServerMessageHandler(LostVictory app, CharacterLoader characterLoader, UUID clientID, ParticleManager particleManager, HeadsUpDisplayAppState hud) {
         this.clientID = clientID;
@@ -146,8 +148,10 @@ public class ResponseFromServerMessageHandler extends SimpleChannelInboundHandle
             
             System.out.println("message decompressed:"+sb);
             //ok lets do something with this
+            String toString = sb.toString();
+            toString = dictionary.decode(toString);
             
-            LostVictoryMessage message = MAPPER.readValue(sb.toString(), LostVictoryMessage.class);
+            LostVictoryMessage message = MAPPER.readValue(toString, LostVictoryMessage.class);
             serverMessageAssembler.append(message);
 //            if(message instanceof UpdateCharactersResponse){
 //                handle((UpdateCharactersResponse) message);

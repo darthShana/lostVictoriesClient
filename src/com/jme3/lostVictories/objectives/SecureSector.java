@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.jme3.ai.navmesh.NavMeshPathfinder;
 import com.jme3.ai.navmesh.NavigationProvider;
 import com.jme3.asset.AssetManager;
+import com.jme3.lostVictories.GameSector;
 import com.jme3.lostVictories.structures.GameHouseNode;
 import com.jme3.lostVictories.WorldMap;
 import com.jme3.lostVictories.actions.AIAction;
@@ -29,6 +30,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -113,14 +115,17 @@ public class SecureSector extends Objective<AICharacterNode> implements MinimapP
     @Override
     public Objective fromJson(JsonNode json, GameCharacterNode character, NavigationProvider pathFinder, Node rootNode, WorldMap map) throws IOException {
         JavaType type = MAPPER.getTypeFactory().constructCollectionType(Set.class, UUID.class);
-        Set<UUID> result = MAPPER.convertValue(json.get("houses"), type);
         int ds = json.get("deploymentStrength").asInt();
         int mfs = json.get("minimumFightingStrenght").asInt();
         Vector h = MAPPER.treeToValue(json.get("homeBase"), Vector.class);
+        Vector centre = MAPPER.treeToValue(json.get("centre"), Vector.class);
 
-        Set<GameHouseNode> hs = new HashSet<GameHouseNode>();
-        for(UUID id:result){
-            hs.add(map.getHouse(id));
+        Set<GameHouseNode> hs = new HashSet<>();
+        Optional<GameSector> sector = map.findSector(centre);
+        if(sector.isPresent()){            
+            hs.addAll(sector.get().getHouses());
+        }else{
+            System.out.println("unable to find sector:"+centre);
         }
         
         if(!(character instanceof Lieutenant)){

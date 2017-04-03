@@ -12,6 +12,8 @@ import com.jme3.lostVictories.structures.GameStructureNode;
 import com.jme3.lostVictories.characters.AvatarCharacterNode;
 import com.jme3.lostVictories.characters.GameCharacterNode;
 import com.jme3.lostVictories.network.messages.UnClaimedEquipmentMessage;
+import com.jme3.lostVictories.network.messages.Vector;
+import com.jme3.lostVictories.objectives.CaptureTown;
 import com.jme3.lostVictories.structures.GameObjectNode;
 import com.jme3.lostVictories.structures.Pickable;
 import com.jme3.lostVictories.structures.UnclaimedEquipmentNode;
@@ -28,6 +30,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -69,7 +72,8 @@ public class WorldMap implements Runnable {
     private final Set<GameStructureNode> structures;
     private final Map<UUID, GameHouseNode> houses = new HashMap<UUID, GameHouseNode>();
     private final Map<UUID, UnclaimedEquipmentNode> unclaimedEquipment = new HashMap<UUID, UnclaimedEquipmentNode>();
-    
+    Set<GameSector> gameSectors;
+
     private WorldMap(AvatarCharacterNode avatar, Set<GameCharacterNode> characters, Set<GameStructureNode> structures, Set<GameObjectNode> coverObjects) {
         this.avatar = avatar;
         this.structures = structures;
@@ -376,6 +380,85 @@ public class WorldMap implements Runnable {
 
         }
         return false;
+    }
+
+    public Set<GameSector> getGameSectors() {
+        if(gameSectors==null){
+            gameSectors = calculateGameSectorHouses(getAllHouses());
+        }
+        return gameSectors;
+    }
+    
+    public static Set<GameSector> calculateGameSector(Iterable<GameStructureNode> allHouses) {
+        Set<GameSector> ret = new HashSet<GameSector>();
+        
+        for(int y = WorldMap.mapBounds.y;y<=WorldMap.mapBounds.getMaxY();y=y+50){
+            for(int x = WorldMap.mapBounds.x;x<=WorldMap.mapBounds.getMaxX();x=x+50){
+                ret.add(new GameSector(new Rectangle(x, y, 50, 50)));
+            }
+        }
+        
+        for(GameStructureNode house:allHouses){
+            for(GameSector sector:ret){
+                if(sector.containsHouse(house)){
+                    sector.add(house);
+                }
+            }
+        }
+        
+        for(Iterator<GameSector> it = ret.iterator();it.hasNext();){
+            if(it.next().structures.isEmpty()){
+                it.remove();
+            }
+        }
+        
+//        merge adjoing sectorors to gether with limit number of houses
+        Set<GameSector> merged = new HashSet<GameSector>();
+        GameSector next = ret.iterator().next();
+        merged.add(next);
+        ret.remove(next);
+		
+        while(!ret.isEmpty()){
+            boolean foundMerge = false;
+            for(GameSector sector:merged){
+                Optional<GameSector> neighbour = findNeighbouringSector(sector, ret);
+                if(neighbour.isPresent()){
+                    sector.merge(neighbour.get());
+                    ret.remove(neighbour.get());
+                    foundMerge = true;
+                }
+            }
+            if(!foundMerge){
+                next = ret.iterator().next();
+                merged.add(next);
+                ret.remove(next);
+            }
+        		
+        }
+        
+        
+        return merged;
+    }
+    
+    static Optional<GameSector> findNeighbouringSector(GameSector sector, Set<GameSector> ret) {
+        for(GameSector s:ret){
+            if(sector.isJoinedTo(s)){
+                return Optional.of(s);
+            }
+        }
+        return Optional.empty();
+    }
+
+    Set<GameSector> calculateGameSectorHouses(Iterable<GameHouseNode> allHouses) {
+        Set<GameStructureNode> stru = new HashSet<GameStructureNode>();
+        for(GameHouseNode h: allHouses){
+            stru.add(h);
+        }
+        return calculateGameSector(stru);
+    }
+
+    public Optional<GameSector> findSector(Vector centre) {
+        return gameSectors.stream().filter(sector->sector.containsPoint(centre.x, centre.z)).findAny();
     }
 
     

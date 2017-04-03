@@ -106,8 +106,8 @@ class StructureLoader {
 //            Node a = GeometryBatchFactory.optimize(houses, true);
 //            sceneGraph.attachChild(houses);
 //        }
-        final Set<CaptureTown.GameSector> calculateGameSector = CaptureTown.calculateGameSector(structures);
-        for(CaptureTown.GameSector sector:calculateGameSector){
+        final Set<GameSector> calculateGameSector = WorldMap.calculateGameSector(structures);
+        for(GameSector sector:calculateGameSector){
             Node sec = new Node();
             for(GameStructureNode s:sector.structures()){
                 sec.attachChild(s);
