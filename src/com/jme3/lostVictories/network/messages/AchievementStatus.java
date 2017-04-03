@@ -10,7 +10,7 @@ import java.io.Serializable;
  *
  * @author dharshanar
  */
-public class AchivementStatus implements Serializable{
+public class AchievementStatus implements Serializable{
     private String achivementStatusText;
     private int achivementTotal;
     private int achivementCurrent;
@@ -26,10 +26,10 @@ public class AchivementStatus implements Serializable{
 
     @Override
     public boolean equals(Object obj) {
-        if(!(obj instanceof AchivementStatus)){
+        if(!(obj instanceof AchievementStatus)){
             return false;
         }
-        AchivementStatus other = (AchivementStatus) obj;
+        AchievementStatus other = (AchievementStatus) obj;
         return achivementStatusText.equals(other.achivementStatusText) &&
                 achivementCurrent == other.achivementCurrent &&
                 achivementTotal == other.achivementTotal;

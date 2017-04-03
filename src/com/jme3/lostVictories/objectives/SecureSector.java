@@ -4,6 +4,9 @@
  */
 package com.jme3.lostVictories.objectives;
 
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.jme3.ai.navmesh.NavMeshPathfinder;
 import com.jme3.ai.navmesh.NavigationProvider;
 import com.jme3.asset.AssetManager;
@@ -28,9 +31,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.node.ObjectNode;
-import org.codehaus.jackson.type.TypeReference;
 
 /**
  *
@@ -112,10 +112,11 @@ public class SecureSector extends Objective<AICharacterNode> implements MinimapP
 
     @Override
     public Objective fromJson(JsonNode json, GameCharacterNode character, NavigationProvider pathFinder, Node rootNode, WorldMap map) throws IOException {
-        Set<UUID> result = MAPPER.readValue(json.get("houses"), new TypeReference<HashSet<UUID>>() {});
+        JavaType type = MAPPER.getTypeFactory().constructCollectionType(Set.class, UUID.class);
+        Set<UUID> result = MAPPER.convertValue(json.get("houses"), type);
         int ds = json.get("deploymentStrength").asInt();
         int mfs = json.get("minimumFightingStrenght").asInt();
-        Vector h = MAPPER.readValue(json.get("homeBase"), Vector.class);
+        Vector h = MAPPER.treeToValue(json.get("homeBase"), Vector.class);
 
         Set<GameHouseNode> hs = new HashSet<GameHouseNode>();
         for(UUID id:result){

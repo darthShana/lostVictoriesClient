@@ -9,7 +9,7 @@ import com.jme3.lostVictories.structures.GameTargetNode;
 import com.jme3.lostVictories.structures.GameStructureNode;
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.BulletAppState;
-import com.jme3.lostVictories.network.messages.CheckoutScreenResponse;
+import com.jme3.lostVictories.network.ServerResponse;
 import com.jme3.lostVictories.network.messages.HouseMessage;
 import com.jme3.lostVictories.objectives.CaptureTown;
 import com.jme3.lostVictories.structures.CollisionShapeFactoryProvider;
@@ -57,7 +57,7 @@ class StructureLoader {
     }
 
 
-    void loadStuctures(Set<GameStructureNode> structures, Node sceneGraph, CheckoutScreenResponse checkout, TerrainQuad terrain, LostVictory app) {
+    void loadStuctures(Set<GameStructureNode> structures, Node sceneGraph, ServerResponse checkout, TerrainQuad terrain, LostVictory app) {
                 
         structureTypes.add("Models/Structures/casaMedieval.j3o");
         structureTypes.add("Models/Structures/house.j3o");

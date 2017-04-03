@@ -4,10 +4,10 @@
  */
 package com.jme3.lostVictories.network.messages;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.jme3.math.Vector3f;
 import java.io.Serializable;
-import org.codehaus.jackson.annotate.JsonCreator;
-import org.codehaus.jackson.annotate.JsonProperty;
 
 /**
  *

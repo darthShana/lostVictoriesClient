@@ -4,6 +4,9 @@
  */
 package com.jme3.lostVictories.characters;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.jme3.lostVictories.Country;
 import com.jme3.lostVictories.NetworkClientAppState;
 import static com.jme3.lostVictories.characters.RemoteBehaviourControler.MAPPER;
@@ -28,9 +31,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.JsonProcessingException;
-import org.codehaus.jackson.node.ObjectNode;
 
 /**
  *

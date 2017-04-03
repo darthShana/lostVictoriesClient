@@ -4,6 +4,8 @@
  */
 package com.jme3.lostVictories.objectives;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.jme3.ai.navmesh.NavMeshPathfinder;
 import com.jme3.ai.navmesh.NavigationProvider;
 import com.jme3.asset.AssetManager;
@@ -30,8 +32,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.node.ObjectNode;
 
 /**
  *
@@ -127,8 +127,8 @@ public class CoverFront extends Objective<CadetCorporal> implements MinimapPrese
     }
 
     public CoverFront fromJson(JsonNode json, GameCharacterNode character, NavigationProvider pathFinder, Node rootNode, WorldMap map) throws IOException {
-        final Vector press = MAPPER.readValue(json.get("mousePress"), Vector.class);
-        final Vector release = MAPPER.readValue(json.get("mouseRelease"), Vector.class);
+        final Vector press = MAPPER.treeToValue(json.get("mousePress"), Vector.class);
+        final Vector release = MAPPER.treeToValue(json.get("mouseRelease"), Vector.class);
         return new CoverFront(new Vector3f(press.x, press.y, press.z), new Vector3f(release.x, release.y, release.z), rootNode);
     }
     

@@ -38,13 +38,15 @@ public class CharacterMessage implements Serializable{
     Set<Action> actions;
     Map<String, String> objectives;
     Set<String> completedObjectives;
-    boolean isDead;
+    boolean dead;
     boolean engineDamaged;
     Long timeOfDeath;
     long version;
     Set<UUID> kills;
     SquadType squadType;
 
+    private CharacterMessage(){}
+    
     public CharacterMessage(UUID id, Vector location, Vector orientation, RankMessage rank, Set<Action> actions, Map<String, String> objectives, Set<String> completedObjectives, long version) {
         this.id = id;
         this.location = location;
@@ -93,7 +95,7 @@ public class CharacterMessage implements Serializable{
     }
 
     public boolean isDead() {
-        return isDead;
+        return dead;
     }
 
     public boolean isCheckedOutBy(UUID clientID) {

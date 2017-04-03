@@ -4,6 +4,10 @@
  */
 package com.jme3.lostVictories.characters;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.jme3.ai.navmesh.NavMeshPathfinder;
 import com.jme3.ai.navmesh.NavigationProvider;
 import com.jme3.animation.AnimChannel;
@@ -30,10 +34,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import org.codehaus.jackson.annotate.JsonAutoDetect.Visibility;
-import org.codehaus.jackson.annotate.JsonMethod;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.node.ObjectNode;
 
 
 /**
@@ -45,7 +45,7 @@ public class RemoteBehaviourControler implements BehaviorControler {
     public static ObjectMapper MAPPER;
     static{
             MAPPER = new ObjectMapper();
-            MAPPER.setVisibility(JsonMethod.FIELD, Visibility.ANY);
+            MAPPER.setVisibility(PropertyAccessor.FIELD, Visibility.ANY);
     }
     
     private CharacterMessage remoteState;

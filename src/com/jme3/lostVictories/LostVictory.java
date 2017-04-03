@@ -1,5 +1,6 @@
 package com.jme3.lostVictories;
  
+import com.fasterxml.jackson.databind.JsonNode;
 import com.jme3.ai.navmesh.CustomNavMeshBuilder;
 import com.jme3.lostVictories.structures.GameHouseNode;
 import static com.jme3.lostVictories.characters.RemoteBehaviourControler.MAPPER;
@@ -25,7 +26,7 @@ import com.jme3.lostVictories.effects.ParticleManager;
 import com.jme3.lostVictories.minimap.MinimapNode;
 import com.jme3.lostVictories.network.NetworkClient;
 import com.jme3.lostVictories.network.ResponseFromServerMessageHandler;
-import com.jme3.lostVictories.network.messages.CheckoutScreenResponse;
+import com.jme3.lostVictories.network.ServerResponse;
 import com.jme3.lostVictories.structures.GameObjectNode;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
@@ -43,7 +44,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Base64;
-import org.codehaus.jackson.JsonNode;
 
 
 
@@ -174,7 +174,7 @@ public class LostVictory extends SimpleApplication implements ActionListener {
         
         Set<GameCharacterNode> characters = new HashSet<GameCharacterNode>();
         try {
-            CheckoutScreenResponse checkout = networkClientAppState.checkoutSceenSynchronous(avatarUUID);
+            ServerResponse checkout = networkClientAppState.checkoutSceenSynchronous(avatarUUID);
             structureLoader.loadStuctures(structures, sceneGraph, checkout, terrain, this);
             avatar = characterLoader.loadCharacters(characters, structures, objects, checkout, avatarUUID);
             sceneGraph.addControl(new SimpleGrassControl(assetManager, bulletAppState, (Node) sceneGraph, checkout.getAllTrees(), "Resources/Textures/Grass/grass.png"));
@@ -207,6 +207,7 @@ public class LostVictory extends SimpleApplication implements ActionListener {
     @Override
     public void simpleUpdate(float tpf) {     
         if(gameOver){
+            
             return;
         }
 

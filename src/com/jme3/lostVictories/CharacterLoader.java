@@ -32,9 +32,9 @@ import com.jme3.lostVictories.characters.Rank;
 import com.jme3.lostVictories.characters.RemoteBehaviourControler;
 import com.jme3.lostVictories.characters.blenderModels.SoldierBlenderModel;
 import com.jme3.lostVictories.effects.ParticleManager;
+import com.jme3.lostVictories.network.ServerResponse;
 import com.jme3.lostVictories.network.messages.CharacterMessage;
 import com.jme3.lostVictories.network.messages.CharacterType;
-import com.jme3.lostVictories.network.messages.CheckoutScreenResponse;
 import com.jme3.lostVictories.network.messages.RankMessage;
 import com.jme3.lostVictories.network.messages.UnClaimedEquipmentMessage;
 import com.jme3.lostVictories.structures.GameObjectNode;
@@ -93,7 +93,7 @@ public class CharacterLoader {
         this.app = app;
     }
     
-    public AvatarCharacterNode loadCharacters(Set<GameCharacterNode> characters, Set<GameStructureNode> structures, Set<GameObjectNode> coverObjects,CheckoutScreenResponse checkout, UUID avatarID) throws InterruptedException {
+    public AvatarCharacterNode loadCharacters(Set<GameCharacterNode> characters, Set<GameStructureNode> structures, Set<GameObjectNode> coverObjects,ServerResponse checkout, UUID avatarID) throws InterruptedException {
        
         //System.out.println("recived async response:"+checkout);
         Map<UUID, GameCharacterNode> characterIdMap = new HashMap<UUID, GameCharacterNode>();

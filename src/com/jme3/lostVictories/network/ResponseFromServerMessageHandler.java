@@ -4,6 +4,7 @@
  */
 package com.jme3.lostVictories.network;
 
+import static com.jme3.lostVictories.characters.RemoteBehaviourControler.MAPPER;
 
 import com.jme3.lostVictories.CharacterLoader;
 import com.jme3.lostVictories.Country;
@@ -25,40 +26,55 @@ import com.jme3.lostVictories.effects.ParticleManager;
 import com.jme3.lostVictories.network.messages.CharacterMessage;
 import com.jme3.lostVictories.network.messages.CharacterType;
 import com.jme3.lostVictories.network.messages.HouseMessage;
+import com.jme3.lostVictories.network.messages.wrapper.LostVictoryMessage;
 import com.jme3.lostVictories.network.messages.UnClaimedEquipmentMessage;
-import com.jme3.lostVictories.network.messages.UpdateCharactersResponse;
 import com.jme3.lostVictories.structures.UnclaimedEquipmentNode;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.channel.socket.DatagramPacket;
+import io.netty.util.CharsetUtil;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.Inflater;
+import java.util.zip.InflaterInputStream;
 
 /**
  *
  * @author dharshanar
  */
-public class ResponseFromServerMessageHandler {
+public class ResponseFromServerMessageHandler extends SimpleChannelInboundHandler<DatagramPacket> {
+
     private final UUID clientID;
     private final LostVictory app;
     private final CharacterLoader characterLoader;
-    ConcurrentLinkedDeque<UpdateCharactersResponse> responseQueue = new ConcurrentLinkedDeque<UpdateCharactersResponse>();
+    ConcurrentLinkedDeque<ServerResponse> responseQueue = new ConcurrentLinkedDeque<ServerResponse>();
+    
     private final ParticleManager particleManager;
     private final HeadsUpDisplayAppState hud;
-    private NetworkClientAppState messageReceivedListener;
+    private final ServerMessageAssembler serverMessageAssembler;
     
     public ResponseFromServerMessageHandler(LostVictory app, CharacterLoader characterLoader, UUID clientID, ParticleManager particleManager, HeadsUpDisplayAppState hud) {
         this.clientID = clientID;
         this.app = app;
         this.characterLoader = characterLoader;     
         this.particleManager = particleManager;
-        this.hud = hud;        
+        this.hud = hud;
+        this.serverMessageAssembler = new ServerMessageAssembler();
     }
 
     public void syncroniseWithServerView() {
-        UpdateCharactersResponse msg = responseQueue.peekLast();
+        ServerResponse msg = responseQueue.peekLast();
         responseQueue.clear();
         
         if(msg!=null){
@@ -93,11 +109,63 @@ public class ResponseFromServerMessageHandler {
         
     }
 
-    void handle(UpdateCharactersResponse updateCharactersResponse) {
-        responseQueue.addLast(updateCharactersResponse);
-        if(messageReceivedListener!=null){
-            messageReceivedListener.messageReceived(updateCharactersResponse);
+    @Override
+    protected void messageReceived(ChannelHandlerContext chc, DatagramPacket msg) throws Exception {
+        System.out.println("com.jme3.lostVictories.network.ResponseFromServerMessageHandler.messageReceived()");
+
+        try {
+            int i = 0;
+            byte[] incomming = new byte[msg.content().capacity()];
+            while (msg.content().isReadable()) {
+                incomming[i++] = msg.content().readByte();
+            }
+            
+            ByteArrayInputStream bis = new ByteArrayInputStream(incomming);
+            GZIPInputStream gis = new GZIPInputStream(bis);
+            BufferedReader br = new BufferedReader(new InputStreamReader(gis, "UTF-8"));
+            StringBuilder sb = new StringBuilder();
+            String line;
+            while((line = br.readLine()) != null) {
+                    sb.append(line);
+            }
+            br.close();
+            gis.close();
+            bis.close();
+
+//            Inflater inflater = new Inflater();   
+//            inflater.setInput(incomming);  
+//            ByteArrayOutputStream outputStream = new ByteArrayOutputStream(incomming.length);  
+//            byte[] buffer = new byte[2048];  
+//            while (!inflater.finished()) {  
+//                int count = inflater.inflate(buffer);  
+//                outputStream.write(buffer, 0, count);  
+//            }  
+//            outputStream.close();  
+//            byte[] output = outputStream.toByteArray();  
+
+            
+            System.out.println("message decompressed:"+sb);
+            //ok lets do something with this
+            
+            LostVictoryMessage message = MAPPER.readValue(sb.toString(), LostVictoryMessage.class);
+            serverMessageAssembler.append(message);
+//            if(message instanceof UpdateCharactersResponse){
+//                handle((UpdateCharactersResponse) message);
+//            }
+//            if(messageReceivedListener!=null){
+//                messageReceivedListener.messageReceived(message);
+//            }
+
+        } catch (IOException e) {
+            throw new AssertionError(e);
         }
+        
+        
+    }
+    
+    void handle(ServerResponse updateCharactersResponse) {
+        responseQueue.addLast(updateCharactersResponse);
+        
     }
 
     private boolean hasSameUnits(CommandingOfficer c, Set<UUID> unitsUnderCommand, Map<UUID, GameCharacterNode> allCharacters, Map<UUID, CharacterMessage> relatedCharacters) {
@@ -209,7 +277,7 @@ public class ResponseFromServerMessageHandler {
         }
     }
 
-    void syncronizeCharacters(UpdateCharactersResponse msg, WorldMap worldMap, UUID removedSelectedCharacter) throws RuntimeException {
+    void syncronizeCharacters(ServerResponse msg, WorldMap worldMap, UUID removedSelectedCharacter) throws RuntimeException {
         Map<UUID, GameCharacterNode> localCharacters = new HashMap<UUID, GameCharacterNode>();
         Map<UUID, CharacterMessage> remoteCharacters = new HashMap<UUID, CharacterMessage>();
         Map<UUID, CharacterMessage> relatedCharacters = new HashMap<UUID, CharacterMessage>();
@@ -283,8 +351,9 @@ public class ResponseFromServerMessageHandler {
         }
     }
 
-    public void addListener(NetworkClientAppState appState) {
-        this.messageReceivedListener = appState;
+    public ServerResponse getServerResponces() {
+        return serverMessageAssembler.popResponces();
     }
+
     
 }

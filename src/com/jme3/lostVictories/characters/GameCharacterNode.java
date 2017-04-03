@@ -5,6 +5,7 @@
 package com.jme3.lostVictories.characters;
 
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.jme3.lostVictories.characters.blenderModels.BlenderModel;
 import com.jme3.lostVictories.objectives.Objective;
 import com.jme3.ai.navmesh.NavMeshPathfinder;
@@ -61,7 +62,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
-import org.codehaus.jackson.node.ObjectNode;
 
 /**
  *

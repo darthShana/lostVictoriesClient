@@ -22,7 +22,6 @@ import com.jme3.lostVictories.effects.ParticleManager;
 import com.jme3.lostVictories.network.messages.CharacterMessage;
 import com.jme3.lostVictories.network.messages.RankMessage;
 import com.jme3.lostVictories.network.messages.UnClaimedEquipmentMessage;
-import com.jme3.lostVictories.network.messages.UpdateCharactersResponse;
 import com.jme3.lostVictories.network.messages.Vector;
 import com.jme3.math.Vector3f;
 import java.util.HashMap;
@@ -96,7 +95,7 @@ public class ResponseFromServerMessageHandlerTest {
         CharacterMessage message = new CharacterMessage(s.getIdentity(), new Vector(0, 0, 0), new Vector(0, 0, 0), RankMessage.CADET_CORPORAL, null, null, null, 0);
         message.setCountry(com.jme3.lostVictories.network.messages.Country.GERMAN);
         msg.add(message);
-        final UpdateCharactersResponse updateCharactersResponse = new UpdateCharactersResponse(UUID.randomUUID(), msg, new HashSet<CharacterMessage>(), new HashSet<UnClaimedEquipmentMessage>());
+        final ServerResponse updateCharactersResponse = new ServerResponse(UUID.randomUUID(), msg, new HashSet<CharacterMessage>(), new HashSet<UnClaimedEquipmentMessage>());
         
         
         handler.syncronizeCharacters(updateCharactersResponse, worldMAp, null);
