@@ -3,7 +3,7 @@ Material MyMaterial : Common/MatDefs/Light/Lighting.j3md {
         DiffuseMap : Flip Repeat Models/Structures/textures/StructureAtlas_2.jpg
         Specular : 0.0 0.0 0.0 1.0
         Diffuse : 1.0 1.0 1.0 1.0
-        UseMaterialColors : true
+        UseMaterialColors : false
         ParallaxHeight : 0.05
         Ambient : 0.0 0.0 0.0 1.0
         Shininess : 0.0
