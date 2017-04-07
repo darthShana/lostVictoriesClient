@@ -104,7 +104,6 @@ public class SecureSector extends Objective<AICharacterNode> implements MinimapP
        }
         
         ObjectNode node = MAPPER.createObjectNode();
-        node.put("houses", MAPPER.valueToTree(hs));
         node.put("centre", MAPPER.valueToTree(new Vector(centre)));
         node.put("homeBase", MAPPER.valueToTree(new Vector(homeBase)));
         node.put("deploymentStrength", deploymentStrength);

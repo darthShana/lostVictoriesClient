@@ -679,6 +679,10 @@ public abstract class GameCharacterNode<T extends GameCharacterControl> extends 
         
         return new CharacterMessage(identity, vector, new Vector(getPlayerDirection()), RankMessage.fromRank(getRank()), actions, objectives, completedObjectives, version);
     }
+    
+    public long getVersion(){
+        return version;
+    }
 
     @Override
     public boolean equals(Object obj) {

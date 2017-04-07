@@ -30,14 +30,12 @@ public class ServerMessageAssembler {
     private Map<UUID, UnClaimedEquipmentMessage> equipment = new HashMap<>();
     private Map<UUID, TreeGroupMessage> trees = new HashMap<>();
     private Map<UUID, HouseMessage> houses = new HashMap<>();
-    int count =0;
     
     public ServerMessageAssembler() {
         
     }
 
     void append(LostVictoryMessage message) {
-        count++;
         synchronized(this){
             if(message instanceof CharacterStatusResponse){
                 ((CharacterStatusResponse) message).getCharacters().forEach(
@@ -64,7 +62,6 @@ public class ServerMessageAssembler {
                     }
                 );
             }
-            System.out.println("received mesage count:"+count);
             
         }
     }

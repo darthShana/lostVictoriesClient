@@ -5,6 +5,7 @@
 package com.jme3.lostVictories.characters;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -46,6 +47,8 @@ public class RemoteBehaviourControler implements BehaviorControler {
     static{
             MAPPER = new ObjectMapper();
             MAPPER.setVisibility(PropertyAccessor.FIELD, Visibility.ANY);
+            MAPPER.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+
     }
     
     private CharacterMessage remoteState;

@@ -8,6 +8,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.jme3.math.Vector3f;
 import java.io.Serializable;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /**
  *
@@ -46,5 +48,31 @@ public class Vector implements Serializable{
     public Vector3f toVector(){
         return new Vector3f(x, y, z);
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) { return false; }
+        if (obj == this) { return true; }
+        if (obj.getClass() != getClass()) {
+            return false;
+        }
+        Vector rhs = (Vector) obj;
+        return new EqualsBuilder()
+                 .append(x, rhs.x)
+                 .append(y, rhs.y)
+                 .append(z, rhs.z)
+                 .isEquals();
+    }
+
+    @Override
+   public int hashCode() {
+     return new HashCodeBuilder(17, 37).
+       append(x).
+       append(y).
+       append(z).
+       toHashCode();
+   }
+    
+    
  
 }

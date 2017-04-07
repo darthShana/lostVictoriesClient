@@ -10,10 +10,13 @@ import com.jme3.lostVictories.network.messages.actions.ManualControl;
 import com.jme3.lostVictories.network.messages.actions.SetupWeapon;
 import com.jme3.lostVictories.network.messages.actions.Shoot;
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /**
  *
@@ -44,7 +47,9 @@ public class CharacterMessage implements Serializable{
     long version;
     Set<UUID> kills;
     SquadType squadType;
+    long creationTime  = System.currentTimeMillis();
 
+    
     private CharacterMessage(){}
     
     public CharacterMessage(UUID id, Vector location, Vector orientation, RankMessage rank, Set<Action> actions, Map<String, String> objectives, Set<String> completedObjectives, long version) {
@@ -150,15 +155,6 @@ public class CharacterMessage implements Serializable{
         return false;
     }
     
-//    public ManualControl controlingBoardedVehicle() {
-//        for(Action a: actions){
-//            if(a instanceof ManualControl){
-//                return (ManualControl) a;
-//            }
-//        }
-//        return null;
-//    }
-    
     public Set<UUID> getPassengers(){
         return passengers;
     }
@@ -198,5 +194,45 @@ public class CharacterMessage implements Serializable{
     public long getVersion(){
         return version;
     }
+    
+    public long getCreationTime(){
+        return creationTime;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      if (obj == null) { return false; }
+      if (obj == this) { return true; }
+      if (obj.getClass() != getClass()) {
+        return false;
+      }
+      CharacterMessage rhs = (CharacterMessage) obj;
+      return new EqualsBuilder()
+                    .append(location, rhs.location)
+                    .append(id, rhs.id)
+                    .append(orientation, rhs.orientation)
+                    .append(actions, rhs.actions)
+                    .append(objectives.keySet(), rhs.objectives.keySet())
+                    .append(completedObjectives, rhs.completedObjectives)
+                    .append(checkoutClient, rhs.checkoutClient)
+                    .isEquals();
+    }
+    
+    @Override
+    public int hashCode() {
+        // you pick a hard-coded, randomly chosen, non-zero, odd number
+        // ideally different for each class
+        return new HashCodeBuilder(17, 37)
+            .append(location)
+            .append(orientation)
+            .append(actions)
+            .append(objectives.keySet())
+            .append(completedObjectives)
+            .append(checkoutClient)
+            .append(version)
+          .toHashCode();
+    }
+    
+    
     
 }

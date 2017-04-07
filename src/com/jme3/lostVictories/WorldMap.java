@@ -129,8 +129,8 @@ public class WorldMap implements Runnable {
     }
     
 
-    public Iterable<GameCharacterNode> getAllCharacters() {
-        return new HashSet<GameCharacterNode>(characters.allCharacters());
+    public Set<GameCharacterNode> getAllCharacters() {
+        return new HashSet<>(characters.allCharacters());
     }
     
     public GameCharacterNode getCharacter(UUID id){
@@ -458,7 +458,7 @@ public class WorldMap implements Runnable {
     }
 
     public Optional<GameSector> findSector(Vector centre) {
-        return gameSectors.stream().filter(sector->sector.containsPoint(centre.x, centre.z)).findAny();
+        return getGameSectors().stream().filter(sector->sector.containsPoint(centre.x, centre.z)).findAny();
     }
 
     

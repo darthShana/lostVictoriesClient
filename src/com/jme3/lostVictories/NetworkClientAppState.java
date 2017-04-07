@@ -13,12 +13,14 @@ import com.jme3.lostVictories.network.messages.CharacterMessage;
 import com.jme3.lostVictories.network.messages.wrapper.LostVictoryMessage;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.SynchronousQueue;
+import java.util.stream.Collectors;
 
 
 /**
@@ -44,7 +46,7 @@ public class NetworkClientAppState extends AbstractAppState {
     public static NetworkClientAppState get(){
         return instance;
     }
-    final BlockingQueue<ServerResponse> updateInProgress = new LinkedBlockingQueue<ServerResponse>();
+    private final Map<UUID, CharacterMessage> lastSent = new HashMap<>();
     
     private NetworkClientAppState(LostVictory app, NetworkClient networkClient, ResponseFromServerMessageHandler serverSync) {
         this.app = app;
@@ -57,31 +59,35 @@ public class NetworkClientAppState extends AbstractAppState {
     public void update(float tpf) {
         final long currentTimeMillis = System.currentTimeMillis();
         responseHandler.syncroniseWithServerView();
-        if(currentTimeMillis-lastRunTime>100 && updateInProgress.peek()!=null){
-            updateInProgress.clear();
             
-            Set<CharacterMessage> toUpdate = new HashSet<CharacterMessage>();
-            
-            final Iterable<GameCharacterNode> charactersInRange = WorldMap.get().getAllCharacters();
-            Point.Float p = new Point.Float(app.avatar.getLocalTranslation().x, app.avatar.getLocalTranslation().z);
-            Rectangle.Float r = new Rectangle.Float(p.x-CLIENT_RANGE, p.y-CLIENT_RANGE, CLIENT_RANGE*2, CLIENT_RANGE*2);
-            
-            for(GameCharacterNode c: charactersInRange){
-                if(!c.isDead() && c.isControledLocaly() && r.contains(new Point.Float(c.getLocalTranslation().x, c.getLocalTranslation().z))){
-                    toUpdate.add(c.toMessage());    
-                }
+        final Set<GameCharacterNode> charactersInRange = WorldMap.get().getAllCharacters();
+        Point.Float p = new Point.Float(app.avatar.getLocalTranslation().x, app.avatar.getLocalTranslation().z);
+        Rectangle.Float r = new Rectangle.Float(p.x-CLIENT_RANGE, p.y-CLIENT_RANGE, CLIENT_RANGE*2, CLIENT_RANGE*2);
+
+        Set<CharacterMessage> toUpdate = charactersInRange.stream()
+            .filter(c->{
+                return !c.isDead() && c.isControledLocaly() && r.contains(new Point.Float(c.getLocalTranslation().x, c.getLocalTranslation().z));
+            })
+            .filter(hc->{
+                return !lastSent.containsKey(hc.getIdentity()) || (hc.getVersion()>lastSent.get(hc.getIdentity()).getVersion()) || System.currentTimeMillis()-lastSent.get(hc.getIdentity()).getCreationTime()>300;
+            })
+            .map(c->c.toMessage())
+            .filter(m->{
+                return !lastSent.containsKey(m.getId()) || !m.equals(lastSent.get(m.getId()));// add time check here;
+            })
+            .collect(Collectors.toSet());
+
+        try{
+            if(!toUpdate.isEmpty()){
+                networkClient.updateLocalCharacters(toUpdate, (app.avatar!=null)?app.avatar.toMessage():null);
             }
-            
-            try{
-                if(!toUpdate.isEmpty()){
-                    networkClient.updateLocalCharacters(toUpdate, (app.avatar!=null)?app.avatar.toMessage():null);
-                }
-            }catch(Throwable e){
-                e.printStackTrace();
-            }
-            lastRunTime = currentTimeMillis;    
-            
+        }catch(Throwable e){
+            e.printStackTrace();
         }
+        toUpdate.forEach(cm->lastSent.put(cm.getId(), cm));
+
+        lastRunTime = currentTimeMillis;    
+            
         
         
     }

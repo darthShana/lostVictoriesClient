@@ -2,14 +2,12 @@ Material MyMaterial : Common/MatDefs/Light/Lighting.j3md {
     MaterialParameters {
         DiffuseMap : Textures/Tree1-___________________0011-DiffuseMap.png
         AlphaMap : Flip Repeat Models/Plants/Textures/plants_Atlas_alpha.png
-        Minnaert : false
         Specular : 1.0 1.0 1.0 0.0
         Diffuse : 1.0 1.0 1.0 1.0
         UseMaterialColors : false
         ParallaxHeight : 0.05
         Ambient : 0.0 0.0 0.0 0.0
         Shininess : 20.0
-        WardIso : false
         SpecularMap : Flip Repeat Models/Plants/Textures/plants_AtlasSpecular.png
         NormalMap : Flip Repeat Models/Plants/Textures/PlantAtlasNormal.png
     }

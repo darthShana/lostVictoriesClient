@@ -24,6 +24,7 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.DatagramPacket;
 import io.netty.channel.socket.nio.NioDatagramChannel;
 import io.netty.util.CharsetUtil;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.Set;
@@ -33,6 +34,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.SynchronousQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.zip.GZIPOutputStream;
 
 
 /**
@@ -124,7 +126,13 @@ public class NetworkClient {
     }
 
     public void updateLocalCharacters(Set<CharacterMessage> toUpdate, CharacterMessage avatar) {
-        sendMessage(new UpdateCharactersRequest(clientID, toUpdate, avatar));
+        toUpdate.forEach(c->{
+//            if("2fbe421f-f701-49c9-a0d4-abb0fa904204".equals(c.getId().toString())){
+//                System.out.println("in here sending avatar version:"+c.getVersion());
+//            }
+            sendMessage(new UpdateCharactersRequest(clientID, c, avatar.getId()));
+        });
+        
     }
 
     public void deathNotification(UUID killer, UUID victim) {
@@ -153,14 +161,29 @@ public class NetworkClient {
     
     
     private void sendMessage(LostVictoryMessage message)  {
-        synchronized(channel){
-            try {
-                channel.writeAndFlush(new DatagramPacket(
-                        Unpooled.copiedBuffer(MAPPER.writeValueAsBytes(message)),
-                        new InetSocketAddress(ipAddress, port))).sync();
-            } catch (IOException | InterruptedException ex) {
-                ex.printStackTrace();
+        
+        try {
+            byte[] data = MAPPER.writeValueAsBytes(message);
+
+            ByteArrayOutputStream bos = new ByteArrayOutputStream(data.length);
+            GZIPOutputStream gzip;
+            gzip = new GZIPOutputStream(bos);
+            gzip.write(data);
+            gzip.close();
+            byte[] compressed = bos.toByteArray();
+            bos.close();
+            synchronized(channel){
+                try {
+                    channel.writeAndFlush(new DatagramPacket(
+                            Unpooled.copiedBuffer(compressed),
+                            new InetSocketAddress(ipAddress, port))).sync();
+//                    System.out.println("send request:"+message.getClass()+" size"+data.length+"/"+compressed.length);
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
+                }
             }
+        } catch (IOException ex) {
+            ex.printStackTrace();
         }
     }
     

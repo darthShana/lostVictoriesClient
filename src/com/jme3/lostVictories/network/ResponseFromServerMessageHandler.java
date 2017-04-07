@@ -26,7 +26,6 @@ import com.jme3.lostVictories.effects.ParticleManager;
 import com.jme3.lostVictories.network.messages.CharacterMessage;
 import com.jme3.lostVictories.network.messages.CharacterType;
 import com.jme3.lostVictories.network.messages.HouseMessage;
-import com.jme3.lostVictories.network.messages.LostVictoryDictionary;
 import com.jme3.lostVictories.network.messages.wrapper.LostVictoryMessage;
 import com.jme3.lostVictories.network.messages.UnClaimedEquipmentMessage;
 import com.jme3.lostVictories.structures.UnclaimedEquipmentNode;
@@ -64,7 +63,6 @@ public class ResponseFromServerMessageHandler extends SimpleChannelInboundHandle
     private final ParticleManager particleManager;
     private final HeadsUpDisplayAppState hud;
     private final ServerMessageAssembler serverMessageAssembler;
-    private LostVictoryDictionary dictionary = new LostVictoryDictionary();
     
     public ResponseFromServerMessageHandler(LostVictory app, CharacterLoader characterLoader, UUID clientID, ParticleManager particleManager, HeadsUpDisplayAppState hud) {
         this.clientID = clientID;
@@ -74,8 +72,18 @@ public class ResponseFromServerMessageHandler extends SimpleChannelInboundHandle
         this.hud = hud;
         this.serverMessageAssembler = new ServerMessageAssembler();
     }
+    
+    public void syncroniseWithServerView(){
+        final ServerResponse popResponces = serverMessageAssembler.popResponces();
+        popResponces.getAllUnits().forEach(msg -> {
+            GameCharacterNode clientView = WorldMap.get().getCharacter(msg.getId());
+            if(clientView!=null){
+                updateOnSceneCharacter(clientView, msg);
+            }
+        });
+    }
 
-    public void syncroniseWithServerView() {
+    public void syncroniseWithServerViewOld() {
         ServerResponse msg = responseQueue.peekLast();
         responseQueue.clear();
         
@@ -113,7 +121,7 @@ public class ResponseFromServerMessageHandler extends SimpleChannelInboundHandle
 
     @Override
     protected void messageReceived(ChannelHandlerContext chc, DatagramPacket msg) throws Exception {
-        System.out.println("com.jme3.lostVictories.network.ResponseFromServerMessageHandler.messageReceived()");
+//        System.out.println("com.jme3.lostVictories.network.ResponseFromServerMessageHandler.messageReceived()");
 
         try {
             int i = 0;
@@ -146,12 +154,9 @@ public class ResponseFromServerMessageHandler extends SimpleChannelInboundHandle
 //            byte[] output = outputStream.toByteArray();  
 
             
-            System.out.println("message decompressed:"+sb);
-            //ok lets do something with this
-            String toString = sb.toString();
-            toString = dictionary.decode(toString);
-            
-            LostVictoryMessage message = MAPPER.readValue(toString, LostVictoryMessage.class);
+//            System.out.println("message decompressed:"+sb);
+            //ok lets do something with this            
+            LostVictoryMessage message = MAPPER.readValue(sb.toString(), LostVictoryMessage.class);
             serverMessageAssembler.append(message);
 //            if(message instanceof UpdateCharactersResponse){
 //                handle((UpdateCharactersResponse) message);
@@ -164,11 +169,6 @@ public class ResponseFromServerMessageHandler extends SimpleChannelInboundHandle
             throw new AssertionError(e);
         }
         
-        
-    }
-    
-    void handle(ServerResponse updateCharactersResponse) {
-        responseQueue.addLast(updateCharactersResponse);
         
     }
 
@@ -313,7 +313,7 @@ public class ResponseFromServerMessageHandler extends SimpleChannelInboundHandle
                 characterLoader.destroyCharacter(n);
             }else {
                 localCharacters.put(n.getIdentity(), n);
-                updateOnSceneCharacter(n, cMessage);
+                
             }
 
         }

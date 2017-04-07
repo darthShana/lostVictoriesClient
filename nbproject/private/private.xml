@@ -3,47 +3,13 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/Users/dharshanar/development/jmeProjects/lostVictoriesClient/src/com/jme3/lostVictories/StructureLoader.java</file>
-            <file>file:/Users/dharshanar/development/jmeProjects/lostVictoriesClient/src/com/jme3/lostVictories/objectives/AttackBoggies.java</file>
-            <file>file:/Users/dharshanar/development/jmeProjects/lostVictoriesClient/src/com/jme3/lostVictories/objectives/AttackAndTakeCoverObjective.java</file>
-            <file>file:/Users/dharshanar/development/jmeProjects/lostVictoriesClient/src/com/jme3/lostVictories/objectives/TransportSquad.java</file>
+            <file>file:/Users/dharshanar/development/jmeProjects/lostVictoriesClient/src/com/jme3/lostVictories/SimpleGrassControl.java</file>
+            <file>file:/Users/dharshanar/development/jmeProjects/lostVictoriesClient/src/com/jme3/lostVictories/NetworkClientAppState.java</file>
             <file>file:/Users/dharshanar/development/jmeProjects/lostVictoriesClient/src/com/jme3/lostVictories/network/NetworkClient.java</file>
-            <file>file:/Users/dharshanar/development/jmeProjects/lostVictoriesClient/src/com/jme3/lostVictories/objectives/DisembarkPasengers.java</file>
-            <file>file:/Users/dharshanar/development/jmeProjects/lostVictoriesClient/src/com/jme3/lostVictories/CharacterLoader.java</file>
+            <file>file:/Users/dharshanar/development/jmeProjects/lostVictoriesClient/src/com/jme3/lostVictories/LostVictory.java</file>
             <file>file:/Users/dharshanar/development/jmeProjects/lostVictoriesClient/src/com/jme3/lostVictories/network/ResponseFromServerMessageHandler.java</file>
             <file>file:/Users/dharshanar/development/jmeProjects/lostVictoriesClient/src/com/jme3/lostVictories/characters/GameCharacterNode.java</file>
-            <file>file:/Users/dharshanar/development/jmeProjects/lostVictoriesClient/src/com/jme3/lostVictories/network/messages/wrapper/AddObjectiveRequest.java</file>
-            <file>file:/Users/dharshanar/development/jmeProjects/lostVictoriesClient/src/com/jme3/lostVictories/objectives/CoverFront.java</file>
-            <file>file:/Users/dharshanar/development/jmeProjects/lostVictoriesClient/src/com/jme3/lostVictories/objectives/ProvideFireSupportFromCover.java</file>
-            <file>file:/Users/dharshanar/development/jmeProjects/lostVictoriesClient/src/com/jme3/lostVictories/objectives/NavigateObjective.java</file>
-            <file>file:/Users/dharshanar/development/jmeProjects/lostVictoriesClient/src/com/jme3/lostVictories/objectives/FollowCommander.java</file>
-            <file>file:/Users/dharshanar/development/jmeProjects/lostVictoriesClient/src/com/jme3/lostVictories/objectives/TravelObjective.java</file>
-            <file>file:/Users/dharshanar/development/jmeProjects/lostVictoriesClient/src/com/jme3/lostVictories/objectives/SecureSectorState.java</file>
-            <file>file:/Users/dharshanar/development/jmeProjects/lostVictoriesClient/src/com/jme3/lostVictories/objectives/SurvivalObjective.java</file>
-            <file>file:/Users/dharshanar/development/jmeProjects/lostVictoriesClient/src/com/jme3/lostVictories/objectives/CompleteBootCamp.java</file>
-            <file>file:/Users/dharshanar/development/jmeProjects/lostVictoriesClient/src/com/jme3/lostVictories/network/messages/wrapper/GameStatsResponse.java</file>
-            <file>file:/Users/dharshanar/development/jmeProjects/lostVictoriesClient/src/com/jme3/lostVictories/objectives/Cover.java</file>
-            <file>file:/Users/dharshanar/development/jmeProjects/lostVictoriesClient/src/com/jme3/lostVictories/network/ServerResponse.java</file>
-            <file>file:/Users/dharshanar/development/jmeProjects/lostVictoriesClient/src/com/jme3/lostVictories/objectives/ManualControlByAvatar.java</file>
-            <file>file:/Users/dharshanar/development/jmeProjects/lostVictoriesClient/src/com/jme3/lostVictories/objectives/VehicleCoverObjective.java</file>
-            <file>file:/Users/dharshanar/development/jmeProjects/lostVictoriesClient/src/com/jme3/lostVictories/objectives/BombardTargets.java</file>
-            <file>file:/Users/dharshanar/development/jmeProjects/lostVictoriesClient/src/com/jme3/lostVictories/network/messages/wrapper/CharacterStatusResponse.java</file>
-            <file>file:/Users/dharshanar/development/jmeProjects/lostVictoriesClient/src/com/jme3/lostVictories/objectives/StearToTarget.java</file>
-            <file>file:/Users/dharshanar/development/jmeProjects/lostVictoriesClient/src/com/jme3/lostVictories/network/messages/AchievementStatus.java</file>
-            <file>file:/Users/dharshanar/development/jmeProjects/lostVictoriesClient/src/com/jme3/lostVictories/objectives/AttackObjective.java</file>
-            <file>file:/Users/dharshanar/development/jmeProjects/lostVictoriesClient/src/com/jme3/lostVictories/objectives/CaptureTown.java</file>
-            <file>file:/Users/dharshanar/development/jmeProjects/lostVictoriesClient/src/com/jme3/lostVictories/NetworkClientAppState.java</file>
-            <file>file:/Users/dharshanar/development/jmeProjects/lostVictoriesClient/src/com/jme3/lostVictories/characters/LocalAIBehaviourControler.java</file>
-            <file>file:/Users/dharshanar/development/jmeProjects/lostVictoriesClient/src/com/jme3/lostVictories/objectives/AbstractCoverObjective.java</file>
-            <file>file:/Users/dharshanar/development/jmeProjects/lostVictoriesClient/src/com/jme3/lostVictories/objectives/CaptureStructure.java</file>
-            <file>file:/Users/dharshanar/development/jmeProjects/lostVictoriesClient/src/com/jme3/lostVictories/LostVictory.java</file>
-            <file>file:/Users/dharshanar/development/jmeProjects/lostVictoriesClient/src/com/jme3/lostVictories/objectives/RemanAbandonedVehicles.java</file>
-            <file>file:/Users/dharshanar/development/jmeProjects/lostVictoriesClient/src/com/jme3/lostVictories/objectives/BoardVehicle.java</file>
-            <file>file:/Users/dharshanar/development/jmeProjects/lostVictoriesClient/src/com/jme3/lostVictories/objectives/CrouchAndShoot.java</file>
-            <file>file:/Users/dharshanar/development/jmeProjects/lostVictoriesClient/src/com/jme3/lostVictories/objectives/CollectEquipment.java</file>
-            <file>file:/Users/dharshanar/development/jmeProjects/lostVictoriesClient/test/com/jme3/lostVictories/network/ResponseFromServerMessageHandlerTest.java</file>
-            <file>file:/Users/dharshanar/development/jmeProjects/lostVictoriesClient/src/com/jme3/lostVictories/characters/VirtualGameCharacterNode.java</file>
-            <file>file:/Users/dharshanar/development/jmeProjects/lostVictoriesClient/src/com/jme3/lostVictories/objectives/CommandeerMachinary.java</file>
+            <file>file:/Users/dharshanar/development/jmeProjects/lostVictoriesClient/src/com/jme3/lostVictories/network/messages/CharacterMessage.java</file>
         </group>
     </open-files>
 </project-private>
