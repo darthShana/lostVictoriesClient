@@ -20,8 +20,10 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 @JsonTypeInfo(use=Id.CLASS, include=As.PROPERTY, property="class")
 public abstract class Action {
     
-    protected final String type;
+    protected String type;
 
+    Action(){}
+    
     public Action(String type) {
         this.type = type;
     }

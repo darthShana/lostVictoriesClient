@@ -12,8 +12,9 @@ import java.util.UUID;
 
 public class UpdateCharactersRequest extends LostVictoryMessage {
 	
-	private Set<CharacterMessage> characters = new HashSet<>();
-	private UUID avatar;
+    private CharacterMessage character;
+    private UUID avatar;
+    private long clientStartTime;
 
 	private UpdateCharactersRequest(){}
 
@@ -21,10 +22,11 @@ public class UpdateCharactersRequest extends LostVictoryMessage {
 //		super(clientID);
 //	}
 	
-        public UpdateCharactersRequest(UUID clientID, CharacterMessage character, UUID avatar){
+        public UpdateCharactersRequest(UUID clientID, CharacterMessage character, UUID avatar, long clientStartTime){
             super(clientID);
             this.avatar = avatar;
-            this.characters.add(character);
+            this.character = character;
+            this.clientStartTime = clientStartTime;
         }
         
 //	public UpdateCharactersRequest(UUID clientID, Set<CharacterMessage> characters, CharacterMessage avatar) {
@@ -33,12 +35,12 @@ public class UpdateCharactersRequest extends LostVictoryMessage {
 //		this.avatar = avatar.getId();
 //	}
 
-	public Set<CharacterMessage> getCharacters(){
-		return characters;
+	public CharacterMessage getCharacter(){
+            return character;
 	}
 	
 	public UUID getAvatar(){
-		return avatar;
+            return avatar;
 	}
 
 }

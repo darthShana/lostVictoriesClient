@@ -8,14 +8,14 @@ import com.jme3.lostVictories.network.messages.CharacterMessage;
 /**
  * Created by dharshanar on 1/04/17.
  */
-
-public class CharacterStatusResponse extends LostVictoryMessage {
+             
+public class RelatedCharacterStatusResponse extends LostVictoryMessage {
 
     private CharacterMessage unit;
 
-    private CharacterStatusResponse(){}
+    private RelatedCharacterStatusResponse(){}
     
-    public CharacterStatusResponse(CharacterMessage unit) {
+    public RelatedCharacterStatusResponse(CharacterMessage unit) {
         this.unit = unit;
     }
     public CharacterMessage getCharacter() {

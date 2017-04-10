@@ -16,8 +16,10 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
  */
 @JsonTypeInfo(use=JsonTypeInfo.Id.CLASS, include=JsonTypeInfo.As.PROPERTY, property="class")
 public class Shoot extends Action {
-    private final long shootTime;
-    private final Vector[] targets;
+    private long shootTime;
+    private Vector[] targets;
+
+    private Shoot() {}
     
     public Shoot(long shootTime, Vector[] targets) {
         super("shoot");

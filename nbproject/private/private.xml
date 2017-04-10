@@ -3,13 +3,11 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/Users/dharshanar/development/jmeProjects/lostVictoriesClient/src/com/jme3/lostVictories/SimpleGrassControl.java</file>
             <file>file:/Users/dharshanar/development/jmeProjects/lostVictoriesClient/src/com/jme3/lostVictories/NetworkClientAppState.java</file>
             <file>file:/Users/dharshanar/development/jmeProjects/lostVictoriesClient/src/com/jme3/lostVictories/network/NetworkClient.java</file>
             <file>file:/Users/dharshanar/development/jmeProjects/lostVictoriesClient/src/com/jme3/lostVictories/LostVictory.java</file>
             <file>file:/Users/dharshanar/development/jmeProjects/lostVictoriesClient/src/com/jme3/lostVictories/network/ResponseFromServerMessageHandler.java</file>
-            <file>file:/Users/dharshanar/development/jmeProjects/lostVictoriesClient/src/com/jme3/lostVictories/characters/GameCharacterNode.java</file>
-            <file>file:/Users/dharshanar/development/jmeProjects/lostVictoriesClient/src/com/jme3/lostVictories/network/messages/CharacterMessage.java</file>
+            <file>file:/Users/dharshanar/development/jmeProjects/lostVictoriesClient/src/com/jme3/lostVictories/network/messages/wrapper/UpdateCharactersRequest.java</file>
         </group>
     </open-files>
 </project-private>

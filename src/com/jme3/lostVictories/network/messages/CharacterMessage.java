@@ -47,7 +47,7 @@ public class CharacterMessage implements Serializable{
     long version;
     Set<UUID> kills;
     SquadType squadType;
-    long creationTime  = System.currentTimeMillis();
+    long creationTime;
 
     
     private CharacterMessage(){}
@@ -195,6 +195,10 @@ public class CharacterMessage implements Serializable{
         return version;
     }
     
+    public UUID getCheckoutClient(){
+        return checkoutClient;
+    }
+    
     public long getCreationTime(){
         return creationTime;
     }
@@ -231,6 +235,10 @@ public class CharacterMessage implements Serializable{
             .append(checkoutClient)
             .append(version)
           .toHashCode();
+    }
+
+    public void setCreationTime(long creationTime) {
+        this.creationTime = creationTime;
     }
     
     

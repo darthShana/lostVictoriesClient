@@ -14,9 +14,11 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
  */
 @JsonTypeInfo(use=JsonTypeInfo.Id.CLASS, include=JsonTypeInfo.As.PROPERTY, property="class")
 public class ManualControl extends Action{
-    private final String gear;
-    private final String steering;
+    private String gear;
+    private String steering;
 
+    private ManualControl(){}
+    
     public ManualControl(String gear, String steering) {
         super("manualControl");
         this.gear = gear;

@@ -47,11 +47,13 @@ public class NetworkClientAppState extends AbstractAppState {
         return instance;
     }
     private final Map<UUID, CharacterMessage> lastSent = new HashMap<>();
+    private final long clientStartTime;
     
     private NetworkClientAppState(LostVictory app, NetworkClient networkClient, ResponseFromServerMessageHandler serverSync) {
         this.app = app;
         this.networkClient = networkClient;
         this.responseHandler = serverSync;
+        this.clientStartTime = System.currentTimeMillis();
         //updateInProgress.offer(new ServerResponse(UUID.randomUUID(), new HashSet<CharacterMessage>()));
     }
 
@@ -64,6 +66,8 @@ public class NetworkClientAppState extends AbstractAppState {
         Point.Float p = new Point.Float(app.avatar.getLocalTranslation().x, app.avatar.getLocalTranslation().z);
         Rectangle.Float r = new Rectangle.Float(p.x-CLIENT_RANGE, p.y-CLIENT_RANGE, CLIENT_RANGE*2, CLIENT_RANGE*2);
 
+        //..why are we still sending documents with the same version number
+        
         Set<CharacterMessage> toUpdate = charactersInRange.stream()
             .filter(c->{
                 return !c.isDead() && c.isControledLocaly() && r.contains(new Point.Float(c.getLocalTranslation().x, c.getLocalTranslation().z));
@@ -73,17 +77,19 @@ public class NetworkClientAppState extends AbstractAppState {
             })
             .map(c->c.toMessage())
             .filter(m->{
-                return !lastSent.containsKey(m.getId()) || !m.equals(lastSent.get(m.getId()));// add time check here;
+                return !lastSent.containsKey(m.getId()) || !m.equals(lastSent.get(m.getId())) || System.currentTimeMillis()-lastSent.get(m.getId()).getCreationTime()>2000;
             })
             .collect(Collectors.toSet());
 
         try{
             if(!toUpdate.isEmpty()){
-                networkClient.updateLocalCharacters(toUpdate, (app.avatar!=null)?app.avatar.toMessage():null);
+                networkClient.updateLocalCharacters(toUpdate, (app.avatar!=null)?app.avatar.getIdentity():null, clientStartTime);
             }
         }catch(Throwable e){
             e.printStackTrace();
         }
+//        toUpdate.forEach(cm->System.out.println("sending:"+cm.getId()+" version:"+cm.getVersion()+" creation:"+cm.getCreationTime()));
+//        System.out.println("");
         toUpdate.forEach(cm->lastSent.put(cm.getId(), cm));
 
         lastRunTime = currentTimeMillis;    

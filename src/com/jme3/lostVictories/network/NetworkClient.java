@@ -125,12 +125,12 @@ public class NetworkClient {
         sendMessage(new CheckoutScreenRequest(clientID, avatar));
     }
 
-    public void updateLocalCharacters(Set<CharacterMessage> toUpdate, CharacterMessage avatar) {
+    public void updateLocalCharacters(Set<CharacterMessage> toUpdate, UUID avatar, long clientStartTime) {
         toUpdate.forEach(c->{
 //            if("2fbe421f-f701-49c9-a0d4-abb0fa904204".equals(c.getId().toString())){
 //                System.out.println("in here sending avatar version:"+c.getVersion());
 //            }
-            sendMessage(new UpdateCharactersRequest(clientID, c, avatar.getId()));
+            sendMessage(new UpdateCharactersRequest(clientID, c, avatar, System.currentTimeMillis()-clientStartTime));
         });
         
     }

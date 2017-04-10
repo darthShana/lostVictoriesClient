@@ -25,13 +25,15 @@ public class ServerResponse {
 
     private final UUID id;
     private final HashSet<CharacterMessage> charcters;
+    private final HashSet<CharacterMessage> relatedCharcters;
     private final HashSet<HouseMessage> houses;
     private final HashSet<UnClaimedEquipmentMessage> equipment;
     private final HashSet<TreeGroupMessage> trees;
 
-    ServerResponse(UUID id, HashSet<CharacterMessage> charcters, HashSet<HouseMessage> houses, HashSet<UnClaimedEquipmentMessage> equipment, HashSet<TreeGroupMessage> trees) {
+    ServerResponse(UUID id, HashSet<CharacterMessage> charcters, HashSet<CharacterMessage> relatedCharcters, HashSet<HouseMessage> houses, HashSet<UnClaimedEquipmentMessage> equipment, HashSet<TreeGroupMessage> trees) {
         this.id = id;
         this.charcters = charcters;
+        this.relatedCharcters = relatedCharcters;
         this.houses = houses;
         this.equipment = equipment;
         this.trees = trees;
@@ -43,7 +45,7 @@ public class ServerResponse {
     }
 
    public Collection<CharacterMessage> getAllRelatedCharacters() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return relatedCharcters;
     }
 
     public Iterable<UnClaimedEquipmentMessage> getAllEquipment() {
@@ -72,6 +74,10 @@ public class ServerResponse {
 
     Iterable<UnClaimedEquipmentMessage> getUnclaimedEquipment() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public Collection<CharacterMessage> getAllRelatedUnits() {
+        return relatedCharcters;
     }
     
 }

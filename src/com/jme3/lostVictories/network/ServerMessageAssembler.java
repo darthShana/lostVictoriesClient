@@ -13,6 +13,7 @@ import com.jme3.lostVictories.network.messages.wrapper.CharacterStatusResponse;
 import com.jme3.lostVictories.network.messages.wrapper.EquipmentStatusResponse;
 import com.jme3.lostVictories.network.messages.wrapper.HouseStatusResponse;
 import com.jme3.lostVictories.network.messages.wrapper.LostVictoryMessage;
+import com.jme3.lostVictories.network.messages.wrapper.RelatedCharacterStatusResponse;
 import com.jme3.lostVictories.network.messages.wrapper.TreeStatusResponse;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -30,6 +31,7 @@ public class ServerMessageAssembler {
     private Map<UUID, UnClaimedEquipmentMessage> equipment = new HashMap<>();
     private Map<UUID, TreeGroupMessage> trees = new HashMap<>();
     private Map<UUID, HouseMessage> houses = new HashMap<>();
+    private Map<UUID, CharacterMessage> relatedCharacters = new HashMap<>();
     
     public ServerMessageAssembler() {
         
@@ -38,11 +40,11 @@ public class ServerMessageAssembler {
     void append(LostVictoryMessage message) {
         synchronized(this){
             if(message instanceof CharacterStatusResponse){
-                ((CharacterStatusResponse) message).getCharacters().forEach(
-                    cm->{
-                        characters.put(cm.getId(), cm);
-                    }
-                );
+                CharacterMessage cm = ((CharacterStatusResponse) message).getCharacter();
+                characters.put(cm.getId(), cm);
+            }else if(message instanceof RelatedCharacterStatusResponse){
+                CharacterMessage cm = ((RelatedCharacterStatusResponse) message).getCharacter();
+                relatedCharacters.put(cm.getId(), cm);
             }else if(message instanceof EquipmentStatusResponse){
                 ((EquipmentStatusResponse) message).getUnclaimedEquipment().forEach(
                     em->{
@@ -70,11 +72,13 @@ public class ServerMessageAssembler {
         synchronized(this){
             ServerResponse ret = new ServerResponse(UUID.randomUUID(), 
                     new HashSet<>(characters.values()), 
+                    new HashSet<>(relatedCharacters.values()),
                     new HashSet<>(houses.values()), 
                     new HashSet<>(equipment.values()), 
                     new HashSet<>(trees.values()));
             
             characters.clear();
+            relatedCharacters.clear();
             houses.clear();
             equipment.clear();
             trees.clear();
