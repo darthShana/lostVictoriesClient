@@ -71,7 +71,9 @@ public class ResponseFromServerMessageHandler extends SimpleChannelInboundHandle
     private final ParticleManager particleManager;
     private final HeadsUpDisplayAppState hud;
     private final ServerMessageAssembler serverMessageAssembler;
-    private Map<UUID, Long> receivedMessages = new HashMap<>();
+    private final Map<UUID, Long> receivedCharacterMessages = new HashMap<>();
+    private final Map<UUID, Long> receivedEquipmentMessages = new HashMap<>();
+
     private Map<UUID, CharacterMessage> relatedCharacters = new HashMap<>();
     
     public ResponseFromServerMessageHandler(LostVictory app, CharacterLoader characterLoader, UUID clientID, ParticleManager particleManager, HeadsUpDisplayAppState hud) {
@@ -96,7 +98,7 @@ public class ResponseFromServerMessageHandler extends SimpleChannelInboundHandle
                 .collect(Collectors.toMap(r->r.getId(), Function.identity()));
         
         popResponces.getAllUnits().forEach(msg -> {
-            receivedMessages.put(msg.getId(), System.currentTimeMillis());
+            receivedCharacterMessages.put(msg.getId(), System.currentTimeMillis());
            
             GameCharacterNode clientView = worldMap.getCharacter(msg.getId());
             if(clientView!=null){
@@ -139,7 +141,7 @@ public class ResponseFromServerMessageHandler extends SimpleChannelInboundHandle
             }
         });
         
-        for(Iterator<Entry<UUID, Long>> it = receivedMessages.entrySet().iterator();it.hasNext();){
+        for(Iterator<Entry<UUID, Long>> it = receivedCharacterMessages.entrySet().iterator();it.hasNext();){
             final Entry<UUID, Long> next = it.next();
             final GameCharacterNode character = WorldMap.get().getCharacter(next.getKey());
             if(character!=null && System.currentTimeMillis()-next.getValue()>3000){
@@ -148,41 +150,37 @@ public class ResponseFromServerMessageHandler extends SimpleChannelInboundHandle
             }
         }
         
-    }
-
-    public void syncroniseWithServerViewOld() {
-        ServerResponse msg = responseQueue.peekLast();
-        responseQueue.clear();
+        popResponces.getAllHouses().forEach(houseMessage->{
+            worldMap.getHouse(houseMessage.getId()).updateOwership(houseMessage);
+        });
         
-        if(msg!=null){
-            UUID removedSelectedCharacter = null;
-            WorldRunner.get().setGameStatistics(msg.getGameStatistics());
-            WorldRunner.get().setAchiveemntStatus(msg.getAchivementStatus());
-            if(msg.getMessages()!=null){
-                hud.addMessage(msg.getMessages().toArray(new String[]{}));
-            }
-            
-            WorldMap worldMap = WorldMap.get();
-            Set<UUID> fromMsg = new HashSet<UUID>();
-            for(UnClaimedEquipmentMessage eq:msg.getUnclaimedEquipment()){
-                fromMsg.add(eq.getId());
-                if(!worldMap.hasUnclaimedEquipment(eq)){
-                    characterLoader.laodUnclaimedEquipment(eq);
-                }
-            }
-            for(UnclaimedEquipmentNode n:worldMap.getAllEquipment()){
-                if(!fromMsg.contains(n.getId())){
-                    n.destroy();
-                    worldMap.removeEquipment(n);
-                }
-            }
-            syncronizeCharacters(msg, worldMap, removedSelectedCharacter);
-                  
-            for(HouseMessage structure:msg.getAllHouses()){
-                worldMap.getHouse(structure.getId()).updateOwership(structure);
-            }
-                                    
+        if(popResponces.getMessages()!=null){
+            hud.addMessage(popResponces.getMessages().toArray(new String[]{}));
         }
+        if(popResponces.getGameStatistics()!=null){
+            WorldRunner.get().setGameStatistics(popResponces.getGameStatistics());
+        }
+        if(popResponces.getAchivementStatus()!=null){
+             WorldRunner.get().setAchiveemntStatus(popResponces.getAchivementStatus());
+        }
+        
+        popResponces.getAllEquipment().forEach(eq->{
+            receivedEquipmentMessages.put(eq.getId(), System.currentTimeMillis());
+            if(!worldMap.hasUnclaimedEquipment(eq)){
+                characterLoader.laodUnclaimedEquipment(eq);
+            }
+        });
+        
+        for(Iterator<Entry<UUID, Long>> it = receivedEquipmentMessages.entrySet().iterator();it.hasNext();){
+            final Entry<UUID, Long> next = it.next();
+            final UnclaimedEquipmentNode equipment = (UnclaimedEquipmentNode) WorldMap.get().getEquipment(next.getKey());
+            if(equipment!=null && System.currentTimeMillis()-next.getValue()>3000){
+                equipment.destroy();
+                worldMap.removeEquipment(equipment);
+            }
+        }
+                
+
         
     }
 

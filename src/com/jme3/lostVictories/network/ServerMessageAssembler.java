@@ -11,6 +11,7 @@ import com.jme3.lostVictories.network.messages.TreeGroupMessage;
 import com.jme3.lostVictories.network.messages.UnClaimedEquipmentMessage;
 import com.jme3.lostVictories.network.messages.wrapper.CharacterStatusResponse;
 import com.jme3.lostVictories.network.messages.wrapper.EquipmentStatusResponse;
+import com.jme3.lostVictories.network.messages.wrapper.GameStatsResponse;
 import com.jme3.lostVictories.network.messages.wrapper.HouseStatusResponse;
 import com.jme3.lostVictories.network.messages.wrapper.LostVictoryMessage;
 import com.jme3.lostVictories.network.messages.wrapper.RelatedCharacterStatusResponse;
@@ -19,7 +20,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentLinkedDeque;
 
 /**
  *
@@ -32,6 +32,7 @@ public class ServerMessageAssembler {
     private Map<UUID, TreeGroupMessage> trees = new HashMap<>();
     private Map<UUID, HouseMessage> houses = new HashMap<>();
     private Map<UUID, CharacterMessage> relatedCharacters = new HashMap<>();
+    private GameStatsResponse gameStatsResponse;
     
     public ServerMessageAssembler() {
         
@@ -45,6 +46,8 @@ public class ServerMessageAssembler {
             }else if(message instanceof RelatedCharacterStatusResponse){
                 CharacterMessage cm = ((RelatedCharacterStatusResponse) message).getCharacter();
                 relatedCharacters.put(cm.getId(), cm);
+            }else if(message instanceof GameStatsResponse){
+                gameStatsResponse = (GameStatsResponse) message;
             }else if(message instanceof EquipmentStatusResponse){
                 ((EquipmentStatusResponse) message).getUnclaimedEquipment().forEach(
                     em->{
@@ -75,13 +78,17 @@ public class ServerMessageAssembler {
                     new HashSet<>(relatedCharacters.values()),
                     new HashSet<>(houses.values()), 
                     new HashSet<>(equipment.values()), 
-                    new HashSet<>(trees.values()));
+                    new HashSet<>(trees.values()),
+                    (gameStatsResponse!=null)?gameStatsResponse.getMessages():null,
+                    (gameStatsResponse!=null)?gameStatsResponse.getAchivementStatus():null,
+                    (gameStatsResponse!=null)?gameStatsResponse.getGameStatistics():null);
             
             characters.clear();
             relatedCharacters.clear();
             houses.clear();
             equipment.clear();
             trees.clear();
+            gameStatsResponse = null;
             return ret;
         }
     }

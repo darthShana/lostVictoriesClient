@@ -23,4 +23,21 @@ public class GameStatsResponse extends LostVictoryMessage{
         this.gameStatistics = gameStatistics;
         this.achivementStatus = achivementStatus;
     }
+
+    public List<String> getMessages() {
+        return messages;
+    }
+
+    public GameStatistics getGameStatistics() {
+        return gameStatistics;
+    }
+
+    public AchievementStatus getAchivementStatus() {
+        return achivementStatus;
+    }
+    
+    
+    
+
+
 }

@@ -29,14 +29,20 @@ public class ServerResponse {
     private final HashSet<HouseMessage> houses;
     private final HashSet<UnClaimedEquipmentMessage> equipment;
     private final HashSet<TreeGroupMessage> trees;
+    private final List<String> messages;
+    private final AchievementStatus achievementStatus;
+    private final GameStatistics gameStatistics;
 
-    ServerResponse(UUID id, HashSet<CharacterMessage> charcters, HashSet<CharacterMessage> relatedCharcters, HashSet<HouseMessage> houses, HashSet<UnClaimedEquipmentMessage> equipment, HashSet<TreeGroupMessage> trees) {
+    ServerResponse(UUID id, HashSet<CharacterMessage> charcters, HashSet<CharacterMessage> relatedCharcters, HashSet<HouseMessage> houses, HashSet<UnClaimedEquipmentMessage> equipment, HashSet<TreeGroupMessage> trees, List<String> messages, AchievementStatus achievementStatus, GameStatistics gameStatistics) {
         this.id = id;
         this.charcters = charcters;
         this.relatedCharcters = relatedCharcters;
         this.houses = houses;
         this.equipment = equipment;
         this.trees = trees;
+        this.messages = messages;
+        this.achievementStatus = achievementStatus;
+        this.gameStatistics = gameStatistics;
         
     }
 
@@ -61,19 +67,15 @@ public class ServerResponse {
     }
 
     GameStatistics getGameStatistics() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return gameStatistics;
     }
 
     AchievementStatus getAchivementStatus() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return achievementStatus;
     }
 
     List<String> getMessages() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    Iterable<UnClaimedEquipmentMessage> getUnclaimedEquipment() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return messages;
     }
 
     public Collection<CharacterMessage> getAllRelatedUnits() {
