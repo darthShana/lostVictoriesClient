@@ -18,6 +18,8 @@ public class GameStatsResponse extends LostVictoryMessage{
     private GameStatistics gameStatistics;
     private AchievementStatus achivementStatus;
 
+    private GameStatsResponse(){}
+    
     public GameStatsResponse(List<String> messages, GameStatistics gameStatistics, AchievementStatus achivementStatus){
         this.messages = messages;
         this.gameStatistics = gameStatistics;

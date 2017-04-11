@@ -61,6 +61,7 @@ public class CharacterMessage implements Serializable{
         this.objectives = objectives;
         this.completedObjectives = completedObjectives;
         this.version = version;
+        this.creationTime = System.currentTimeMillis();
     }
     
     public UUID getId() {

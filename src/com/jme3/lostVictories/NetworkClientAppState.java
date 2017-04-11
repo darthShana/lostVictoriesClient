@@ -73,7 +73,7 @@ public class NetworkClientAppState extends AbstractAppState {
                 return !c.isDead() && c.isControledLocaly() && r.contains(new Point.Float(c.getLocalTranslation().x, c.getLocalTranslation().z));
             })
             .filter(hc->{
-                return !lastSent.containsKey(hc.getIdentity()) || (hc.getVersion()>lastSent.get(hc.getIdentity()).getVersion()) || System.currentTimeMillis()-lastSent.get(hc.getIdentity()).getCreationTime()>300;
+                return !lastSent.containsKey(hc.getIdentity()) || (hc.getVersion()>lastSent.get(hc.getIdentity()).getVersion()) || System.currentTimeMillis()-lastSent.get(hc.getIdentity()).getCreationTime()>2000;
             })
             .map(c->c.toMessage())
             .filter(m->{

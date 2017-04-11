@@ -14,7 +14,7 @@ public class AchievementStatus implements Serializable{
     private String achivementStatusText;
     private int achivementTotal;
     private int achivementCurrent;
-    private long sentTIme;
+    private long sentTime;
     
     public String getAchivementStatusText() {
         return achivementStatusText;
