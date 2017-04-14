@@ -420,13 +420,6 @@ public class AvatarCharacterNode extends GameCharacterNode<BetterSoldierControl>
         }
         return k;
     }
-    
-    @Override
-    public void resetKillCount() {
-        for(Commandable c: ((CommandingOfficer)this).getCharactersUnderCommand()){
-            c.resetKillCount();
-        }
-    }
 
     @Override
     public Rank getRank() {

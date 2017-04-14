@@ -42,9 +42,7 @@ public interface Commandable {
     public void requestBoarding(GameVehicleNode key, GameCharacterNode issuingCharacter);
     
     public int getKillCount();
-    
-    public void resetKillCount();
-    
+        
     public String getUnitName();
     
     public void setUnitName(String unitName);

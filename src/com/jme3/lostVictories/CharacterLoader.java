@@ -251,7 +251,7 @@ public class CharacterLoader {
         }else{
             throw new UnsupportedOperationException("error loading character type:"+c.getType()+" rank:"+c.getRank());
         }
-        loadedCharacter.initialiseKills(c.getKills());
+        loadedCharacter.initialiseKills(c.getKillCount());
         loadedCharacter.setVersion(c.getVersion());
         if(c.getType()==CharacterType.SOLDIER){
             loadedCharacter.addControl(new CustomLODControl(app.getCamera(), assetManager.loadModel("Models/Soldier/stickfigure3.j3o")));

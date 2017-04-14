@@ -10,6 +10,7 @@ import com.jme3.lostVictories.structures.GameStructureNode;
 import com.jme3.math.Vector3f;
 import java.awt.Rectangle;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 public class GameSector {
@@ -47,13 +48,19 @@ public class GameSector {
         return false;
     }
     
-    boolean containsPoint(float x, float z){
-        for(Rectangle r:rects){
-            if(r.contains(x, z)){
-                return true;
+    public boolean containsPoint(float x, float z) {
+        if(rects.isEmpty()){
+            return false;
+        }
+        Rectangle union = null;
+        for(Iterator<Rectangle> it = rects.iterator();it.hasNext();){
+            if(union == null){
+                union = it.next();
+            }else{
+                union.add(it.next());
             }
         }
-        return false;
+        return (union!=null)?union.contains(x, z):false;
     }
 
     void add(GameStructureNode structure) {

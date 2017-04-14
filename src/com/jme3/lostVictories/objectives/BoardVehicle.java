@@ -86,7 +86,7 @@ public class BoardVehicle extends Objective<Soldier> {
 
     @Override
     public Objective fromJson(JsonNode json, GameCharacterNode character, NavigationProvider pathFinder, Node rootNode, WorldMap map) throws IOException {
-        GameVehicleNode v = (GameVehicleNode) map.getCharacter(MAPPER.readValue(json.get("vehicleID").asText(), UUID.class));
+        GameVehicleNode v = (GameVehicleNode) map.getCharacter(UUID.fromString(json.get("vehicleID").asText()));
         if(v!=null){
             return new BoardVehicle(character, v);
         }

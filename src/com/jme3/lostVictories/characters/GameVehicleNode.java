@@ -248,7 +248,6 @@ public abstract class GameVehicleNode extends AICharacterNode<BetterVehicleContr
     public abstract float getTurnSpeed();
 
     protected void addOperator(Country newCountry) {
-        kills.clear();
         removeOperator();
         characterNode.attachChild(operator.get(newCountry));
         

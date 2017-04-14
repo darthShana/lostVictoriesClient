@@ -96,7 +96,7 @@ public abstract class GameCharacterNode<T extends GameCharacterControl> extends 
     protected List<Vector3f> blasts = new ArrayList<Vector3f>();
     protected String unitName;
     
-    Set<UUID> kills = new HashSet<UUID>();
+    int kills;
     protected final UUID identity;
     protected final Geometry shell;
     protected long shootStartTime;
@@ -259,11 +259,7 @@ public abstract class GameCharacterNode<T extends GameCharacterControl> extends 
     
     @Override
     public void onAnimCycleDone(AnimControl control, AnimChannel channel, String animName) {
-        
-        if("9740bc8a-835d-4fa2-ab2b-6ed8d914e6ef".equals(getIdentity().toString())){
-            System.out.println("Remote3:in here test shooting:"+animName);
-        }
-        
+       
         if(model.isAboutToFire(animName)){
             CollisionResults results = new CollisionResults();
             List<Float> collitionLifes = new ArrayList<>();
@@ -288,7 +284,7 @@ public abstract class GameCharacterNode<T extends GameCharacterControl> extends 
             }
             if(isControledLocaly()){
                 for(CollisionResult result:results){
-                    kills.addAll(doRayDamage(result));
+                    doRayDamage(result);
                 }            
             }
             ShotsFiredListener.instance().register(getLocalTranslation());
@@ -300,7 +296,6 @@ public abstract class GameCharacterNode<T extends GameCharacterControl> extends 
                 blastFragments.killAllParticles();
                 blastFragments.setLocalTranslation(blast);
                 blastFragments.emitAllParticles();
-                kills.addAll(doBlastDamage(blast));
             }
             blasts.clear();
             
@@ -438,7 +433,7 @@ public abstract class GameCharacterNode<T extends GameCharacterControl> extends 
     private boolean hasBeenKilledAlready(CollisionResult r) {
         for(Node n = r.getGeometry().getParent();n!=null;n = n.getParent()){
             if(n.getUserData("GameCharacterControl")!=null && !"blank".equals(n.getUserData("GameCharacterControl"))){
-                if(kills.contains(((GameCharacterNode) n).identity)){
+                if(((GameCharacterNode) n).isDead){
                     return true;
                 }
             }
@@ -448,7 +443,7 @@ public abstract class GameCharacterNode<T extends GameCharacterControl> extends 
     }
       
     public int getKillCount(){
-        return kills.size();
+        return kills;
     }
 
     public Rank getRank() {
@@ -577,15 +572,6 @@ public abstract class GameCharacterNode<T extends GameCharacterControl> extends 
             }
         }
         return count;
-    }
-    
-    public void resetKillCount() {
-        kills.clear();
-        if(this instanceof CommandingOfficer){
-            for(Commandable c: ((CommandingOfficer)this).getCharactersUnderCommand()){
-                c.resetKillCount();
-            }
-        }
     }
 
     public boolean doWeaponDamage(CanInteractWith victim, CollisionResult result) {
@@ -718,9 +704,8 @@ public abstract class GameCharacterNode<T extends GameCharacterControl> extends 
         //bulletAppState.getPhysicsSpace().remove(playerControl);
     }
     
-    public void initialiseKills(Set<UUID> k) {
-        this.kills.clear();
-        this.kills.addAll(k);
+    public void initialiseKills(int k) {
+        this.kills = k;
     }
 
     public GameVehicleNode getBoardedVehicle() {

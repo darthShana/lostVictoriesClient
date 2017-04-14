@@ -276,7 +276,7 @@ public class ResponseFromServerMessageHandler extends SimpleChannelInboundHandle
         
         if(worldMap.getCharacter(cMessage.getCommandingOfficer())==null && relatedCharacters.containsKey(cMessage.getCommandingOfficer())){
             n.setCommandingOfficer(new VirtualGameCharacterNode(relatedCharacters.get(cMessage.getCommandingOfficer()), false));
-        }else if(worldMap.getCharacter(cMessage.getCommandingOfficer())!=null && n.getCommandingOfficer() instanceof VirtualGameCharacterNode){
+        }else if(worldMap.getCharacter(cMessage.getCommandingOfficer())!=null && n.getCommandingOfficer() instanceof VirtualGameCharacterNode && worldMap.getCharacter(cMessage.getCommandingOfficer()) instanceof CommandingOfficer){
             n.setCommandingOfficer((CommandingOfficer) worldMap.getCharacter(cMessage.getCommandingOfficer()));
         }
         
@@ -321,7 +321,7 @@ public class ResponseFromServerMessageHandler extends SimpleChannelInboundHandle
             ((GameVehicleNode)n).synchronisePassengers(cMessage.getPassengers());
         }
         
-        n.initialiseKills(cMessage.getKills());
+        n.initialiseKills(cMessage.getKillCount());
         n.setVersion(cMessage.getVersion());
         
         if(cMessage.shouldBeControledRemotely(clientID) && !n.isControledRemotely()){

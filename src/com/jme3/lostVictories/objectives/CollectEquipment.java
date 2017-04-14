@@ -72,7 +72,7 @@ public class CollectEquipment extends Objective<Soldier>{
 
     @Override
     public Objective fromJson(JsonNode json, GameCharacterNode character, NavigationProvider pathFinder, Node rootNode, WorldMap map) throws IOException {
-        Pickable p = map.getEquipment(MAPPER.readValue(json.get("equipmentID").asText(), UUID.class));
+        Pickable p = map.getEquipment(UUID.fromString(json.get("equipmentID").asText()));
         if(p!=null){
             return new CollectEquipment(p);
         }

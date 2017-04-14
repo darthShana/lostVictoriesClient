@@ -42,6 +42,7 @@ public class ServerMessageAssembler {
         synchronized(this){
             if(message instanceof CharacterStatusResponse){
                 CharacterMessage cm = ((CharacterStatusResponse) message).getCharacter();
+//                System.err.println("recived:"+cm.getId()+" version:"+cm.getVersion());
                 characters.put(cm.getId(), cm);
             }else if(message instanceof RelatedCharacterStatusResponse){
                 CharacterMessage cm = ((RelatedCharacterStatusResponse) message).getCharacter();

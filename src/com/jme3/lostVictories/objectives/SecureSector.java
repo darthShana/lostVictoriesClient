@@ -117,14 +117,14 @@ public class SecureSector extends Objective<AICharacterNode> implements MinimapP
         int ds = json.get("deploymentStrength").asInt();
         int mfs = json.get("minimumFightingStrenght").asInt();
         Vector h = MAPPER.treeToValue(json.get("homeBase"), Vector.class);
-        Vector centre = MAPPER.treeToValue(json.get("centre"), Vector.class);
+        Vector cent = MAPPER.treeToValue(json.get("centre"), Vector.class);
 
         Set<GameHouseNode> hs = new HashSet<>();
-        Optional<GameSector> sector = map.findSector(centre);
+        Optional<GameSector> sector = map.findSector(cent);
         if(sector.isPresent()){            
             hs.addAll(sector.get().getHouses());
         }else{
-            System.out.println("unable to find sector:"+centre);
+            System.out.println("unable to find sector:"+cent);
         }
         
         if(!(character instanceof Lieutenant)){

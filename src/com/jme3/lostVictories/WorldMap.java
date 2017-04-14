@@ -390,7 +390,7 @@ public class WorldMap implements Runnable {
     }
     
     public static Set<GameSector> calculateGameSector(Iterable<GameStructureNode> allHouses) {
-        Set<GameSector> ret = new HashSet<GameSector>();
+        Set<GameSector> ret = new HashSet<>();
         
         for(int y = WorldMap.mapBounds.y;y<=WorldMap.mapBounds.getMaxY();y=y+50){
             for(int x = WorldMap.mapBounds.x;x<=WorldMap.mapBounds.getMaxX();x=x+50){

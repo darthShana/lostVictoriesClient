@@ -62,16 +62,19 @@ public class NetworkClientAppState extends AbstractAppState {
         final long currentTimeMillis = System.currentTimeMillis();
         responseHandler.syncroniseWithServerView();
             
-        final Set<GameCharacterNode> charactersInRange = WorldMap.get().getAllCharacters();
+        Set<GameCharacterNode> charactersInRange = WorldMap.get().getAllCharacters();
         Point.Float p = new Point.Float(app.avatar.getLocalTranslation().x, app.avatar.getLocalTranslation().z);
         Rectangle.Float r = new Rectangle.Float(p.x-CLIENT_RANGE, p.y-CLIENT_RANGE, CLIENT_RANGE*2, CLIENT_RANGE*2);
 
         //..why are we still sending documents with the same version number
+        charactersInRange = charactersInRange.stream().filter(c->{
+                return !c.isDead() && c.isControledLocaly() && r.contains(new Point.Float(c.getLocalTranslation().x, c.getLocalTranslation().z));
+            }).collect(Collectors.toSet());
+        if(WorldMap.get().getCharacter(app.avatar.getIdentity())==null){
+            charactersInRange.add(app.avatar);
+        }
         
         Set<CharacterMessage> toUpdate = charactersInRange.stream()
-            .filter(c->{
-                return !c.isDead() && c.isControledLocaly() && r.contains(new Point.Float(c.getLocalTranslation().x, c.getLocalTranslation().z));
-            })
             .filter(hc->{
                 return !lastSent.containsKey(hc.getIdentity()) || (hc.getVersion()>lastSent.get(hc.getIdentity()).getVersion()) || System.currentTimeMillis()-lastSent.get(hc.getIdentity()).getCreationTime()>2000;
             })

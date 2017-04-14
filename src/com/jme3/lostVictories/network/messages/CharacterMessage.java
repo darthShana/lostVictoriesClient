@@ -45,7 +45,7 @@ public class CharacterMessage implements Serializable{
     boolean engineDamaged;
     Long timeOfDeath;
     long version;
-    Set<UUID> kills;
+    int killCount;
     SquadType squadType;
     long creationTime;
 
@@ -120,8 +120,8 @@ public class CharacterMessage implements Serializable{
         return orientation;
     }
     
-    public Set<UUID> getKills(){
-        return kills;
+    public int getKillCount(){
+        return killCount;
     }
     
     public Map<String, String> getObjectives(){

@@ -3,9 +3,13 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/Users/dharshanar/development/jmeProjects/lostVictoriesClient/src/com/jme3/lostVictories/network/ServerMessageAssembler.java</file>
+            <file>file:/Users/dharshanar/development/jmeProjects/lostVictoriesClient/src/com/jme3/lostVictories/objectives/SecureSector.java</file>
             <file>file:/Users/dharshanar/development/jmeProjects/lostVictoriesClient/src/com/jme3/lostVictories/NetworkClientAppState.java</file>
+            <file>file:/Users/dharshanar/development/jmeProjects/lostVictoriesClient/src/com/jme3/lostVictories/characters/AICharacterNode.java</file>
+            <file>file:/Users/dharshanar/development/jmeProjects/lostVictoriesClient/src/com/jme3/lostVictories/characters/Soldier.java</file>
             <file>file:/Users/dharshanar/development/jmeProjects/lostVictoriesClient/src/com/jme3/lostVictories/LostVictory.java</file>
+            <file>file:/Users/dharshanar/development/jmeProjects/lostVictoriesClient/src/com/jme3/lostVictories/characters/GameVehicleNode.java</file>
+            <file>file:/Users/dharshanar/development/jmeProjects/lostVictoriesClient/src/com/jme3/lostVictories/characters/AntiTankGunNode.java</file>
             <file>file:/Users/dharshanar/development/jmeProjects/lostVictoriesClient/src/com/jme3/lostVictories/network/ResponseFromServerMessageHandler.java</file>
             <file>file:/Users/dharshanar/development/jmeProjects/lostVictoriesClient/src/com/jme3/lostVictories/characters/GameCharacterNode.java</file>
             <file>file:/Users/dharshanar/development/jmeProjects/lostVictoriesClient/src/com/jme3/lostVictories/network/messages/CharacterMessage.java</file>
