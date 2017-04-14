@@ -296,6 +296,7 @@ public abstract class GameCharacterNode<T extends GameCharacterControl> extends 
                 blastFragments.killAllParticles();
                 blastFragments.setLocalTranslation(blast);
                 blastFragments.emitAllParticles();
+                doBlastDamage(blast);
             }
             blasts.clear();
             
