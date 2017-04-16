@@ -115,7 +115,9 @@ public class NetworkClientAppState extends AbstractAppState {
         System.out.println("sending checkout request");
         networkClient.checkoutSceen(avatar);
         Thread.sleep(5000);
-        return responseHandler.getServerResponces();
+        final ServerResponse serverResponces = responseHandler.getServerResponces();
+        System.out.println("received checkout messages:"+responseHandler.getMessagesReceivedCouunt());
+        return serverResponces;
     }
 
     public void notifyDeath(UUID killer, UUID victim) {

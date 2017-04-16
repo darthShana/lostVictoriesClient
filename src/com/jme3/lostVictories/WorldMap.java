@@ -461,5 +461,9 @@ public class WorldMap implements Runnable {
         return getGameSectors().stream().filter(sector->sector.containsPoint(centre.x, centre.z)).findAny();
     }
 
+    void addHouse(GameHouseNode addHouse) {
+        houses.put(addHouse.getId(), addHouse);
+    }
+
     
 }

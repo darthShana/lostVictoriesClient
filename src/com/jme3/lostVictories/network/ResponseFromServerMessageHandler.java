@@ -10,7 +10,7 @@ import com.jme3.lostVictories.CharacterLoader;
 import com.jme3.lostVictories.Country;
 import com.jme3.lostVictories.HeadsUpDisplayAppState;
 import com.jme3.lostVictories.LostVictory;
-import com.jme3.lostVictories.NetworkClientAppState;
+import com.jme3.lostVictories.StructureLoader;
 import com.jme3.lostVictories.WorldMap;
 import com.jme3.lostVictories.WorldRunner;
 import com.jme3.lostVictories.characters.AvatarCharacterNode;
@@ -28,6 +28,7 @@ import com.jme3.lostVictories.network.messages.CharacterType;
 import com.jme3.lostVictories.network.messages.HouseMessage;
 import com.jme3.lostVictories.network.messages.wrapper.LostVictoryMessage;
 import com.jme3.lostVictories.network.messages.UnClaimedEquipmentMessage;
+import com.jme3.lostVictories.structures.GameHouseNode;
 import com.jme3.lostVictories.structures.UnclaimedEquipmentNode;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -63,6 +64,8 @@ import java.util.zip.InflaterInputStream;
  */
 public class ResponseFromServerMessageHandler extends SimpleChannelInboundHandler<DatagramPacket> {
 
+    private final StructureLoader structureLoader;
+
     private final UUID clientID;
     private final LostVictory app;
     private final CharacterLoader characterLoader;
@@ -76,7 +79,8 @@ public class ResponseFromServerMessageHandler extends SimpleChannelInboundHandle
 
     private Map<UUID, CharacterMessage> relatedCharacters = new HashMap<>();
     
-    public ResponseFromServerMessageHandler(LostVictory app, CharacterLoader characterLoader, UUID clientID, ParticleManager particleManager, HeadsUpDisplayAppState hud) {
+    public ResponseFromServerMessageHandler(LostVictory app, CharacterLoader characterLoader, StructureLoader structureLoader, UUID clientID, ParticleManager particleManager, HeadsUpDisplayAppState hud) {
+        this.structureLoader = structureLoader;
         this.clientID = clientID;
         this.app = app;
         this.characterLoader = characterLoader;     
@@ -151,7 +155,12 @@ public class ResponseFromServerMessageHandler extends SimpleChannelInboundHandle
         }
         
         popResponces.getAllHouses().forEach(houseMessage->{
-            worldMap.getHouse(houseMessage.getId()).updateOwership(houseMessage);
+            if(worldMap.getHouse(houseMessage.getId())!=null){
+                worldMap.getHouse(houseMessage.getId()).updateOwership(houseMessage);
+            }else{
+                System.out.print("adding new house after initial load:"+houseMessage.getId());
+                structureLoader.addHouse(houseMessage);
+            }
         });
         
         if(popResponces.getMessages()!=null){
@@ -183,6 +192,8 @@ public class ResponseFromServerMessageHandler extends SimpleChannelInboundHandle
 
         
     }
+    
+    long messagesReceivedCounter;
 
     @Override
     protected void messageReceived(ChannelHandlerContext chc, DatagramPacket msg) throws Exception {
@@ -223,6 +234,7 @@ public class ResponseFromServerMessageHandler extends SimpleChannelInboundHandle
             //ok lets do something with this            
             LostVictoryMessage message = MAPPER.readValue(sb.toString(), LostVictoryMessage.class);
             serverMessageAssembler.append(message);
+            messagesReceivedCounter++;
 //            if(message instanceof UpdateCharactersResponse){
 //                handle((UpdateCharactersResponse) message);
 //            }
@@ -235,6 +247,10 @@ public class ResponseFromServerMessageHandler extends SimpleChannelInboundHandle
         }
         
         
+    }
+    
+    public long getMessagesReceivedCouunt(){
+        return messagesReceivedCounter;
     }
 
     private boolean hasSameUnits(CommandingOfficer c, Set<UUID> unitsUnderCommand, WorldMap worldMap, Map<UUID, CharacterMessage> relatedCharacters) {

@@ -64,7 +64,7 @@ public class LostVictory extends SimpleApplication implements ActionListener {
             
         String playerID, serverIP, gameVersion;
         int port = 5055;
-//        args = new String[]{"lostvic://lostVictoriesLauncher/game=eyJpZCI6InNhYXJfb2ZmZW5zaXZlIiwibmFtZSI6IlNhYXIgT2ZmZW5zaXZlIiwiaG9zdCI6ImNvbm5lY3QubG9zdHZpY3Rvcmllcy5jb20iLCJwb3J0IjoiNTA1NSIsInN0YXJ0RGF0ZSI6MTQ5MTMyNzg4OTE3Nywiam9pbmVkIjp0cnVlLCJhdmF0YXJJRCI6IjZjYTU1ODA2LTE0MjMtNDMyYi05NzE1LTg4M2ZmNzFhMzRlZiIsImdhbWVWZXJzaW9uIjoicHJlX2FscGhhIiwiZ2FtZVN0YXR1cyI6ImluUHJvZ3Jlc3MiLCJ2aWN0b3IiOm51bGwsImVuZERhdGUiOm51bGwsImNvdW50cnkiOiJHRVJNQU4ifQ=="};
+//        args = new String[]{"lostvic://lostVictoriesLauncher/game=eyJpZCI6Im9wZXJhdGlvbl93ZXNlcnVidW5nIiwibmFtZSI6Ik9wZXJhdGlvbiBXZXNlcnVidW5nIiwiaG9zdCI6ImNvbm5lY3QubG9zdHZpY3Rvcmllcy5jb20iLCJwb3J0IjoiNTA1NSIsInN0YXJ0RGF0ZSI6MTQ5MjIxNjA4Mjc1OCwiam9pbmVkIjp0cnVlLCJhdmF0YXJJRCI6ImFmN2M1MzIzLTIzYjktNGI1Zi04MmZiLTVhODQ1MGVhNGUzZSIsImdhbWVWZXJzaW9uIjoicHJlX2FscGhhIiwiZ2FtZVN0YXR1cyI6ImluUHJvZ3Jlc3MiLCJ2aWN0b3IiOm51bGwsImVuZERhdGUiOm51bGwsImNvdW50cnkiOiJHRVJNQU4ifQ=="};
         if(args.length>0){    
 //            JOptionPane.showOptionDialog(null, args[0], "Warning", JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[0]);         
 //            if(args.length>1){
@@ -159,7 +159,7 @@ public class LostVictory extends SimpleApplication implements ActionListener {
         rootNode.addLight(al);
         
         navMesh = CustomNavMeshBuilder.buildMesh((Geometry)sceneGraph.getChild("NavMesh"));
-        StructureLoader structureLoader = StructureLoader.instance(rootNode, assetManager, bulletAppState);
+        StructureLoader structureLoader = StructureLoader.instance(rootNode, assetManager, bulletAppState, this, terrain, sceneGraph);
        
         MinimapNode minimapNode = new MinimapNode("minimap", this);
         chaseCameraAppState = new RealTimeStrategyAppState(minimapNode);
@@ -169,13 +169,13 @@ public class LostVictory extends SimpleApplication implements ActionListener {
         ParticleEmitterFactory pf = ParticleEmitterFactory.instance(assetManager);
         ParticleManager particleManager = new ParticleManager(sceneGraph, assetManager, renderManager);
         characterLoader = CharacterLoader.instance(sceneGraph, assetManager, bulletAppState, navMesh, pf, headsUpDisplayAppState, particleManager, this);
-        ResponseFromServerMessageHandler serverSync = new ResponseFromServerMessageHandler(this, characterLoader, avatarUUID, particleManager, headsUpDisplayAppState);
+        ResponseFromServerMessageHandler serverSync = new ResponseFromServerMessageHandler(this, characterLoader, structureLoader, avatarUUID, particleManager, headsUpDisplayAppState);
         networkClientAppState = NetworkClientAppState.init(this, new NetworkClient(ipAddress, port, avatarUUID, serverSync), serverSync);
         
         Set<GameCharacterNode> characters = new HashSet<GameCharacterNode>();
         try {
             ServerResponse checkout = networkClientAppState.checkoutSceenSynchronous(avatarUUID);
-            structureLoader.loadStuctures(structures, sceneGraph, checkout, terrain, this);
+            structureLoader.loadStuctures(structures, checkout);
             avatar = characterLoader.loadCharacters(characters, structures, objects, checkout, avatarUUID);
             sceneGraph.addControl(new SimpleGrassControl(assetManager, bulletAppState, (Node) sceneGraph, checkout.getAllTrees(), "Resources/Textures/Grass/grass.png"));
         } catch (InterruptedException ex) {
