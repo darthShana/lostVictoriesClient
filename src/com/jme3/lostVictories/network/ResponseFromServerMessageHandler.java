@@ -158,7 +158,7 @@ public class ResponseFromServerMessageHandler extends SimpleChannelInboundHandle
             if(worldMap.getHouse(houseMessage.getId())!=null){
                 worldMap.getHouse(houseMessage.getId()).updateOwership(houseMessage);
             }else{
-                System.out.print("adding new house after initial load:"+houseMessage.getId());
+                System.out.println("adding new house after initial load:"+houseMessage.getId());
                 structureLoader.addHouse(houseMessage);
             }
         });

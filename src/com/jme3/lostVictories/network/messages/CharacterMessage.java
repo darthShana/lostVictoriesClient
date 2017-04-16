@@ -48,6 +48,8 @@ public class CharacterMessage implements Serializable{
     int killCount;
     SquadType squadType;
     long creationTime;
+    boolean isBusy;
+    boolean isAttacking;
 
     
     private CharacterMessage(){}
@@ -242,6 +244,12 @@ public class CharacterMessage implements Serializable{
         this.creationTime = creationTime;
     }
     
+    public boolean isBusy(){
+        return isBusy;
+    }
     
+    public boolean isAttacking(){
+        return isAttacking;
+    }
     
 }
