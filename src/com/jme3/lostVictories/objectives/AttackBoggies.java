@@ -7,6 +7,8 @@ package com.jme3.lostVictories.objectives;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Iterables;
 import com.jme3.ai.navmesh.NavMeshPathfinder;
 import com.jme3.ai.navmesh.NavigationProvider;
 import com.jme3.asset.AssetManager;
@@ -53,7 +55,7 @@ public class AttackBoggies extends Objective<CadetCorporal> implements MinimapPr
     private AttackBoggies(){}
     
     public AttackBoggies(Set<Vector3f> targets, Node rootNode) {
-        this.targets = targets;
+        this.targets = new HashSet<>(ImmutableSet.copyOf(Iterables.limit(targets, 4)));
         this.rootNode = rootNode;
         usedCover = new HashMap<Node, Integer>();
     }

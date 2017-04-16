@@ -48,8 +48,8 @@ public class CharacterMessage implements Serializable{
     int killCount;
     SquadType squadType;
     long creationTime;
-    boolean isBusy;
-    boolean isAttacking;
+    boolean busy;
+    boolean attacking;
 
     
     private CharacterMessage(){}
@@ -245,11 +245,11 @@ public class CharacterMessage implements Serializable{
     }
     
     public boolean isBusy(){
-        return isBusy;
+        return busy;
     }
     
     public boolean isAttacking(){
-        return isAttacking;
+        return attacking;
     }
     
 }
