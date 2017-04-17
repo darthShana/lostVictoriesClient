@@ -4,6 +4,7 @@
  */
 package com.jme3.lostVictories.network.messages;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.jme3.lostVictories.network.messages.actions.Action;
 import com.jme3.lostVictories.network.messages.actions.Crouch;
 import com.jme3.lostVictories.network.messages.actions.ManualControl;
@@ -250,6 +251,21 @@ public class CharacterMessage implements Serializable{
     
     public boolean isAttacking(){
         return attacking;
+    }
+
+    @JsonIgnore
+    public boolean hasBeenSentRecently(long version) {
+        if(type==CharacterType.AVATAR){
+            if(!isSameVersion(version)){
+                return true;
+            }
+        }
+        return System.currentTimeMillis()-creationTime<2000;
+        
+    }
+
+    public boolean isSameVersion(long version) {
+        return this.version<=version;
     }
     
 }

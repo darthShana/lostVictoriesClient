@@ -66,7 +66,6 @@ public class NetworkClientAppState extends AbstractAppState {
         Point.Float p = new Point.Float(app.avatar.getLocalTranslation().x, app.avatar.getLocalTranslation().z);
         Rectangle.Float r = new Rectangle.Float(p.x-CLIENT_RANGE, p.y-CLIENT_RANGE, CLIENT_RANGE*2, CLIENT_RANGE*2);
 
-        //..why are we still sending documents with the same version number
         charactersInRange = charactersInRange.stream().filter(c->{
                 return !c.isDead() && c.isControledLocaly() && r.contains(new Point.Float(c.getLocalTranslation().x, c.getLocalTranslation().z));
             }).collect(Collectors.toSet());
@@ -76,11 +75,11 @@ public class NetworkClientAppState extends AbstractAppState {
         
         Set<CharacterMessage> toUpdate = charactersInRange.stream()
             .filter(hc->{
-                return !lastSent.containsKey(hc.getIdentity()) || (hc.getVersion()>lastSent.get(hc.getIdentity()).getVersion()) || System.currentTimeMillis()-lastSent.get(hc.getIdentity()).getCreationTime()>2000;
+                return !lastSent.containsKey(hc.getIdentity()) || !lastSent.get(hc.getIdentity()).isSameVersion(hc.getVersion()) || !lastSent.get(hc.getIdentity()).hasBeenSentRecently(hc.getVersion());
             })
             .map(c->c.toMessage())
             .filter(m->{
-                return !lastSent.containsKey(m.getId()) || !m.equals(lastSent.get(m.getId())) || System.currentTimeMillis()-lastSent.get(m.getId()).getCreationTime()>2000;
+                return !lastSent.containsKey(m.getId()) || !m.equals(lastSent.get(m.getId())) || !lastSent.get(m.getId()).hasBeenSentRecently(m.getVersion());
             })
             .collect(Collectors.toSet());
 
