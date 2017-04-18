@@ -1,12 +1,13 @@
 Material MyMaterial : Common/MatDefs/Light/Lighting.j3md {
     MaterialParameters {
-        DiffuseMap : Textures/cottage-Untitled_0091-1-DiffuseMap.png
+        DiffuseMap : Repeat Textures/cottage-Untitled_0091-1-DiffuseMap.png
         Specular : 0.0 0.0 0.0 1.0
         Diffuse : 1.0 1.0 1.0 1.0
         UseMaterialColors : false
         ParallaxHeight : 0.05
         Ambient : 0.0 0.0 0.0 1.0
         Shininess : 0.0
+        NormalMap : Flip Repeat Models/Structures/textures/StructureAtlas1_normal.png
     }
     AdditionalRenderState {
       FaceCull Back

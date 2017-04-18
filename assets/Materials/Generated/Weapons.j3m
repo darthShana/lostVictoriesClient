@@ -4,10 +4,11 @@ Material MyMaterial : Common/MatDefs/Light/Lighting.j3md {
         GlowColor : 0.0 0.0 0.0 1.0
         Specular : 0.5 0.5 0.5 1.0
         Diffuse : 0.64000005 0.64000005 0.64000005 1.0
-        UseMaterialColors : true
+        UseMaterialColors : false
         ParallaxHeight : 0.05
         Ambient : 0.8 0.8 0.8 1.0
-        Shininess : 12.5
+        Shininess : 0.0
+        SpecularMap : Repeat Models/Soldier/textures/Weapons_specular.png
     }
     AdditionalRenderState {
       FaceCull Back
