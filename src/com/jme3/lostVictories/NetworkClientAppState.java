@@ -115,6 +115,7 @@ public class NetworkClientAppState extends AbstractAppState {
                     return !lastSent.containsKey(m.getId()) || !m.equals(lastSent.get(m.getId())) || !lastSent.get(m.getId()).hasBeenSentRecently(m.getVersion());
                 })
                 .collect(Collectors.toSet());
+        
         return toUpdate;
     }
     

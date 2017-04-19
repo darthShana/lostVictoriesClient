@@ -12,6 +12,7 @@ import com.jme3.lostVictories.characters.weapons.Weapon;
 import com.jme3.lostVictories.network.NetworkClient;
 import com.jme3.lostVictories.network.ResponseFromServerMessageHandler;
 import com.jme3.lostVictories.network.messages.CharacterMessage;
+import com.jme3.lostVictories.network.messages.CharacterType;
 import com.jme3.lostVictories.network.messages.RankMessage;
 import com.jme3.lostVictories.network.messages.Vector;
 import com.jme3.lostVictories.network.messages.actions.Action;
@@ -38,11 +39,15 @@ public class NetworkClientAppStateTest {
         final UUID randomUUID = UUID.randomUUID();
         when(n1.getIdentity()).thenReturn(randomUUID);
         
-        CharacterMessage message = new CharacterMessage(randomUUID, new Vector(0, 0, 0), new Vector(0, 0, 0), RankMessage.PRIVATE, new HashSet<Action>(), null, null, 6);
-        when(n1.toMessage()).thenReturn(message);
-//        GameCharacterNode node = AICharacterNodeTest.createAvatar(UUID.randomUUID(), null, Weapon.rifle());
-//        node.setVersion(3);
-        appState.lastSent.put(randomUUID, message);
+        CharacterMessage message1 = new CharacterMessage(randomUUID, new Vector(0, 0, 0), new Vector(0, 0, 0), RankMessage.PRIVATE, new HashSet<Action>(), null, null, 6);
+        message1.setType(CharacterType.AVATAR);
+
+        CharacterMessage message2 = new CharacterMessage(randomUUID, new Vector(0, 0, 0), new Vector(0, 0, 0), RankMessage.PRIVATE, new HashSet<Action>(), null, null, 7);
+        message2.setType(CharacterType.AVATAR);
+        when(n1.toMessage()).thenReturn(message2);
+
+        
+        appState.lastSent.put(randomUUID, message1);
         final HashSet<GameCharacterNode> toFilter = new HashSet<>();
         toFilter.add(n1);
         final Set<CharacterMessage> filtered = appState.filterCharactersToSend(toFilter);

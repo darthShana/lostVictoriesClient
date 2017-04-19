@@ -30,6 +30,7 @@ import com.jme3.lostVictories.characters.blenderModels.VehicleBlenderModel;
 import com.jme3.lostVictories.characters.weapons.Weapon;
 import com.jme3.lostVictories.effects.ParticleManager;
 import com.jme3.lostVictories.network.messages.CharacterMessage;
+import com.jme3.lostVictories.network.messages.CharacterType;
 import com.jme3.lostVictories.objectives.CompleteBootCamp;
 import com.jme3.lostVictories.objectives.EnemyActivityReport;
 import com.jme3.lostVictories.objectives.ManualControlByAvatar;
@@ -562,7 +563,7 @@ public class AvatarCharacterNode extends GameCharacterNode<BetterSoldierControl>
         if(boaredVehicleControl!=null){
             toMessage.addAction(boaredVehicleControl.getAction().toMessage());
         }
-                  
+        toMessage.setType(CharacterType.AVATAR);
         return toMessage;
     }
     

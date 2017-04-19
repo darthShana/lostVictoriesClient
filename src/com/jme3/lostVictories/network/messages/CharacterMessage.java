@@ -98,6 +98,10 @@ public class CharacterMessage implements Serializable{
     public CharacterType getType() {
         return type;
     }
+    
+    public void setType(CharacterType type){
+        this.type = type;
+    }
 
     public Set<UUID> getUnitsUnderCommand() {
         return unitsUnderCommand;
@@ -215,29 +219,33 @@ public class CharacterMessage implements Serializable{
         return false;
       }
       CharacterMessage rhs = (CharacterMessage) obj;
-      return new EqualsBuilder()
-                    .append(location, rhs.location)
-                    .append(id, rhs.id)
-                    .append(orientation, rhs.orientation)
-                    .append(actions, rhs.actions)
-                    .append(objectives.keySet(), rhs.objectives.keySet())
-                    .append(completedObjectives, rhs.completedObjectives)
-                    .append(checkoutClient, rhs.checkoutClient)
-                    .isEquals();
+        final EqualsBuilder builder = new EqualsBuilder()
+                .append(location, rhs.location)
+                .append(id, rhs.id)
+                .append(orientation, rhs.orientation)
+                .append(actions, rhs.actions)
+                .append(completedObjectives, rhs.completedObjectives)
+                .append(checkoutClient, rhs.checkoutClient);
+        if(objectives!=null){
+            builder.append(objectives.keySet(), rhs.objectives.keySet());
+        }
+      return builder.isEquals();
     }
     
     @Override
     public int hashCode() {
-        // you pick a hard-coded, randomly chosen, non-zero, odd number
-        // ideally different for each class
-        return new HashCodeBuilder(17, 37)
-            .append(location)
-            .append(orientation)
-            .append(actions)
-            .append(objectives.keySet())
-            .append(completedObjectives)
-            .append(checkoutClient)
-            .append(version)
+        final HashCodeBuilder builder = new HashCodeBuilder(17, 37)
+                .append(location)
+                .append(orientation)
+                .append(actions)
+                .append(completedObjectives)
+                .append(checkoutClient)
+                .append(version);
+        if(objectives!=null){
+            builder.append(objectives.keySet());
+        }
+
+        return builder
           .toHashCode();
     }
 
