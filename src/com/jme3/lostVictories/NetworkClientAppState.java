@@ -16,6 +16,7 @@ import java.awt.Rectangle;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.BlockingQueue;
@@ -46,10 +47,11 @@ public class NetworkClientAppState extends AbstractAppState {
     public static NetworkClientAppState get(){
         return instance;
     }
-    private final Map<UUID, CharacterMessage> lastSent = new HashMap<>();
+    final Map<UUID, CharacterMessage> lastSent = new HashMap<>();
     private final long clientStartTime;
+    private long lastSen;
     
-    private NetworkClientAppState(LostVictory app, NetworkClient networkClient, ResponseFromServerMessageHandler serverSync) {
+    protected NetworkClientAppState(LostVictory app, NetworkClient networkClient, ResponseFromServerMessageHandler serverSync) {
         this.app = app;
         this.networkClient = networkClient;
         this.responseHandler = serverSync;
@@ -73,15 +75,18 @@ public class NetworkClientAppState extends AbstractAppState {
             charactersInRange.add(app.avatar);
         }
         
-        Set<CharacterMessage> toUpdate = charactersInRange.stream()
-            .filter(hc->{
-                return !lastSent.containsKey(hc.getIdentity()) || !lastSent.get(hc.getIdentity()).isSameVersion(hc.getVersion()) || !lastSent.get(hc.getIdentity()).hasBeenSentRecently(hc.getVersion());
-            })
-            .map(c->c.toMessage())
-            .filter(m->{
-                return !lastSent.containsKey(m.getId()) || !m.equals(lastSent.get(m.getId())) || !lastSent.get(m.getId()).hasBeenSentRecently(m.getVersion());
-            })
-            .collect(Collectors.toSet());
+        if(lastSent.containsKey(UUID.fromString("2fbe421f-f701-49c9-a0d4-abb0fa904204"))){
+            System.out.println("considering sending:"+app.avatar.getVersion()+" last sent version:"+lastSent.get(UUID.fromString("2fbe421f-f701-49c9-a0d4-abb0fa904204")).getVersion()+" time:"+(System.currentTimeMillis()-lastSen));
+        }
+        
+        Set<CharacterMessage> toUpdate = filterCharactersToSend(charactersInRange);
+        
+        final Optional<CharacterMessage> findAny = toUpdate.stream().filter(m->"2fbe421f-f701-49c9-a0d4-abb0fa904204".equals(m.getId().toString())).findAny();
+        if(findAny.isPresent()){
+            System.out.println("sending message version:"+findAny.get().getVersion()+" at time:"+(System.currentTimeMillis()-lastSen));
+            lastSen = System.currentTimeMillis();
+        
+        }
 
         try{
             if(!toUpdate.isEmpty()){
@@ -98,6 +103,19 @@ public class NetworkClientAppState extends AbstractAppState {
             
         
         
+    }
+
+    Set<CharacterMessage> filterCharactersToSend(Set<GameCharacterNode> charactersInRange) {
+        Set<CharacterMessage> toUpdate = charactersInRange.stream()
+                .filter(hc->{
+                    return !lastSent.containsKey(hc.getIdentity()) || lastSent.get(hc.getIdentity()).isOlderVersion(hc.getVersion()) || !lastSent.get(hc.getIdentity()).hasBeenSentRecently(hc.getVersion());
+                })
+                .map(c->c.toMessage())
+                .filter(m->{
+                    return !lastSent.containsKey(m.getId()) || !m.equals(lastSent.get(m.getId())) || !lastSent.get(m.getId()).hasBeenSentRecently(m.getVersion());
+                })
+                .collect(Collectors.toSet());
+        return toUpdate;
     }
     
     

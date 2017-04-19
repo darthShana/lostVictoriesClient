@@ -155,7 +155,7 @@ public class LostVictory extends SimpleApplication implements ActionListener {
         rootNode.addLight(sun1);
         
         AmbientLight al = new AmbientLight();
-        al.setColor(ColorRGBA.White.mult(.5f));
+        al.setColor(ColorRGBA.White.mult(.4f));
         rootNode.addLight(al);
         
         navMesh = CustomNavMeshBuilder.buildMesh((Geometry)sceneGraph.getChild("NavMesh"));

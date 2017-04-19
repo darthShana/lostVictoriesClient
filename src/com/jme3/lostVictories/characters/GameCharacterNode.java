@@ -641,13 +641,12 @@ public abstract class GameCharacterNode<T extends GameCharacterControl> extends 
         Set<Action> actions = new HashSet<>();
         actions.add(characterAction.toMessage());
         if(model.isAlreadyFiring(channel)){
-            if(getIdentity().toString().equals("9740bc8a-835d-4fa2-ab2b-6ed8d914e6ef")){
-                System.out.println("localCharacte shooting:");
-            }
             actions.add(new Shoot(shootStartTime, currentTargets));
-        }else if(isCrouched()){
+        }
+        if(isCrouched()){
             actions.add(new Crouch());
-        }else if(channel!=null && model.hasPlayedSetupAction(channel.getAnimationName())){         
+        }
+        if(channel!=null && model.hasPlayedSetupAction(channel.getAnimationName())){         
             actions.add(new SetupWeapon());
         }
         

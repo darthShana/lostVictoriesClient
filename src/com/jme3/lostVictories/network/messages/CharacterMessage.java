@@ -40,7 +40,7 @@ public class CharacterMessage implements Serializable{
     CharacterType type;
     Vector orientation;
     Set<Action> actions;
-    Map<String, String> objectives;
+    Map<String, String> objectives ;
     Set<String> completedObjectives;
     boolean dead;
     boolean engineDamaged;
@@ -256,16 +256,16 @@ public class CharacterMessage implements Serializable{
     @JsonIgnore
     public boolean hasBeenSentRecently(long version) {
         if(type==CharacterType.AVATAR){
-            if(!isSameVersion(version)){
-                return true;
+            if(isOlderVersion(version)){
+                return false;
             }
         }
         return System.currentTimeMillis()-creationTime<2000;
         
     }
 
-    public boolean isSameVersion(long version) {
-        return this.version<=version;
+    public boolean isOlderVersion(long version) {
+        return this.version<version;
     }
     
 }

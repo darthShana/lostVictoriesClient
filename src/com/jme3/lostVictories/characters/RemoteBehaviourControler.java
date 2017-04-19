@@ -102,7 +102,7 @@ public class RemoteBehaviourControler implements BehaviorControler {
             }
         }else{
             if(!WorldMap.isClose(character.getLocalTranslation(), requiredPossition, .5)){
-
+                
                 TeleportAction mtp = new TeleportAction(requiredPossition);
                 mtp.doAction(character, rootNode, channel, tpf);
             } else if(new Vector2f(character.getPlayerDirection().x, character.getPlayerDirection().z).smallestAngleBetween(new Vector2f(requiredOrientation.x, requiredOrientation.z))> FastMath.QUARTER_PI){
@@ -116,6 +116,9 @@ public class RemoteBehaviourControler implements BehaviorControler {
         }
         
         if(remoteState.isCrouching() && !character.isCrouched() && character instanceof Soldier){
+            if("d993932f-a185-4a6f-8d86-4ef6e2c5ff95".equals(character.getIdentity().toString())){
+                System.err.println("avatar crouch detected");
+            }
             ((Soldier)character).crouch();
         }else if(!remoteState.isCrouching() && character.isCrouched() && character instanceof Soldier){
             ((Soldier)character).stand();
