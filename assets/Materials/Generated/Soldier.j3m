@@ -1,15 +1,14 @@
 Material MyMaterial : Common/MatDefs/Light/Lighting.j3md {
     MaterialParameters {
-        DiffuseMap : Repeat Models/Soldier/textures/SoldierAtlas.png
-        GlowColor : 0.0 0.0 0.0 1.0
-        Specular : 0.5 0.5 0.5 1.0
-        Diffuse : 0.64000005 0.64000005 0.64000005 1.0
-        UseMaterialColors : false
+        DiffuseMap : Flip Repeat Models/Soldier/textures/SoldierAtlas.png
+        GlowColor : 1 1 1 1
+        Specular : 1 1 1 1
+        Diffuse : 1 1 1 1
+        UseMaterialColors : true
         ParallaxHeight : 0.05
         Ambient : 0.8 0.8 0.8 1.0
         Shininess : 0.0
-        NormalMap : Repeat Models/Soldier/textures/SoldierAtlas_Normal.png
-        SpecularMap : Repeat Models/Soldier/textures/SoldierAtlas_Specular.png
+        NormalMap : Flip Repeat Models/Soldier/textures/SoldierAtlas_Normal.png
     }
     AdditionalRenderState {
       FaceCull Back
