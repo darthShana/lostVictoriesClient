@@ -5,11 +5,13 @@
 package com.jme3.lostVictories.network.messages;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.jme3.lostVictories.WorldMap;
 import com.jme3.lostVictories.network.messages.actions.Action;
 import com.jme3.lostVictories.network.messages.actions.Crouch;
 import com.jme3.lostVictories.network.messages.actions.ManualControl;
 import com.jme3.lostVictories.network.messages.actions.SetupWeapon;
 import com.jme3.lostVictories.network.messages.actions.Shoot;
+import com.jme3.math.Vector3f;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -220,23 +222,23 @@ public class CharacterMessage implements Serializable{
       }
       CharacterMessage rhs = (CharacterMessage) obj;
         final EqualsBuilder builder = new EqualsBuilder()
-                .append(location, rhs.location)
+//                .append(location, rhs.location)
                 .append(id, rhs.id)
-                .append(orientation, rhs.orientation)
+//                .append(orientation, rhs.orientation)
                 .append(actions, rhs.actions)
                 .append(completedObjectives, rhs.completedObjectives)
                 .append(checkoutClient, rhs.checkoutClient);
         if(objectives!=null){
             builder.append(objectives.keySet(), rhs.objectives.keySet());
         }
-      return builder.isEquals();
+      return builder.isEquals() && isClose(location, rhs.location, 0.1) && isClose(orientation, rhs.orientation, 0.1);
     }
     
     @Override
     public int hashCode() {
         final HashCodeBuilder builder = new HashCodeBuilder(17, 37)
-                .append(location)
-                .append(orientation)
+//                .append(location)
+//                .append(orientation)
                 .append(actions)
                 .append(completedObjectives)
                 .append(checkoutClient)
@@ -247,6 +249,17 @@ public class CharacterMessage implements Serializable{
 
         return builder
           .toHashCode();
+    }
+    
+    public static boolean isClose(Vector v1, Vector v2, double d) {
+        if(Math.abs(v1.x - v2.x)>d){
+            return false;
+        }
+        
+        if(Math.abs(v1.z - v2.z)>d){
+            return false;
+        }
+        return true;
     }
 
     public void setCreationTime(long creationTime) {

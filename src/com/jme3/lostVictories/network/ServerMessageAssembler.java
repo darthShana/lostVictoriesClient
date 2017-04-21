@@ -42,7 +42,9 @@ public class ServerMessageAssembler {
         synchronized(this){
             if(message instanceof CharacterStatusResponse){
                 CharacterMessage cm = ((CharacterStatusResponse) message).getCharacter();
-//                System.err.println("recived:"+cm.getId()+" version:"+cm.getVersion());
+                if(cm.getId().equals( UUID.fromString("2fbe421f-f701-49c9-a0d4-abb0fa904204"))){
+                    System.out.println("received version:"+cm.getVersion()+" last sent version:");
+                }
                 characters.put(cm.getId(), cm);
             }else if(message instanceof RelatedCharacterStatusResponse){
                 CharacterMessage cm = ((RelatedCharacterStatusResponse) message).getCharacter();

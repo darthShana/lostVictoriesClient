@@ -34,7 +34,6 @@ public class NetworkClientAppState extends AbstractAppState {
     private static float CLIENT_RANGE = 251;
     
     private final LostVictory app;
-    private long lastRunTime = System.currentTimeMillis();
     private final NetworkClient networkClient;
     private final ResponseFromServerMessageHandler responseHandler;
 
@@ -49,7 +48,6 @@ public class NetworkClientAppState extends AbstractAppState {
     }
     final Map<UUID, CharacterMessage> lastSent = new HashMap<>();
     private final long clientStartTime;
-    private long lastSen;
     
     protected NetworkClientAppState(LostVictory app, NetworkClient networkClient, ResponseFromServerMessageHandler serverSync) {
         this.app = app;
@@ -68,26 +66,14 @@ public class NetworkClientAppState extends AbstractAppState {
         Point.Float p = new Point.Float(app.avatar.getLocalTranslation().x, app.avatar.getLocalTranslation().z);
         Rectangle.Float r = new Rectangle.Float(p.x-CLIENT_RANGE, p.y-CLIENT_RANGE, CLIENT_RANGE*2, CLIENT_RANGE*2);
 
-        charactersInRange = charactersInRange.stream().filter(c->{
+        charactersInRange = charactersInRange.parallelStream().filter(c->{
                 return !c.isDead() && c.isControledLocaly() && r.contains(new Point.Float(c.getLocalTranslation().x, c.getLocalTranslation().z));
             }).collect(Collectors.toSet());
         if(WorldMap.get().getCharacter(app.avatar.getIdentity())==null){
             charactersInRange.add(app.avatar);
         }
         
-        if(lastSent.containsKey(UUID.fromString("2fbe421f-f701-49c9-a0d4-abb0fa904204"))){
-            System.out.println("considering sending:"+app.avatar.getVersion()+" last sent version:"+lastSent.get(UUID.fromString("2fbe421f-f701-49c9-a0d4-abb0fa904204")).getVersion()+" time:"+(System.currentTimeMillis()-lastSen));
-        }
-        
         Set<CharacterMessage> toUpdate = filterCharactersToSend(charactersInRange);
-        
-        final Optional<CharacterMessage> findAny = toUpdate.stream().filter(m->"2fbe421f-f701-49c9-a0d4-abb0fa904204".equals(m.getId().toString())).findAny();
-        if(findAny.isPresent()){
-            System.out.println("sending message version:"+findAny.get().getVersion()+" at time:"+(System.currentTimeMillis()-lastSen));
-            lastSen = System.currentTimeMillis();
-        
-        }
-
         try{
             if(!toUpdate.isEmpty()){
                 networkClient.updateLocalCharacters(toUpdate, (app.avatar!=null)?app.avatar.getIdentity():null, clientStartTime);
@@ -95,18 +81,13 @@ public class NetworkClientAppState extends AbstractAppState {
         }catch(Throwable e){
             e.printStackTrace();
         }
-//        toUpdate.forEach(cm->System.out.println("sending:"+cm.getId()+" version:"+cm.getVersion()+" creation:"+cm.getCreationTime()));
-//        System.out.println("");
+        
         toUpdate.forEach(cm->lastSent.put(cm.getId(), cm));
-
-        lastRunTime = currentTimeMillis;    
             
-        
-        
     }
 
     Set<CharacterMessage> filterCharactersToSend(Set<GameCharacterNode> charactersInRange) {
-        Set<CharacterMessage> toUpdate = charactersInRange.stream()
+        Set<CharacterMessage> toUpdate = charactersInRange.parallelStream()
                 .filter(hc->{
                     return !lastSent.containsKey(hc.getIdentity()) || lastSent.get(hc.getIdentity()).isOlderVersion(hc.getVersion()) || !lastSent.get(hc.getIdentity()).hasBeenSentRecently(hc.getVersion());
                 })
