@@ -335,14 +335,9 @@ public class AvatarCharacterNode extends GameCharacterNode<BetterSoldierControl>
             boardedVehicleControl.straighten();
         }
     }
-
-    Set<String> completedObjectives = new HashSet<String>();
     
     @Override
     public void addObjective(Objective objective) {
-        if(this.objective!=null){
-            completedObjectives.add(this.objective.getIdentity().toString());
-        }
         this.objective = objective;
         hud.updateHeadsUpDisplay();
         
@@ -350,18 +345,12 @@ public class AvatarCharacterNode extends GameCharacterNode<BetterSoldierControl>
 
     @Override
     protected Set<String> getCompletedObjectives() {
-        if(objective!=null && objective.isComplete()){
-            completedObjectives.add(objective.getIdentity().toString());
-        }
-        return completedObjectives;
+        return new HashSet<>();
     }
 
     Map<UUID, Objective> emptyObjectives = new HashMap<UUID, Objective>();
     @Override
     public Map<UUID, Objective> getAllObjectives() {        
-        if(objective!=null && !objective.isComplete()){
-            return Collections.singletonMap(objective.getIdentity(), objective);
-        }
         return emptyObjectives;
     }
 

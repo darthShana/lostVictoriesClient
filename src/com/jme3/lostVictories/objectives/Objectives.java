@@ -22,7 +22,7 @@ import java.util.Set;
 public class Objectives<T extends GameCharacterNode> {
     
     private final List<Objective<T>> objectives = new ArrayList<Objective<T>>();
-    private Set<String> completedObjectives = new HashSet<String>();
+    private final Set<String> completedObjectives = new HashSet<String>();
 
     public Objectives() {
         synchronized(objectives){
