@@ -440,7 +440,7 @@ public class WorldMap implements Runnable {
         return merged;
     }
     
-    static Optional<GameSector> findNeighbouringSector(GameSector sector, Set<GameSector> ret) {
+    public static Optional<GameSector> findNeighbouringSector(GameSector sector, Set<GameSector> ret) {
         for(GameSector s:ret){
             if(sector.isJoinedTo(s)){
                 return Optional.of(s);
@@ -449,7 +449,7 @@ public class WorldMap implements Runnable {
         return Optional.empty();
     }
 
-    Set<GameSector> calculateGameSectorHouses(Iterable<GameHouseNode> allHouses) {
+    public static Set<GameSector> calculateGameSectorHouses(Iterable<GameHouseNode> allHouses) {
         Set<GameStructureNode> stru = new HashSet<GameStructureNode>();
         for(GameHouseNode h: allHouses){
             stru.add(h);

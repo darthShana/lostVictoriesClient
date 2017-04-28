@@ -63,7 +63,7 @@ public class GameSector {
         return (union!=null)?union.contains(x, z):false;
     }
 
-    void add(GameStructureNode structure) {
+    public void add(GameStructureNode structure) {
         structures.add(structure);
     }
 

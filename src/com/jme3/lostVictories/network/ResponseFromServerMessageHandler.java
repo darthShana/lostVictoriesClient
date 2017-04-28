@@ -77,7 +77,7 @@ public class ResponseFromServerMessageHandler extends SimpleChannelInboundHandle
     private final Map<UUID, Long> receivedCharacterMessages = new HashMap<>();
     private final Map<UUID, Long> receivedEquipmentMessages = new HashMap<>();
 
-    private Map<UUID, CharacterMessage> relatedCharacters = new HashMap<>();
+    Map<UUID, CharacterMessage> relatedCharacters = new HashMap<>();
     
     public ResponseFromServerMessageHandler(LostVictory app, CharacterLoader characterLoader, StructureLoader structureLoader, UUID clientID, ParticleManager particleManager, HeadsUpDisplayAppState hud) {
         this.structureLoader = structureLoader;
@@ -119,7 +119,7 @@ public class ResponseFromServerMessageHandler extends SimpleChannelInboundHandle
                     }else if(!clientView.hasSameWeapon(msg)){
                         characterLoader.destroyCharacter(clientView);
                     }else{
-                        updateOnSceneCharacter(clientView, msg);
+                        updateOnSceneCharacter(clientView, msg, worldMap);
                     }
                 }
             } 
@@ -275,9 +275,8 @@ public class ResponseFromServerMessageHandler extends SimpleChannelInboundHandle
         return true;
     }
 
-    private void updateOnSceneCharacter(GameCharacterNode n, final CharacterMessage cMessage) {
+    void updateOnSceneCharacter(GameCharacterNode n, final CharacterMessage cMessage, WorldMap worldMap) {
         Commandable oldCO = n.getCommandingOfficer();
-        WorldMap worldMap = WorldMap.get();
         Commandable newCo = worldMap.getCharacter(cMessage.getCommandingOfficer());
         
         if(oldCO!=null && cMessage.getCommandingOfficer()==null){
@@ -361,37 +360,6 @@ public class ResponseFromServerMessageHandler extends SimpleChannelInboundHandle
             }
         }
                     
-    }
-
-
-    void syncronizeCharacters(ServerResponse msg, WorldMap worldMap, UUID removedSelectedCharacter) throws RuntimeException {
-        Map<UUID, GameCharacterNode> localCharacters = new HashMap<UUID, GameCharacterNode>();
-        Map<UUID, CharacterMessage> remoteCharacters = new HashMap<UUID, CharacterMessage>();
-        Map<UUID, CharacterMessage> relatedCharacters = new HashMap<UUID, CharacterMessage>();
-        Set<GameCharacterNode> newCharacters = new HashSet<GameCharacterNode>();
-        
-        for(CharacterMessage c:msg.getAllUnits()){
-            remoteCharacters.put(c.getId(), c);
-        }
-        
-        for(CharacterMessage c:msg.getAllRelatedCharacters()){
-            relatedCharacters.put(c.getId(), c);
-        }
-        
-        for(GameCharacterNode n: worldMap.getAllCharacters()){
-            final CharacterMessage cMessage = remoteCharacters.get(n.getIdentity());
-            if(cMessage==null){
-                if(n.isSelected()){
-                    removedSelectedCharacter = n.getIdentity();
-                }
-                
-            }else{
-                localCharacters.put(n.getIdentity(), n);
-                
-            }
-
-        } 
-        
     }
 
     public ServerResponse getServerResponces() {

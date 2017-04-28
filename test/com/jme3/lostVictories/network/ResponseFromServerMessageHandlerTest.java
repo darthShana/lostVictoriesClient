@@ -8,6 +8,7 @@ import com.jme3.lostVictories.CharacterLoader;
 import com.jme3.lostVictories.Country;
 import com.jme3.lostVictories.HeadsUpDisplayAppState;
 import com.jme3.lostVictories.LostVictory;
+import com.jme3.lostVictories.StructureLoader;
 import com.jme3.lostVictories.WorldMap;
 import com.jme3.lostVictories.characters.AICharacterNodeTest;
 import com.jme3.lostVictories.characters.AvatarCharacterNode;
@@ -19,13 +20,19 @@ import com.jme3.lostVictories.characters.Soldier;
 import com.jme3.lostVictories.characters.VirtualGameCharacterNode;
 import com.jme3.lostVictories.characters.weapons.Weapon;
 import com.jme3.lostVictories.effects.ParticleManager;
+import com.jme3.lostVictories.network.messages.AchievementStatus;
 import com.jme3.lostVictories.network.messages.CharacterMessage;
+import com.jme3.lostVictories.network.messages.GameStatistics;
+import com.jme3.lostVictories.network.messages.HouseMessage;
 import com.jme3.lostVictories.network.messages.RankMessage;
+import com.jme3.lostVictories.network.messages.TreeGroupMessage;
 import com.jme3.lostVictories.network.messages.UnClaimedEquipmentMessage;
 import com.jme3.lostVictories.network.messages.Vector;
 import com.jme3.math.Vector3f;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.UUID;
 import static org.testng.Assert.*;
 import org.testng.annotations.Test;
@@ -43,7 +50,7 @@ public class ResponseFromServerMessageHandlerTest {
     @BeforeMethod
     public void setup(){
         characterLoader = mock(CharacterLoader.class);
-        handler = new ResponseFromServerMessageHandler(mock(LostVictory.class), characterLoader, UUID.randomUUID(), mock(ParticleManager.class), mock(HeadsUpDisplayAppState.class));
+        handler = new ResponseFromServerMessageHandler(mock(LostVictory.class), characterLoader, mock(StructureLoader.class), UUID.randomUUID(), mock(ParticleManager.class), mock(HeadsUpDisplayAppState.class));
     }
     
     @Test
@@ -53,7 +60,7 @@ public class ResponseFromServerMessageHandlerTest {
         CharacterMessage message = new CharacterMessage(UUID.randomUUID(), new Vector(0, 0, 0), new Vector(0, 0, 0), RankMessage.PRIVATE, null, null, null, 0);
 	message.setCountry(com.jme3.lostVictories.network.messages.Country.AMERICAN);
         
-        handler.synchronizCharacter(message, s, new HashMap<UUID, GameCharacterNode>(), new HashMap<UUID, CharacterMessage>(), null);
+        handler.updateOnSceneCharacter(s, message, mock(WorldMap.class));
         
         assertEquals(Country.AMERICAN, s.getCountry());
     }
@@ -65,18 +72,18 @@ public class ResponseFromServerMessageHandlerTest {
         createVehicle.boardPassenger(s);
         assertFalse(createVehicle.isAbbandoned());
         
-        HashMap<UUID, GameCharacterNode> localCharacters = new HashMap<UUID, GameCharacterNode>();
-        localCharacters.put(createVehicle.getIdentity(), createVehicle);
-        localCharacters.put(s.getIdentity(), s);
+        WorldMap worldMap = mock(WorldMap.class);
+        when(worldMap.getCharacter(eq(createVehicle.getIdentity()))).thenReturn(createVehicle);
+        when(worldMap.getCharacter(eq(s.getIdentity()))).thenReturn(s);
         
         CharacterMessage message = new CharacterMessage(s.getIdentity(), new Vector(0, 0, 0), new Vector(0, 0, 0), RankMessage.PRIVATE, null, null, null, 0);
         message.setCountry(com.jme3.lostVictories.network.messages.Country.GERMAN);
-        message.setPassengers(new HashSet<UUID>());
-        handler.synchronizCharacter(message, createVehicle, localCharacters, new HashMap<UUID, CharacterMessage>(), null);
+        message.setPassengers(new HashSet<>());
+        handler.updateOnSceneCharacter(createVehicle, message, worldMap);
         assertTrue(createVehicle.isAbbandoned());
         
         message.setBoardedVehicle(createVehicle.getIdentity());
-        handler.synchronizCharacter(message, s, localCharacters, new HashMap<UUID, CharacterMessage>(), null);
+        handler.updateOnSceneCharacter(s, message, worldMap);
         assertFalse(createVehicle.isAbbandoned());
     }
 
@@ -91,14 +98,10 @@ public class ResponseFromServerMessageHandlerTest {
         final AvatarCharacterNode createAvatar = AICharacterNodeTest.createAvatar(s.getIdentity(), null, Weapon.rifle());
         when(characterLoader.loadCharacter(any(CharacterMessage.class), any(UUID.class))).thenReturn(createAvatar);
         
-        final HashSet<CharacterMessage> msg = new HashSet<CharacterMessage>();
         CharacterMessage message = new CharacterMessage(s.getIdentity(), new Vector(0, 0, 0), new Vector(0, 0, 0), RankMessage.CADET_CORPORAL, null, null, null, 0);
-        message.setCountry(com.jme3.lostVictories.network.messages.Country.GERMAN);
-        msg.add(message);
-        final ServerResponse updateCharactersResponse = new ServerResponse(UUID.randomUUID(), msg, new HashSet<CharacterMessage>(), new HashSet<UnClaimedEquipmentMessage>());
+        message.setCountry(com.jme3.lostVictories.network.messages.Country.GERMAN);        
         
-        
-        handler.syncronizeCharacters(updateCharactersResponse, worldMAp, null);
+        handler.updateOnSceneCharacter(s, message, worldMAp);
         
     }
     
@@ -110,13 +113,13 @@ public class ResponseFromServerMessageHandlerTest {
         hashSet.add(createVehicle);
         when(worldMAp.getAllCharacters()).thenReturn(hashSet);
         
-        HashMap<UUID, GameCharacterNode> localCharacters = new HashMap<UUID, GameCharacterNode>();
-        localCharacters.put(createVehicle.getIdentity(), createVehicle);
+        WorldMap worldMap = mock(WorldMap.class);
+        when(worldMAp.getCharacter(eq(createVehicle.getIdentity()))).thenReturn(createVehicle);
         
         CharacterMessage message = new CharacterMessage(createVehicle.getIdentity(), new Vector(0, 0, 0), new Vector(0, 0, 0), RankMessage.PRIVATE, null, null, null, 0);
         message.setCountry(com.jme3.lostVictories.network.messages.Country.GERMAN);
         message.setPassengers(new HashSet<UUID>());
-        handler.synchronizCharacter(message, createVehicle, localCharacters, new HashMap<UUID, CharacterMessage>(), null);
+        handler.updateOnSceneCharacter(createVehicle, message, worldMAp);
         assertTrue(createVehicle.isAbbandoned());
         assertNull(createVehicle.getChild("operator"));
     }
@@ -133,28 +136,28 @@ public class ResponseFromServerMessageHandlerTest {
         p1Message.setCountry(com.jme3.lostVictories.network.messages.Country.GERMAN);
         p1Message.setCommandingOfficer(c1.getIdentity());
 
-        HashMap<UUID, GameCharacterNode> localCharacters = new HashMap<UUID, GameCharacterNode>();
-        localCharacters.put(p1.getIdentity(), p1);
-        HashMap<UUID, CharacterMessage> relatedCharacters = new HashMap<UUID, CharacterMessage>();
-        relatedCharacters.put(c1.getIdentity(), c1Message);
-        handler.synchronizCharacter(p1Message, p1, localCharacters, relatedCharacters, null);
+        WorldMap wolrdMap = mock(WorldMap.class);
+        when(wolrdMap.getCharacter(eq(p1.getIdentity()))).thenReturn(p1);
+        
+        handler.relatedCharacters.put(c1.getIdentity(), c1Message);
+        handler.updateOnSceneCharacter(p1, p1Message, wolrdMap);
         assertTrue(p1.getCommandingOfficer() instanceof VirtualGameCharacterNode);
         
-        localCharacters = new HashMap<UUID, GameCharacterNode>();
-        localCharacters.put(p1.getIdentity(), p1);
-        localCharacters.put(c1.getIdentity(), c1);
-        relatedCharacters = new HashMap<UUID, CharacterMessage>();
-        handler.synchronizCharacter(p1Message, p1, localCharacters, relatedCharacters, null);
+        wolrdMap = mock(WorldMap.class);
+        when(wolrdMap.getCharacter(eq(p1.getIdentity()))).thenReturn(p1);
+        when(wolrdMap.getCharacter(eq(c1.getIdentity()))).thenReturn(c1);
+        handler.relatedCharacters = new HashMap<>();
+        handler.updateOnSceneCharacter(p1, p1Message, wolrdMap);
         assertTrue(p1.getCommandingOfficer() instanceof GameCharacterNode);
         
         p1.setCommandingOfficer(new VirtualGameCharacterNode(c1Message, false));
         CharacterMessage c2Message = new CharacterMessage(c1.getIdentity(), new Vector(100, 0, 0), new Vector(0, 0, 0), RankMessage.CADET_CORPORAL, null, null, null, 0);
         c2Message.setCountry(com.jme3.lostVictories.network.messages.Country.GERMAN);
-        localCharacters = new HashMap<UUID, GameCharacterNode>();
-        localCharacters.put(p1.getIdentity(), p1);
-        relatedCharacters = new HashMap<UUID, CharacterMessage>();
-        relatedCharacters.put(c1.getIdentity(), c2Message);
-        handler.synchronizCharacter(p1Message, p1, localCharacters, relatedCharacters, null);
+        wolrdMap = mock(WorldMap.class);
+        when(wolrdMap.getCharacter(eq(p1.getIdentity()))).thenReturn(p1);
+        handler.relatedCharacters = new HashMap<>();
+        handler.relatedCharacters.put(c1.getIdentity(), c2Message);
+        handler.updateOnSceneCharacter(p1, p1Message, wolrdMap);
         assertTrue(p1.getCommandingOfficer() instanceof VirtualGameCharacterNode);
         assertEquals(new Vector3f(100, 0, 0), p1.getCommandingOfficer().getLocalTranslation());
     }

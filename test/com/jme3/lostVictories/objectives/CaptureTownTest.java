@@ -8,6 +8,7 @@ import com.jme3.ai.navmesh.NavMeshPathfinder;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.lostVictories.Country;
+import com.jme3.lostVictories.GameSector;
 import com.jme3.lostVictories.WorldMap;
 import com.jme3.lostVictories.characters.AICharacterNodeTest;
 import com.jme3.lostVictories.characters.Commandable;
@@ -15,7 +16,6 @@ import com.jme3.lostVictories.characters.HeerCaptain;
 import com.jme3.lostVictories.network.messages.HouseMessage;
 import com.jme3.lostVictories.network.messages.Quaternion;
 import com.jme3.lostVictories.network.messages.Vector;
-import com.jme3.lostVictories.objectives.CaptureTown.GameSector;
 import com.jme3.lostVictories.structures.CollisionShapeFactoryProvider;
 import com.jme3.lostVictories.structures.GameHouseNode;
 import com.jme3.math.Vector2f;
@@ -44,7 +44,7 @@ public class CaptureTownTest {
             houses.add(convertToHouse(h));
         }
         when(worldMap.getAllHouses()).thenReturn(houses);
-        Set<GameSector> calculateGameSector = captureTown.calculateGameSectorHouses(worldMap.getAllHouses());		
+        Set<GameSector> calculateGameSector = WorldMap.calculateGameSectorHouses(worldMap.getAllHouses());		
         assertEquals(5, calculateGameSector.size());
     }
     
@@ -71,11 +71,11 @@ public class CaptureTownTest {
 
         Set<GameSector> unMerged = new HashSet<GameSector>();
         unMerged.add(new GameSector(new Rectangle(-512+200, -512+200, 100, 100)));		
-        assertFalse(captureTown.findNeighbouringSector(merged, unMerged).isPresent());
+        assertFalse(WorldMap.findNeighbouringSector(merged, unMerged).isPresent());
 
         GameSector neighbour = new GameSector(new Rectangle(-512+100, -512+100, 100, 100));
         unMerged.add(neighbour);
-        assertEquals(neighbour, captureTown.findNeighbouringSector(merged, unMerged).get());
+        assertEquals(neighbour, WorldMap.findNeighbouringSector(merged, unMerged).get());
 
     }
     
@@ -92,14 +92,15 @@ public class CaptureTownTest {
         when(colonel.getCharactersUnderCommand()).thenReturn(units);
         
         CaptureTown captureTown = new CaptureTown(colonel, new Node());
-        captureTown.gameSectors = new HashSet<GameSector>();
-        captureTown.gameSectors.add(createSector(new Rectangle(100, 100, 10, 10)));
-        captureTown.gameSectors.add(createSector(new Rectangle(200, 100, 10, 10)));
-        captureTown.gameSectors.add(createSector(new Rectangle(300, 100, 10, 10)));
-        captureTown.gameSectors.add(createSector(new Rectangle(400, 100, 10, 10)));
-        captureTown.gameSectors.add(createSector(new Rectangle(500, 100, 10, 10)));
+        Set<GameSector> gameSectors = new HashSet<>();
+        gameSectors.add(createSector(new Rectangle(100, 100, 10, 10)));
+        gameSectors.add(createSector(new Rectangle(200, 100, 10, 10)));
+        gameSectors.add(createSector(new Rectangle(300, 100, 10, 10)));
+        gameSectors.add(createSector(new Rectangle(400, 100, 10, 10)));
+        gameSectors.add(createSector(new Rectangle(500, 100, 10, 10)));
         
         final WorldMap worldMap = mock(WorldMap.class);
+        when(worldMap.getGameSectors()).thenReturn(gameSectors);
         captureTown.planObjective(colonel, worldMap);
         captureTown.planObjective(colonel, worldMap);
         captureTown.planObjective(colonel, worldMap);
