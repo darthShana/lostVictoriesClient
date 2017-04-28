@@ -4,6 +4,8 @@
  */
 package com.jme3.lostVictories.objectives;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.jme3.ai.navmesh.NavMeshPathfinder;
 import com.jme3.ai.navmesh.NavigationProvider;
 import com.jme3.lostVictories.NetworkClientAppState;
@@ -16,8 +18,6 @@ import com.jme3.lostVictories.structures.Pickable;
 import com.jme3.scene.Node;
 import java.io.IOException;
 import java.util.UUID;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.node.ObjectNode;
 
 /**
  *
@@ -72,7 +72,7 @@ public class CollectEquipment extends Objective<Soldier>{
 
     @Override
     public Objective fromJson(JsonNode json, GameCharacterNode character, NavigationProvider pathFinder, Node rootNode, WorldMap map) throws IOException {
-        Pickable p = map.getEquipment(MAPPER.readValue(json.get("equipmentID"), UUID.class));
+        Pickable p = map.getEquipment(UUID.fromString(json.get("equipmentID").asText()));
         if(p!=null){
             return new CollectEquipment(p);
         }

@@ -5,7 +5,7 @@
 package com.jme3.lostVictories;
 
 import com.jme3.lostVictories.characters.GameCharacterNode;
-import com.jme3.lostVictories.network.messages.AchivementStatus;
+import com.jme3.lostVictories.network.messages.AchievementStatus;
 import com.jme3.lostVictories.network.messages.GameStatistics;
 
 
@@ -18,7 +18,7 @@ public class WorldRunner implements Runnable {
     private final WorldMap worldMap;
     private Country winner;
     private volatile GameStatistics gameStatistics;
-    private AchivementStatus achivementStatus;
+    private AchievementStatus achivementStatus;
     
 
     
@@ -73,11 +73,11 @@ public class WorldRunner implements Runnable {
         this.gameStatistics = gameStatistics;
     }
     
-    public void setAchiveemntStatus(AchivementStatus achivementStatus){
+    public void setAchiveemntStatus(AchievementStatus achivementStatus){
         this.achivementStatus = achivementStatus;
     }
     
-    public AchivementStatus getAchivementStatus(){
+    public AchievementStatus getAchivementStatus(){
         return achivementStatus;
     }
 

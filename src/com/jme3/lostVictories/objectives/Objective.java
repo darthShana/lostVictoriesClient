@@ -4,6 +4,8 @@
  */
 package com.jme3.lostVictories.objectives;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.jme3.ai.navmesh.NavMeshPathfinder;
 import com.jme3.ai.navmesh.NavigationProvider;
 import com.jme3.asset.AssetManager;
@@ -18,8 +20,6 @@ import com.jme3.scene.Node;
 import com.jme3.scene.shape.Cylinder;
 import java.io.IOException;
 import java.util.UUID;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.node.ObjectNode;
 
 
 /**

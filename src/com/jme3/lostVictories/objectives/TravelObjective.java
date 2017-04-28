@@ -4,6 +4,8 @@
  */
 package com.jme3.lostVictories.objectives;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.jme3.ai.navmesh.DebugInfo;
 import com.jme3.ai.navmesh.NavMeshPathfinder;
 import com.jme3.ai.navmesh.NavigationProvider;
@@ -23,8 +25,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.node.ObjectNode;
 
 
 /**
@@ -123,8 +123,8 @@ import org.codehaus.jackson.node.ObjectNode;
 
     @Override
     public TravelObjective fromJson(JsonNode json, GameCharacterNode character, NavigationProvider pathFinder, Node rootNode, WorldMap map) throws IOException {
-        Vector d = MAPPER.readValue(json.get("destination"), Vector.class);
-        Vector3f f = json.has("facePoint")?MAPPER.readValue(json.get("facePoint"), Vector.class).toVector():null;
+        Vector d = MAPPER.treeToValue(json.get("destination"), Vector.class);
+        Vector3f f = json.has("facePoint")?MAPPER.treeToValue(json.get("facePoint"), Vector.class).toVector():null;
         
         return new TravelObjective(character, d.toVector(), f);
     }

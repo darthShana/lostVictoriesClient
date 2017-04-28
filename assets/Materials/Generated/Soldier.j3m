@@ -4,7 +4,7 @@ Material MyMaterial : Common/MatDefs/Light/Lighting.j3md {
         GlowColor : 1 1 1 1
         Specular : 1 1 1 1
         Diffuse : 1 1 1 1
-        UseMaterialColors : true
+        UseMaterialColors : false
         ParallaxHeight : 0.05
         Ambient : 0.8 0.8 0.8 1.0
         Shininess : 0.0

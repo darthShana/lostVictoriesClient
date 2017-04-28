@@ -4,16 +4,22 @@
  */
 package com.jme3.lostVictories.network.messages.actions;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.jme3.lostVictories.network.messages.Vector;
 import com.jme3.math.Vector3f;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /**
  *
  * @author dharshanar
  */
+@JsonTypeInfo(use=JsonTypeInfo.Id.CLASS, include=JsonTypeInfo.As.PROPERTY, property="class")
 public class Shoot extends Action {
-    private final long shootTime;
-    private final Vector[] targets;
+    private long shootTime;
+    private Vector[] targets;
+
+    private Shoot() {}
     
     public Shoot(long shootTime, Vector[] targets) {
         super("shoot");
@@ -40,6 +46,29 @@ public class Shoot extends Action {
             ret[i] = new Vector3f(targets[i].x, targets[i].y, targets[i].z);
         }
         return ret;
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+      if (obj == null) { return false; }
+      if (obj == this) { return true; }
+      if (obj.getClass() != getClass()) {
+        return false;
+      }
+      Shoot rhs = (Shoot) obj;
+      return new EqualsBuilder()
+        .appendSuper(super.equals(obj))
+        .append(shootTime, rhs.shootTime)
+        .append(targets, rhs.targets)
+        .isEquals();
+    }
+    
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(15, 35)
+            .append(shootTime)
+            .append(targets)
+          .toHashCode();
     }
     
 }

@@ -4,6 +4,11 @@
  */
 package com.jme3.lostVictories.characters;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.jme3.ai.navmesh.NavMeshPathfinder;
 import com.jme3.ai.navmesh.NavigationProvider;
 import com.jme3.animation.AnimChannel;
@@ -30,10 +35,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import org.codehaus.jackson.annotate.JsonAutoDetect.Visibility;
-import org.codehaus.jackson.annotate.JsonMethod;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.node.ObjectNode;
 
 
 /**
@@ -45,7 +46,9 @@ public class RemoteBehaviourControler implements BehaviorControler {
     public static ObjectMapper MAPPER;
     static{
             MAPPER = new ObjectMapper();
-            MAPPER.setVisibility(JsonMethod.FIELD, Visibility.ANY);
+            MAPPER.setVisibility(PropertyAccessor.FIELD, Visibility.ANY);
+            MAPPER.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+
     }
     
     private CharacterMessage remoteState;
@@ -99,7 +102,7 @@ public class RemoteBehaviourControler implements BehaviorControler {
             }
         }else{
             if(!WorldMap.isClose(character.getLocalTranslation(), requiredPossition, .5)){
-
+                
                 TeleportAction mtp = new TeleportAction(requiredPossition);
                 mtp.doAction(character, rootNode, channel, tpf);
             } else if(new Vector2f(character.getPlayerDirection().x, character.getPlayerDirection().z).smallestAngleBetween(new Vector2f(requiredOrientation.x, requiredOrientation.z))> FastMath.QUARTER_PI){
@@ -113,6 +116,9 @@ public class RemoteBehaviourControler implements BehaviorControler {
         }
         
         if(remoteState.isCrouching() && !character.isCrouched() && character instanceof Soldier){
+            if("d993932f-a185-4a6f-8d86-4ef6e2c5ff95".equals(character.getIdentity().toString())){
+                System.err.println("avatar crouch detected");
+            }
             ((Soldier)character).crouch();
         }else if(!remoteState.isCrouching() && character.isCrouched() && character instanceof Soldier){
             ((Soldier)character).stand();

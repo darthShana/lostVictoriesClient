@@ -4,6 +4,9 @@
  */
 package com.jme3.lostVictories.objectives;
 
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.jme3.ai.navmesh.NavMeshPathfinder;
 import com.jme3.ai.navmesh.NavigationProvider;
 import com.jme3.lostVictories.WorldMap;
@@ -24,9 +27,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.node.ObjectNode;
-import org.codehaus.jackson.type.TypeReference;
 
 /**
  *
@@ -87,7 +87,8 @@ class BombardTargets extends Objective {
     }
 
     public BombardTargets fromJson(JsonNode json, GameCharacterNode character, NavigationProvider pathFinder, Node rootNode, WorldMap map) throws IOException {
-        Set<Vector> readValue = MAPPER.readValue(json.get("targets"), new TypeReference<Set<Vector>>(){});
+        JavaType type = MAPPER.getTypeFactory().constructCollectionType(Set.class, Vector.class);
+        Set<Vector> readValue = MAPPER.convertValue(json.get("targets"), type);
         Set<Vector3f> t = new HashSet<Vector3f>();
         for(Vector v: readValue){
             t.add(new Vector3f(v.x, v.y, v.z));

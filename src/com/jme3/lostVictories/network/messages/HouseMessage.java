@@ -23,16 +23,14 @@ public class HouseMessage implements Serializable{
     CaptureStatus captureStatus;
     Long statusChangeTime;
     
+    private HouseMessage(){}
+    
     public HouseMessage(String type, Vector location, Quaternion rotation) {
         this.id = UUID.randomUUID();
         this.type = type;
         this.location = location;
         this.rotation = rotation;
         this.captureStatus = CaptureStatus.NONE;
-    }
-
-    public HouseMessage() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
     public UUID getId(){
