@@ -13,7 +13,7 @@ import com.jme3.lostVictories.characters.AvatarCharacterNode;
 import com.jme3.lostVictories.characters.GameCharacterNode;
 import com.jme3.lostVictories.characters.Rank;
 import com.jme3.lostVictories.headsUpDisplay.MessageBoard;
-import com.jme3.lostVictories.network.messages.AchivementStatus;
+import com.jme3.lostVictories.network.messages.AchievementStatus;
 import com.jme3.niftygui.NiftyJmeDisplay;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.builder.ElementBuilder;
@@ -47,7 +47,7 @@ public class HeadsUpDisplayAppState extends AbstractAppState implements ActionLi
     private int blueHouses;
     private int redHouses;
     private boolean updateHUD = false;
-    private AchivementStatus currentAchivementStatus;
+    private AchievementStatus currentAchivementStatus;
     private MessageBoard gameMessages;
     private ScorllingMessagePanel achivementObjectivePanel;
 

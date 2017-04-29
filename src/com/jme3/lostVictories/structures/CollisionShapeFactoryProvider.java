@@ -5,6 +5,7 @@
 package com.jme3.lostVictories.structures;
 
 import com.jme3.bullet.collision.shapes.CollisionShape;
+import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.scene.Node;
 
@@ -14,8 +15,9 @@ import com.jme3.scene.Node;
  */
 public class CollisionShapeFactoryProvider {
 
-    public CollisionShape createMeshShape(Node house) {
-        return CollisionShapeFactory.createMeshShape(house);
+    public RigidBodyControl createRigidBodyControl(Node house) {
+        final CollisionShape createMeshShape = CollisionShapeFactory.createMeshShape(house);
+        return  new RigidBodyControl(createMeshShape, 0);
     }
     
 }

@@ -4,21 +4,49 @@
  */
 package com.jme3.lostVictories.network.messages.actions;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
+import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
+import com.jme3.lostVictories.network.messages.CharacterMessage;
 import com.jme3.lostVictories.network.messages.Vector;
 import java.io.Serializable;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /**
  *
  * @author dharshanar
  */
-public abstract class Action implements Serializable{
+@JsonTypeInfo(use=Id.CLASS, include=As.PROPERTY, property="class")
+public abstract class Action {
     
-    protected final String type;
+    protected String type;
 
+    Action(){}
+    
     public Action(String type) {
         this.type = type;
     }
     
+    @Override
+    public boolean equals(Object obj) {
+      if (obj == null) { return false; }
+      if (obj == this) { return true; }
+      if (obj.getClass() != getClass()) {
+        return false;
+      }
+      Action rhs = (Action) obj;
+      return new EqualsBuilder()
+        .append(type, rhs.type)
+        .isEquals();
+    }
+    
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(15, 35)
+            .append(type)
+          .toHashCode();
+    }
     
     
     public static Action idle(){

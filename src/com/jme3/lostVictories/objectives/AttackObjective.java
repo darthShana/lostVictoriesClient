@@ -4,6 +4,8 @@
  */
 package com.jme3.lostVictories.objectives;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.jme3.ai.navmesh.NavMeshPathfinder;
 import com.jme3.ai.navmesh.NavigationProvider;
 import com.jme3.lostVictories.WorldMap;
@@ -15,8 +17,6 @@ import com.jme3.lostVictories.network.messages.Vector;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import java.io.IOException;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.node.ObjectNode;
 
 /**
  *
@@ -47,7 +47,7 @@ public class AttackObjective extends Objective<GameCharacterNode>{
     }
 
     public Objective fromJson(JsonNode json, GameCharacterNode character, NavigationProvider pathFinder, Node rootNode, WorldMap map) throws IOException {
-        Vector t = MAPPER.readValue(json.get("target"), Vector.class);
+        Vector t = MAPPER.treeToValue(json.get("target"), Vector.class);
         return new AttackObjective(t.toVector());
     }
     

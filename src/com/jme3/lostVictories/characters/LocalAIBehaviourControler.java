@@ -4,6 +4,7 @@
  */
 package com.jme3.lostVictories.characters;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.jme3.ai.navmesh.NavMeshPathfinder;
 import com.jme3.ai.navmesh.NavigationProvider;
 import com.jme3.lostVictories.WorldMap;
@@ -20,7 +21,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.PriorityBlockingQueue;
-import org.codehaus.jackson.JsonNode;
 
 /**
  *
@@ -65,6 +65,7 @@ public class LocalAIBehaviourControler implements BehaviorControler{
     }
     
     public void addObjectivesFromRemoteCharacters(Map<String, String> objectives, GameCharacterNode character, NavigationProvider pathfinder, Node rootNode, WorldMap map) throws IllegalAccessException, NoSuchMethodException, SecurityException, InvocationTargetException, InstantiationException, IllegalArgumentException, ClassNotFoundException, IOException {
+        //ThreadSafeRootNodeWrapper
         for(Map.Entry<String, String> e: objectives.entrySet()){
             UUID o = UUID.fromString(e.getKey());
             if(!recivedObjectives.contains(o) && !character.getAllObjectives().containsKey(o) && !getCompletedObjectives().contains(o.toString())){

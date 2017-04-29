@@ -38,11 +38,10 @@ public class GameHouseNode extends GameStructureNode{
     private final UUID id;
     private final String houseType;
     private Country contestingOwner;
-    private final NavMeshPathfinder pathfinder;
     private final Node rootNode;
     private Node flagPost;
     
-    public GameHouseNode(UUID id, String houseType, Node house, Map<Country, Node> flags, Node neuralFlag, BulletAppState bulletAppState, CollisionShapeFactoryProvider collisionShapeFactoryProvider, NavMeshPathfinder pathfinder, Node rootNode) {
+    public GameHouseNode(UUID id, String houseType, Node house, Map<Country, Node> flags, Node neuralFlag, BulletAppState bulletAppState, CollisionShapeFactoryProvider collisionShapeFactoryProvider, Node rootNode) {
         super(house, bulletAppState, collisionShapeFactoryProvider);
         this.rootNode = rootNode;
         this.flags = flags;
@@ -51,7 +50,6 @@ public class GameHouseNode extends GameStructureNode{
         attachFlagPost(neuralFlag);
         this.id = id;
         this.houseType = houseType;
-        this.pathfinder = pathfinder;
     }
     
     public UUID getId() {
@@ -73,6 +71,10 @@ public class GameHouseNode extends GameStructureNode{
             contestingOwner = valueOf;
         }
         if(houseMessage.getCaptureStatus()==CaptureStatus.DECAPTURING && structureStatus!=StructureStatus.DECAPTURING){
+            final Country valueOf = Country.valueOf(houseMessage.getOwner().toString());
+            if(currentFlag==null){
+                setFlag(flags.get(valueOf));
+            }
             structureStatus = StructureStatus.DECAPTURING;
             this.action = new DecaptureFlagAction(this);
         }
@@ -123,7 +125,7 @@ public class GameHouseNode extends GameStructureNode{
         rootNode.attachChild(flagPost);
     }
 
-    private void setFlag1(Node flag) {
+    private void setFlag(Node flag) {
         if(currentFlag!=null){
             currentFlag.removeFromParent();
         }
@@ -165,7 +167,7 @@ public class GameHouseNode extends GameStructureNode{
         }
         
         public void doFlagAction(GameHouseNode structure, Map<Country, Node> flags) {
-            structure.setFlag1(flags.get(c));
+            structure.setFlag(flags.get(c));
             AnimControl control = currentFlag.getControl(AnimControl.class);
             AnimChannel channel;
             if(control.getNumChannels()==0){

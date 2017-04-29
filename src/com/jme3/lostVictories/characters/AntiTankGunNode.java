@@ -158,7 +158,7 @@ public class AntiTankGunNode extends GameVehicleNode{
     @Override
     protected void doTerrainDamage(CollisionResult result) {
         particleManager.playExplosionEffect(result.getContactPoint());
-        kills.addAll(doBlastDamage(result.getContactPoint()));
+        doBlastDamage(result.getContactPoint());
     }
     
     @Override

@@ -4,6 +4,7 @@
  */
 package com.jme3.lostVictories.objectives;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.jme3.ai.navmesh.NavMeshPathfinder;
 import com.jme3.lostVictories.Country;
 import com.jme3.lostVictories.WorldMap;
@@ -17,7 +18,6 @@ import com.jme3.lostVictories.network.messages.Vector;
 import com.jme3.lostVictories.structures.GameObjectNode;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
-import org.codehaus.jackson.node.ObjectNode;
 
 /**
  *

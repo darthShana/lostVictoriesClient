@@ -20,13 +20,7 @@ import static org.junit.Assert.*;
 public class ShotsFiredListenerTest {
     
  
-    @Before
-    public void setUp() {
-    }
-    
-    @After
-    public void tearDown() {
-    }
+
 
     /**
      * Test of getShootsFiredInRange method, of class ShotsFiredListener.

@@ -4,6 +4,8 @@
  */
 package com.jme3.lostVictories.objectives;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.jme3.ai.navmesh.NavMeshPathfinder;
 import com.jme3.ai.navmesh.NavigationProvider;
 import com.jme3.lostVictories.WorldMap;
@@ -20,8 +22,6 @@ import com.jme3.scene.Node;
 import java.io.IOException;
 import java.util.Map;
 import java.util.UUID;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.node.ObjectNode;
 
 /**
  *
@@ -95,7 +95,7 @@ public class FollowCommander extends Objective<AICharacterNode> {
     }
 
     public FollowCommander fromJson(JsonNode json, GameCharacterNode character, NavigationProvider pathFinder, Node rootNode, WorldMap map) throws IOException {
-        Vector dir = MAPPER.readValue(json.get("direction"), Vector.class);
+        Vector dir = MAPPER.treeToValue(json.get("direction"), Vector.class);
         return new FollowCommander(new Vector3f(dir.x, dir.y, dir.z), json.get("maxDistance").asInt());
     }
     

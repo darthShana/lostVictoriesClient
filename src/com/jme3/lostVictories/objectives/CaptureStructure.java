@@ -4,7 +4,8 @@
  */
 package com.jme3.lostVictories.objectives;
 
-import com.jme3.ai.navmesh.NavMeshPathfinder;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.jme3.ai.navmesh.NavigationProvider;
 import com.jme3.asset.AssetManager;
 import com.jme3.lostVictories.structures.GameHouseNode;
@@ -28,8 +29,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.node.ObjectNode;
 
 /**
  *
@@ -88,7 +87,14 @@ class CaptureStructure extends Objective<Soldier> implements MinimapPresentable{
 
     public CaptureStructure fromJson(JsonNode json, GameCharacterNode character, NavigationProvider pathFinder, Node rootNode, WorldMap map) throws IOException {
         final UUID sturct = UUID.fromString(json.get("structure").asText());
-        return new CaptureStructure(character, map.getHouse(sturct));
+        final GameHouseNode house = map.getHouse(sturct);
+        if(house!=null){
+            return new CaptureStructure(character, house);  
+        }else{
+            System.out.println("CaptureStructure house not found:"+sturct);
+            return null;
+        }
+        
     }
 
     public Vector3f getObjectiveLocation() {

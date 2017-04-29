@@ -4,6 +4,9 @@
  */
 package com.jme3.lostVictories.characters;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.jme3.lostVictories.Country;
 import com.jme3.lostVictories.NetworkClientAppState;
 import static com.jme3.lostVictories.characters.RemoteBehaviourControler.MAPPER;
@@ -28,9 +31,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.JsonProcessingException;
-import org.codehaus.jackson.node.ObjectNode;
 
 /**
  *
@@ -153,21 +153,11 @@ public class VirtualGameCharacterNode implements Commandable, CommandingOfficer{
     }
 
     public boolean isBusy() {
-        for(String s:msg.getObjectives().values()){
-            if(!isPassiveObjective(toJsonNodeSafe(s))){
-                return true;
-            }
-        }
-        return false;
+        return msg.isBusy();
     }
 
     public boolean isAttacking() {
-        for(String s:msg.getObjectives().values()){
-            if(isAttackingObjective(toJsonNodeSafe(s))){
-                return true;
-            }
-        }
-        return false;
+       return msg.isAttacking();
     }
     
     
@@ -177,29 +167,11 @@ public class VirtualGameCharacterNode implements Commandable, CommandingOfficer{
     }
     
     
-    
-    private boolean isPassiveObjective(JsonNode n) {
-        String s = n.get("class").asText();
-        return "com.jme3.lostVictories.objectives.SurvivalObjective".equals(s) || "com.jme3.lostVictories.objectives.RemanVehicle".equals(s);
-    }
 
     
-    private boolean isAttackingObjective(JsonNode n) {
-        String s = n.get("class").asText();
-        return  "com.jme3.lostVictories.objectives.AttackBoggies".equals(s) || 
-                "com.jme3.lostVictories.objectives.AttackAndTakeCoverObjective".equals(s) ||
-                "com.jme3.lostVictories.objectives.AttackObjective".equals(s);
-    }
+
     
-    private JsonNode toJsonNodeSafe(String s) {
-        try {
-            return MAPPER.readTree(s);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
+
 
     public void updateMessage(CharacterMessage get) {
         this.msg = get;

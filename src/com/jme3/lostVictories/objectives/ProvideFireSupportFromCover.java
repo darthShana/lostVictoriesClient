@@ -4,6 +4,8 @@
  */
 package com.jme3.lostVictories.objectives;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.jme3.ai.navmesh.NavMeshPathfinder;
 import com.jme3.ai.navmesh.NavigationProvider;
 import com.jme3.asset.AssetManager;
@@ -25,8 +27,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.node.ObjectNode;
 
 /**
  *
@@ -93,7 +93,7 @@ class ProvideFireSupportFromCover extends Objective<CadetCorporal> implements Mi
 
     @Override
     public ProvideFireSupportFromCover fromJson(JsonNode json, GameCharacterNode character, NavigationProvider pathFinder, Node rootNode, WorldMap map) throws IOException {
-        Vector p = MAPPER.readValue(json.get("enemyPosition"), Vector.class);
+        Vector p = MAPPER.treeToValue(json.get("enemyPosition"), Vector.class);
         return new ProvideFireSupportFromCover((CadetCorporal) character, new Vector3f(p.x, p.y, p.z), rootNode);
     }
     

@@ -10,6 +10,7 @@ import com.jme3.bounding.BoundingBox;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
+import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.lostVictories.structures.GameStructureNode;
 import com.jme3.lostVictories.WorldMap;
 import com.jme3.lostVictories.actions.AIAction;
@@ -74,7 +75,7 @@ public class AttackAndTakeCoverObjectiveTest {
         node.setLocalTranslation(pos);
         node.setModelBound(new BoundingBox(Vector3f.ZERO, 10, 10, 10));
         final CollisionShapeFactoryProvider shapeProvider = mock(CollisionShapeFactoryProvider.class);
-        when(shapeProvider.createMeshShape(isA(Node.class))).thenReturn(mock(BoxCollisionShape.class));
+        when(shapeProvider.createRigidBodyControl(isA(Node.class))).thenReturn(mock(RigidBodyControl.class));
         final BulletAppState bulletAppState = mock(BulletAppState.class);
         when(bulletAppState.getPhysicsSpace()).thenReturn(mock(PhysicsSpace.class));
         GameStructureNode structure = new GameStructureNode(node, bulletAppState, shapeProvider);

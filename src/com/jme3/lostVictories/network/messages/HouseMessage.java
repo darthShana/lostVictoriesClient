@@ -23,6 +23,8 @@ public class HouseMessage implements Serializable{
     CaptureStatus captureStatus;
     Long statusChangeTime;
     
+    private HouseMessage(){}
+    
     public HouseMessage(String type, Vector location, Quaternion rotation) {
         this.id = UUID.randomUUID();
         this.type = type;
@@ -50,6 +52,10 @@ public class HouseMessage implements Serializable{
     public CaptureStatus getCaptureStatus() {
         return captureStatus;
     }
+    
+    public void setCaptureStatus(CaptureStatus captureStatus){
+        this.captureStatus = captureStatus;
+    }
 
     public Country getContestingOwner() {
         return contestingOwner;
@@ -57,6 +63,10 @@ public class HouseMessage implements Serializable{
 
     public Country getOwner() {
         return owner;
+    }
+    
+    public void setOwner(Country owner){
+        this.owner = owner;
     }
     
     

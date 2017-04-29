@@ -210,7 +210,7 @@ public class SimpleGrassControl extends AbstractControl{
 //        System.out.println("    \"trees\":[");
 
         for(TreeMessage tree:treeGroup.getTrees()){
-            Spatial t = (Node) assetManager.loadModel("Models/Plants/Tree1.j3o");
+            Spatial t = (Node) assetManager.loadModel("Models/Plants/Tree1.j3o");            
             t.setLocalScale(.5f);
             t.rotate(new Quaternion().fromAngleAxis( (((int)(Math.random()*359))+1) *(FastMath.PI/190), Vector3f.UNIT_Y));
             float x = tree.getLocation().x;
@@ -221,7 +221,7 @@ public class SimpleGrassControl extends AbstractControl{
         }
 //        System.out.println("]},");
         n.setLocalTranslation(location);
-        n = (Node) GeometryBatchFactory.optimize(n, true);
+//        n = (Node) GeometryBatchFactory.optimize(n, true);
         RigidBodyControl treeMesh = new RigidBodyControl(CollisionShapeFactory.createMeshShape((Node) n), 0);
         bulletAppState.getPhysicsSpace().add(treeMesh);
 

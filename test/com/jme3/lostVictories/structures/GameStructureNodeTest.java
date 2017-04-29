@@ -9,6 +9,7 @@ import com.jme3.bounding.BoundingBox;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
+import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.lostVictories.characters.GameCharacterNode;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
@@ -54,7 +55,7 @@ public class GameStructureNodeTest {
         node.setModelBound(new BoundingBox(new Vector3f(0, 0, 0), 10, 10, 10));
         
         final CollisionShapeFactoryProvider shapeProvider = mock(CollisionShapeFactoryProvider.class);
-        when(shapeProvider.createMeshShape(isA(Node.class))).thenReturn(mock(BoxCollisionShape.class));
+        when(shapeProvider.createRigidBodyControl(isA(Node.class))).thenReturn(mock(RigidBodyControl.class));
         final BulletAppState bulletAppState = mock(BulletAppState.class);
         when(bulletAppState.getPhysicsSpace()).thenReturn(mock(PhysicsSpace.class));
         

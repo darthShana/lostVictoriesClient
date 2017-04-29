@@ -9,7 +9,7 @@ import com.jme3.lostVictories.structures.GameTargetNode;
 import com.jme3.lostVictories.structures.GameStructureNode;
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.BulletAppState;
-import com.jme3.lostVictories.network.messages.CheckoutScreenResponse;
+import com.jme3.lostVictories.network.ServerResponse;
 import com.jme3.lostVictories.network.messages.HouseMessage;
 import com.jme3.lostVictories.objectives.CaptureTown;
 import com.jme3.lostVictories.structures.CollisionShapeFactoryProvider;
@@ -35,32 +35,35 @@ import jme3tools.optimize.TextureAtlas;
  *
  * @author dharshanar
  */
-class StructureLoader {
+public class StructureLoader {
     private static StructureLoader instance;
     //private Map<String, Node> structureType = new HashMap<String, Node>();
     private Set<String> structureTypes = new HashSet<String>();
 
-    static StructureLoader instance(Node rootNode, AssetManager assetManager, BulletAppState bulletAppState, NavMeshPathfinder pathfinder) {
+    static StructureLoader instance(Node rootNode, AssetManager assetManager, BulletAppState bulletAppState, LostVictory app, TerrainQuad terrain, Node sceneGraph) {
         if(instance == null){
-            instance = new StructureLoader(rootNode, assetManager, bulletAppState, pathfinder);
+            instance = new StructureLoader(rootNode, assetManager, bulletAppState, app, terrain, sceneGraph);
         }
         return instance;
     }
     private final Node rootNode;
     private final AssetManager assetManager;
     private final BulletAppState bulletAppState;
-    private final NavMeshPathfinder pathfinder;
+    private final LostVictory app;
+    private final TerrainQuad terrain;
+    private final Node sceneGraph;
 
-    private StructureLoader(Node rootNode, AssetManager assetManager, BulletAppState bulletAppState, NavMeshPathfinder pathfinder) {
+    private StructureLoader(Node rootNode, AssetManager assetManager, BulletAppState bulletAppState, LostVictory app, TerrainQuad terrain, Node sceneGraph) {
         this.rootNode = rootNode;
         this.assetManager = assetManager;
         this.bulletAppState = bulletAppState;
-        this.pathfinder = pathfinder;
-        
+        this.app = app;
+        this.terrain = terrain;
+        this.sceneGraph = sceneGraph;
     }
 
 
-    void loadStuctures(Set<GameStructureNode> structures, Node sceneGraph, CheckoutScreenResponse checkout, TerrainQuad terrain, LostVictory app) {
+    void loadStuctures(Set<GameStructureNode> structures, ServerResponse checkout) {
                 
         structureTypes.add("Models/Structures/casaMedieval.j3o");
         structureTypes.add("Models/Structures/house.j3o");
@@ -96,50 +99,37 @@ class StructureLoader {
             }
             
         }
-//        Node geom = GeometryBatchFactory.optimize(otherStructureNode, true);
-//        sceneGraph.attachChild(otherStructureNode);
-        
-//        Map<String, Node> toOptomise = new HashMap<String, Node>();
+
         final Set<HouseMessage> allHouses = checkout.getAllHouses();
         
         for(HouseMessage h:allHouses){
-            structures.add(addHouse(clone(app), app, h, terrain, sceneGraph));
+            structures.add(addHouse(getFlagMap(app), app, h, terrain, sceneGraph));
         }
-//        for(Node houses:toOptomise.values()){
-//            Node a = GeometryBatchFactory.optimize(houses, true);
-//            sceneGraph.attachChild(houses);
-//        }
-        final Set<CaptureTown.GameSector> calculateGameSector = CaptureTown.calculateGameSector(structures);
-        for(CaptureTown.GameSector sector:calculateGameSector){
+
+        final Set<GameSector> calculateGameSector = WorldMap.calculateGameSector(structures);
+        for(GameSector sector:calculateGameSector){
             Node sec = new Node();
             for(GameStructureNode s:sector.structures()){
                 sec.attachChild(s);
             }
             Spatial a = GeometryBatchFactory.optimize(sec);
             sceneGraph.attachChild(a);
-//            sceneGraph.attachChild(sec);
         }
-        
-//        Node s1 = (Node) sceneGraph.getChild("church");
-//        addStructure(s1, sceneGraph, structures);
-//        Node s2 = (Node) sceneGraph.getChild("fountain");
-//        addStructure(s2, sceneGraph, structures);
-//        Node s3 = (Node) sceneGraph.getChild("shed");
-//        addStructure(s3, sceneGraph, structures);
-//        Node s4 = (Node) sceneGraph.getChild("school");
-//        addStructure(s4, sceneGraph, structures);
-//        Node s5 = (Node) sceneGraph.getChild("market");
-//        addStructure(s5, sceneGraph, structures);
-//        Node s6 = (Node) sceneGraph.getChild("stable");
-//        addStructure(s6, sceneGraph, structures);
         
         addShootingTarget(new Vector3f(268.71814f, 96.11746f, 17.211853f), sceneGraph, structures);
         addShootingTarget(new Vector3f(-66.78554f, 96.32174f, -254.6674f), sceneGraph, structures);
         
     }
 
+    public GameHouseNode addHouse(HouseMessage houseMessage){
+        final GameHouseNode addHouse = addHouse(getFlagMap(app), app, houseMessage, terrain, sceneGraph);
+        sceneGraph.attachChild(addHouse);
+        WorldMap.get().addHouse(addHouse);
+        return addHouse;
+    }
+    
     private GameHouseNode addHouse(Map flags, LostVictory app, HouseMessage house, TerrainQuad terrain, Node rootNode) {        
-        Node n = (Node) assetManager.loadModel(house.getType());
+        Node n = (Node) assetManager.loadModel("Models/Structures/"+house.getType());
         final Vector3f l = house.getLocalTranslation();
         n.setLocalTranslation(l.x, terrain.getHeight(new Vector2f(l.x, l.z)), l.z);
 
@@ -148,12 +138,8 @@ class StructureLoader {
         neutralFlag.setLocalScale(.5f);
         neutralFlag.addControl(new HeloControl(assetManager, app));
         
-        GameHouseNode h = new GameHouseNode(house.getId(), house.getType(), n, flags, neutralFlag, this.bulletAppState, new CollisionShapeFactoryProvider(), pathfinder, rootNode);
+        GameHouseNode h = new GameHouseNode(house.getId(), house.getType(), n, flags, neutralFlag, this.bulletAppState, new CollisionShapeFactoryProvider(), rootNode);
         
-//        if(!structures.containsKey(house.getType())){
-//            structures.put(house.getType(), new Node());
-//        }
-//        structures.get(house.getType()).attachChild(h);
         return h;        
     }
     
@@ -185,7 +171,7 @@ class StructureLoader {
 //        return flags;
 //    }
 
-    private Map clone(LostVictory app) {
+    private Map getFlagMap(LostVictory app) {
         final Node american = (Node)assetManager.loadModel("Models/Structures/americanFlag.j3o");
         final Node german = (Node)assetManager.loadModel("Models/Structures/germanFlag.j3o");
         american.addControl(new HeloControl(assetManager, app));

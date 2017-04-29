@@ -30,6 +30,7 @@ import com.jme3.lostVictories.characters.blenderModels.VehicleBlenderModel;
 import com.jme3.lostVictories.characters.weapons.Weapon;
 import com.jme3.lostVictories.effects.ParticleManager;
 import com.jme3.lostVictories.network.messages.CharacterMessage;
+import com.jme3.lostVictories.network.messages.CharacterType;
 import com.jme3.lostVictories.objectives.CompleteBootCamp;
 import com.jme3.lostVictories.objectives.EnemyActivityReport;
 import com.jme3.lostVictories.objectives.ManualControlByAvatar;
@@ -334,14 +335,9 @@ public class AvatarCharacterNode extends GameCharacterNode<BetterSoldierControl>
             boardedVehicleControl.straighten();
         }
     }
-
-    Set<String> completedObjectives = new HashSet<String>();
     
     @Override
     public void addObjective(Objective objective) {
-        if(this.objective!=null){
-            completedObjectives.add(this.objective.getIdentity().toString());
-        }
         this.objective = objective;
         hud.updateHeadsUpDisplay();
         
@@ -349,18 +345,12 @@ public class AvatarCharacterNode extends GameCharacterNode<BetterSoldierControl>
 
     @Override
     protected Set<String> getCompletedObjectives() {
-        if(objective!=null && objective.isComplete()){
-            completedObjectives.add(objective.getIdentity().toString());
-        }
-        return completedObjectives;
+        return new HashSet<>();
     }
 
     Map<UUID, Objective> emptyObjectives = new HashMap<UUID, Objective>();
     @Override
     public Map<UUID, Objective> getAllObjectives() {        
-        if(objective!=null && !objective.isComplete()){
-            return Collections.singletonMap(objective.getIdentity(), objective);
-        }
         return emptyObjectives;
     }
 
@@ -419,13 +409,6 @@ public class AvatarCharacterNode extends GameCharacterNode<BetterSoldierControl>
             k+=n.getKillCount();
         }
         return k;
-    }
-    
-    @Override
-    public void resetKillCount() {
-        for(Commandable c: ((CommandingOfficer)this).getCharactersUnderCommand()){
-            c.resetKillCount();
-        }
     }
 
     @Override
@@ -569,7 +552,7 @@ public class AvatarCharacterNode extends GameCharacterNode<BetterSoldierControl>
         if(boaredVehicleControl!=null){
             toMessage.addAction(boaredVehicleControl.getAction().toMessage());
         }
-                  
+        toMessage.setType(CharacterType.AVATAR);
         return toMessage;
     }
     

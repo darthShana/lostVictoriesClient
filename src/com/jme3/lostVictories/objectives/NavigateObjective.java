@@ -4,6 +4,8 @@
  */
 package com.jme3.lostVictories.objectives;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.jme3.ai.navmesh.DebugInfo;
 import com.jme3.lostVictories.actions.AutoDriveAction;
 import com.jme3.ai.navmesh.NavMeshPathfinder;
@@ -23,8 +25,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.node.ObjectNode;
 
 
 /**
@@ -118,8 +118,8 @@ public class NavigateObjective extends Objective<GameVehicleNode> implements Obj
     }
 
     public NavigateObjective fromJson(JsonNode json, GameCharacterNode character, NavigationProvider pathFinder, Node rootNode, WorldMap map) throws IOException {
-        Vector d = MAPPER.readValue(json.get("destination"), Vector.class);
-        Vector3f t = json.has("target")?MAPPER.readValue(json.get("target"), Vector.class).toVector():null;
+        Vector d = MAPPER.treeToValue(json.get("destination"), Vector.class);
+        Vector3f t = json.has("target")?MAPPER.readValue(json.get("target").asText(), Vector.class).toVector():null;
         return new NavigateObjective(d.toVector(), t);
     }
 

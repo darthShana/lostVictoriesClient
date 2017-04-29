@@ -4,16 +4,22 @@
  */
 package com.jme3.lostVictories.network.messages;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.jme3.lostVictories.WorldMap;
 import com.jme3.lostVictories.network.messages.actions.Action;
 import com.jme3.lostVictories.network.messages.actions.Crouch;
 import com.jme3.lostVictories.network.messages.actions.ManualControl;
 import com.jme3.lostVictories.network.messages.actions.SetupWeapon;
 import com.jme3.lostVictories.network.messages.actions.Shoot;
+import com.jme3.math.Vector3f;
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /**
  *
@@ -36,15 +42,22 @@ public class CharacterMessage implements Serializable{
     CharacterType type;
     Vector orientation;
     Set<Action> actions;
-    Map<String, String> objectives;
+    Map<String, String> objectives ;
     Set<String> completedObjectives;
-    boolean isDead;
+    boolean dead;
     boolean engineDamaged;
     Long timeOfDeath;
     long version;
-    Set<UUID> kills;
+    int killCount;
     SquadType squadType;
+    @JsonIgnore
+    long creationTime;
+    boolean busy;
+    boolean attacking;
 
+    
+    private CharacterMessage(){}
+    
     public CharacterMessage(UUID id, Vector location, Vector orientation, RankMessage rank, Set<Action> actions, Map<String, String> objectives, Set<String> completedObjectives, long version) {
         this.id = id;
         this.location = location;
@@ -54,6 +67,7 @@ public class CharacterMessage implements Serializable{
         this.objectives = objectives;
         this.completedObjectives = completedObjectives;
         this.version = version;
+        this.creationTime = System.currentTimeMillis();
     }
     
     public UUID getId() {
@@ -87,13 +101,17 @@ public class CharacterMessage implements Serializable{
     public CharacterType getType() {
         return type;
     }
+    
+    public void setType(CharacterType type){
+        this.type = type;
+    }
 
     public Set<UUID> getUnitsUnderCommand() {
         return unitsUnderCommand;
     }
 
     public boolean isDead() {
-        return isDead;
+        return dead;
     }
 
     public boolean isCheckedOutBy(UUID clientID) {
@@ -112,8 +130,8 @@ public class CharacterMessage implements Serializable{
         return orientation;
     }
     
-    public Set<UUID> getKills(){
-        return kills;
+    public int getKillCount(){
+        return killCount;
     }
     
     public Map<String, String> getObjectives(){
@@ -147,15 +165,6 @@ public class CharacterMessage implements Serializable{
         }
         return false;
     }
-    
-//    public ManualControl controlingBoardedVehicle() {
-//        for(Action a: actions){
-//            if(a instanceof ManualControl){
-//                return (ManualControl) a;
-//            }
-//        }
-//        return null;
-//    }
     
     public Set<UUID> getPassengers(){
         return passengers;
@@ -195,6 +204,90 @@ public class CharacterMessage implements Serializable{
     
     public long getVersion(){
         return version;
+    }
+    
+    public UUID getCheckoutClient(){
+        return checkoutClient;
+    }
+    
+    public long getCreationTime(){
+        return creationTime;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      if (obj == null) { return false; }
+      if (obj == this) { return true; }
+      if (obj.getClass() != getClass()) {
+        return false;
+      }
+      CharacterMessage rhs = (CharacterMessage) obj;
+        final EqualsBuilder builder = new EqualsBuilder()
+//                .append(location, rhs.location)
+                .append(id, rhs.id)
+//                .append(orientation, rhs.orientation)
+                .append(actions, rhs.actions)
+                .append(completedObjectives, rhs.completedObjectives)
+                .append(checkoutClient, rhs.checkoutClient);
+        if(objectives!=null){
+            builder.append(objectives.keySet(), rhs.objectives.keySet());
+        }
+      return builder.isEquals() && isClose(location, rhs.location, 0.1) && isClose(orientation, rhs.orientation, 0.1);
+    }
+    
+    @Override
+    public int hashCode() {
+        final HashCodeBuilder builder = new HashCodeBuilder(17, 37)
+//                .append(location)
+//                .append(orientation)
+                .append(actions)
+                .append(completedObjectives)
+                .append(checkoutClient)
+                .append(version);
+        if(objectives!=null){
+            builder.append(objectives.keySet());
+        }
+
+        return builder
+          .toHashCode();
+    }
+    
+    public static boolean isClose(Vector v1, Vector v2, double d) {
+        if(Math.abs(v1.x - v2.x)>d){
+            return false;
+        }
+        
+        if(Math.abs(v1.z - v2.z)>d){
+            return false;
+        }
+        return true;
+    }
+
+    public void setCreationTime(long creationTime) {
+        this.creationTime = creationTime;
+    }
+    
+    public boolean isBusy(){
+        return busy;
+    }
+    
+    public boolean isAttacking(){
+        return attacking;
+    }
+
+    @JsonIgnore
+    public boolean hasBeenSentRecently(long version) {
+        if(type==CharacterType.AVATAR){
+            if(isOlderVersion(version)){
+                return false;
+            }
+        }
+        return System.currentTimeMillis()-creationTime<2000;
+        
+    }
+
+    public boolean isOlderVersion(long version) {
+        return this.version<version;
     }
     
 }

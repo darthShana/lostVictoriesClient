@@ -1,5 +1,6 @@
 package com.jme3.lostVictories;
  
+import com.fasterxml.jackson.databind.JsonNode;
 import com.jme3.ai.navmesh.CustomNavMeshBuilder;
 import com.jme3.lostVictories.structures.GameHouseNode;
 import static com.jme3.lostVictories.characters.RemoteBehaviourControler.MAPPER;
@@ -25,7 +26,7 @@ import com.jme3.lostVictories.effects.ParticleManager;
 import com.jme3.lostVictories.minimap.MinimapNode;
 import com.jme3.lostVictories.network.NetworkClient;
 import com.jme3.lostVictories.network.ResponseFromServerMessageHandler;
-import com.jme3.lostVictories.network.messages.CheckoutScreenResponse;
+import com.jme3.lostVictories.network.ServerResponse;
 import com.jme3.lostVictories.structures.GameObjectNode;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
@@ -43,7 +44,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Base64;
-import org.codehaus.jackson.JsonNode;
 
 
 
@@ -64,7 +64,7 @@ public class LostVictory extends SimpleApplication implements ActionListener {
             
         String playerID, serverIP, gameVersion;
         int port = 5055;
-//        args = new String[]{"lostvic://lostVictoriesLauncher/game=eyJpZCI6Im5vcndlZ2lhbl9jYW1wYWlnbiIsIm5hbWUiOiJOb3J3ZWdpYW4gQ2FtcGFpZ24iLCJob3N0IjoiY29ubmVjdC5sb3N0dmljdG9yaWVzLmNvbSIsInBvcnQiOiI1MDU1Iiwic3RhcnREYXRlIjoxNDg5MDgwOTg5MjAxLCJqb2luZWQiOnRydWUsImF2YXRhcklEIjoiNDUyZDNlYjItNzc3ZS00MDJjLTkyODctZDM4ZWEyNzI0NWZlIiwiZ2FtZVZlcnNpb24iOiJwcmVfYWxwaGEiLCJnYW1lU3RhdHVzIjoiaW5Qcm9ncmVzcyIsInZpY3RvciI6bnVsbCwiZW5kRGF0ZSI6bnVsbCwiY291bnRyeSI6IkFNRVJJQ0FOIn0="};
+//        args = new String[]{"lostvic://lostVictoriesLauncher/game=eyJpZCI6Im5vcndlZ2lhbl9jYW1wYWlnbiIsIm5hbWUiOiJOb3J3ZWdpYW4gQ2FtcGFpZ24iLCJob3N0IjoiY29ubmVjdC5sb3N0dmljdG9yaWVzLmNvbSIsInBvcnQiOiI1MDU1Iiwic3RhcnREYXRlIjoxNDkzMjI4OTI2NTkzLCJqb2luZWQiOnRydWUsImF2YXRhcklEIjoiMDI0YTQ0MTYtYzI2YS00MDgxLTkzOTAtM2UyZDA5YTllZDQ4IiwiZ2FtZVZlcnNpb24iOiJwcmVfYWxwaGEiLCJnYW1lU3RhdHVzIjoiaW5Qcm9ncmVzcyIsInZpY3RvciI6bnVsbCwiZW5kRGF0ZSI6bnVsbCwiY291bnRyeSI6IkdFUk1BTiJ9"};
         if(args.length>0){    
 //            JOptionPane.showOptionDialog(null, args[0], "Warning", JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[0]);         
 //            if(args.length>1){
@@ -90,12 +90,12 @@ public class LostVictory extends SimpleApplication implements ActionListener {
             playerID = env.get("player_id");
             serverIP = env.get("server_ip");
             if(playerID==null){
-               //playerID = "2fbe421f-f701-49c9-a0d4-abb0fa904204"; //german
-               playerID = "d993932f-a185-4a6f-8d86-4ef6e2c5ff95"; //american 1
+               playerID = "2fbe421f-f701-49c9-a0d4-abb0fa904204"; //german
+               //playerID = "d993932f-a185-4a6f-8d86-4ef6e2c5ff95"; //american 1
                //playerID = "844fd93d-e65a-438a-82c5-dab9ad58e854"; //american 2
             }
             if(serverIP == null){
-                serverIP = "192.168.20.7";
+                serverIP = "localhost";
                 //serverIP = "connect.lostvictories.com";
             }
             gameVersion = "pre_alpha";
@@ -155,11 +155,11 @@ public class LostVictory extends SimpleApplication implements ActionListener {
         rootNode.addLight(sun1);
         
         AmbientLight al = new AmbientLight();
-        al.setColor(ColorRGBA.White.mult(.5f));
+        al.setColor(ColorRGBA.White.mult(.4f));
         rootNode.addLight(al);
         
         navMesh = CustomNavMeshBuilder.buildMesh((Geometry)sceneGraph.getChild("NavMesh"));
-        StructureLoader structureLoader = StructureLoader.instance(rootNode, assetManager, bulletAppState, new NavMeshPathfinder(navMesh));
+        StructureLoader structureLoader = StructureLoader.instance(rootNode, assetManager, bulletAppState, this, terrain, sceneGraph);
        
         MinimapNode minimapNode = new MinimapNode("minimap", this);
         chaseCameraAppState = new RealTimeStrategyAppState(minimapNode);
@@ -169,13 +169,13 @@ public class LostVictory extends SimpleApplication implements ActionListener {
         ParticleEmitterFactory pf = ParticleEmitterFactory.instance(assetManager);
         ParticleManager particleManager = new ParticleManager(sceneGraph, assetManager, renderManager);
         characterLoader = CharacterLoader.instance(sceneGraph, assetManager, bulletAppState, navMesh, pf, headsUpDisplayAppState, particleManager, this);
-        ResponseFromServerMessageHandler serverSync = new ResponseFromServerMessageHandler(this, characterLoader, avatarUUID, particleManager, headsUpDisplayAppState);
+        ResponseFromServerMessageHandler serverSync = new ResponseFromServerMessageHandler(this, characterLoader, structureLoader, avatarUUID, particleManager, headsUpDisplayAppState);
         networkClientAppState = NetworkClientAppState.init(this, new NetworkClient(ipAddress, port, avatarUUID, serverSync), serverSync);
         
         Set<GameCharacterNode> characters = new HashSet<GameCharacterNode>();
         try {
-            CheckoutScreenResponse checkout = networkClientAppState.checkoutSceenSynchronous(avatarUUID);
-            structureLoader.loadStuctures(structures, sceneGraph, checkout, terrain, this);
+            ServerResponse checkout = networkClientAppState.checkoutSceenSynchronous(avatarUUID);
+            structureLoader.loadStuctures(structures, checkout);
             avatar = characterLoader.loadCharacters(characters, structures, objects, checkout, avatarUUID);
             sceneGraph.addControl(new SimpleGrassControl(assetManager, bulletAppState, (Node) sceneGraph, checkout.getAllTrees(), "Resources/Textures/Grass/grass.png"));
         } catch (InterruptedException ex) {
@@ -207,6 +207,7 @@ public class LostVictory extends SimpleApplication implements ActionListener {
     @Override
     public void simpleUpdate(float tpf) {     
         if(gameOver){
+            
             return;
         }
 

@@ -4,6 +4,8 @@
  */
 package com.jme3.lostVictories.objectives;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.jme3.ai.navmesh.NavMeshPathfinder;
 import com.jme3.ai.navmesh.NavigationProvider;
 import com.jme3.lostVictories.actions.StearAction;
@@ -18,9 +20,6 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import java.io.IOException;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.node.ObjectNode;
-
 /**
  *
  * @author dharshanar
@@ -56,7 +55,7 @@ public class StearToTarget extends Objective<GameVehicleNode> {
 
     @Override
     public StearToTarget fromJson(JsonNode json, GameCharacterNode character, NavigationProvider pathFinder, Node rootNode, WorldMap map) throws IOException {
-        Vector t = MAPPER.readValue(json.get("target"), Vector.class);
+        Vector t = MAPPER.treeToValue(json.get("target"), Vector.class);
         return new StearToTarget(new Vector3f(t.x, t.y, t.z));
     }
     
