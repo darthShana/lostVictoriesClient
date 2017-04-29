@@ -27,9 +27,11 @@ import com.jme3.lostVictories.characters.Commandable;
 import com.jme3.lostVictories.characters.HalfTrackNode;
 import com.jme3.lostVictories.characters.Lieutenant;
 import com.jme3.lostVictories.characters.LocalAIBehaviourControler;
+import com.jme3.lostVictories.characters.MediumTankNode;
 import com.jme3.lostVictories.characters.Private;
 import com.jme3.lostVictories.characters.Rank;
 import com.jme3.lostVictories.characters.RemoteBehaviourControler;
+import com.jme3.lostVictories.characters.blenderModels.Panzer4BlenderModel;
 import com.jme3.lostVictories.characters.blenderModels.SoldierBlenderModel;
 import com.jme3.lostVictories.effects.ParticleManager;
 import com.jme3.lostVictories.network.ServerResponse;
@@ -163,6 +165,18 @@ public class CharacterLoader {
         }
         return v;
     }
+    
+    private GameVehicleNode loadPanzer4(UUID id, Vector3f position, Vector3f rotation, Country country, CommandingOfficer commandingOfficer, BehaviorControler behaviorControler) {
+        final Panzer4BlenderModel panzer4BlenderModel = new Panzer4BlenderModel("Models/Vehicles/PanzerIV.j3o", 1, Weapon.cannon());
+        Node vehicle =  getModel(panzer4BlenderModel);
+        System.out.println("in here loading panzer");
+        
+        final GameVehicleNode v = new MediumTankNode(id, vehicle, getOperators(), country, commandingOfficer, position, rotation, rootNode, bulletAppState, pf.getCharacterParticleEmitters(), particleManager, pathFinder, assetManager, panzer4BlenderModel, behaviorControler, app.getCamera());
+        if(commandingOfficer!=null){
+            commandingOfficer.addCharactersUnderCommand(new HashSet<Commandable>(){{add(v);}});
+        }
+        return v;
+    }
    
     private GameVehicleNode loadAmoredCar(UUID id, Vector3f position, Vector3f rotation, Country country, CommandingOfficer commandingOfficer, BehaviorControler behaviorControler) {
         final AmoredCarBlenderModel amoredCarBlenderModel = new AmoredCarBlenderModel("Models/Vehicles/M3_Scout.j3o", 1, Weapon.mg42());
@@ -237,6 +251,8 @@ public class CharacterLoader {
             loadedCharacter = loadAmoredCar(c.getId(), location, rotation, country, null, b);
         }else if(CharacterType.HALF_TRACK == c.getType()){
             loadedCharacter = loadHalfTrack(c.getId(), location, rotation, country, null, b);
+        }else if(CharacterType.PANZER4 == c.getType()){
+            loadedCharacter = loadPanzer4(c.getId(), location, rotation, country, null, b);
         }else if(CharacterType.AVATAR == c.getType() && avatarId.equals(c.getId())){
             final Rank r = Rank.valueOf(c.getRank().name());
             loadedCharacter = loadAvatar(c.getId(), location, rotation, country.getModel(weapon, r), country, null, hud, r);
