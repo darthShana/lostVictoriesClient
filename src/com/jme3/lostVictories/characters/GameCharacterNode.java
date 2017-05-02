@@ -137,6 +137,7 @@ public abstract class GameCharacterNode<T extends GameCharacterControl> extends 
         }
                 
         geometry.setLocalScale(m.getModelScale());
+        geometry.setLocalTranslation(m.getModelTranslation());
         characterNode.attachChild(geometry);
         Cylinder b= new Cylinder(6, 6, .25f, 1.85f, true);       
         shell = new Geometry("shell", b);

@@ -39,7 +39,7 @@ public class BetterVehicleControl extends VehicleControl implements GameCharacte
 
 
     public BetterVehicleControl(int mass, GameVehicleNode vehicleNode, VehicleBlenderModel blenderModel, AssetManager assetManager) {
-        super(getShape(blenderModel.getModelBounds()), mass);
+        super(blenderModel.getPhysicsShape(), mass);
         this.vehicleNode = vehicleNode;
         this.myMass = mass;
         
@@ -66,7 +66,7 @@ public class BetterVehicleControl extends VehicleControl implements GameCharacte
         //Create four wheels and add them at their locations
         Vector3f wheelDirection = new Vector3f(0, -1, 0); // was 0, -1, 0
         Vector3f wheelAxle = new Vector3f(-1, 0, 0); // was -1, 0, 0
-        float radius = 0.5f;
+        float radius = blenderModel.getWheelRadius();;
         float restLength = 0.3f;
 
         Cylinder wheelMesh = new Cylinder(16, 16, radius, radius * 0.6f, true);
@@ -107,12 +107,6 @@ public class BetterVehicleControl extends VehicleControl implements GameCharacte
     
     
     
-    private static CollisionShape getShape(Vector3f dimensions) {
-        CompoundCollisionShape compoundShape = new CompoundCollisionShape();
-        BoxCollisionShape box = new BoxCollisionShape(new Vector3f(dimensions.x, dimensions.y, dimensions.z));
-        compoundShape.addChildShape(box, new Vector3f(0, 1, 0));
-        return compoundShape;
-    }
 
     public void warp(Vector3f location) {
         setPhysicsLocation(location);

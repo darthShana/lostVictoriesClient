@@ -6,6 +6,9 @@ package com.jme3.lostVictories.characters.blenderModels;
 
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.LoopMode;
+import com.jme3.bullet.collision.shapes.BoxCollisionShape;
+import com.jme3.bullet.collision.shapes.CollisionShape;
+import com.jme3.bullet.collision.shapes.CompoundCollisionShape;
 import com.jme3.lostVictories.characters.GameAnimChannel;
 import com.jme3.lostVictories.characters.weapons.Weapon;
 import com.jme3.math.Vector3f;
@@ -21,7 +24,7 @@ import java.util.List;
 public class Panzer4BlenderModel extends VehicleBlenderModel{
     private static Vector3f muzzelLocation = new Vector3f(0f, 2.9f, 1.4f);
     private static Vector3f operatorTranslation = new Vector3f(0, 1.55f, -1f);
-    private static Vector3f modelBounds = new Vector3f(1.65f, .75f, 3.5f);
+    private static Vector3f modelBounds = new Vector3f(2f, 1f, 3.8f);
     private static Vector3f bustTranslation = new Vector3f(0, -1.5f, -7.5f);
 
     public Panzer4BlenderModel(String modelPath, float walkSpeed, Weapon weapon) {
@@ -48,10 +51,10 @@ public class Panzer4BlenderModel extends VehicleBlenderModel{
         return operatorTranslation;
     }    
 
-    @Override
-    public Vector3f getModelBounds() {
-        return modelBounds;
-    }
+//    @Override
+//    public Vector3f getModelBounds() {
+//        return modelBounds;
+//    }
     
     @Override
     public Vector3f getBustTranslation() {
@@ -65,8 +68,15 @@ public class Panzer4BlenderModel extends VehicleBlenderModel{
 
     @Override
     public float getModelScale() {
-        return 2.5f;
+        return 3;
     }
+
+    @Override
+    public float getWheelRadius() {
+        return 0.75f;
+    }
+    
+    
 
     @Override
     public String getOperatorIdleAnimation() {
@@ -94,19 +104,40 @@ public class Panzer4BlenderModel extends VehicleBlenderModel{
     
     @Override
     public List<Vector3f> getFrontWheels() {
-        float radius = 0.5f;
-        List<Vector3f> ret = new ArrayList<Vector3f>();        
-        ret.add(new Vector3f(getModelBounds().x-(radius * 0.6f), 0.5f, getModelBounds().z-(radius*2)));
-        ret.add(new Vector3f(-getModelBounds().x+(radius * 0.6f), 0.5f, getModelBounds().z-(radius*2)));
+        List<Vector3f> ret = new ArrayList<>();        
+        ret.add(new Vector3f(modelBounds.x-(getWheelRadius() * 0.6f), 0.25f, modelBounds.z-(getWheelRadius()*.5f)));
+        ret.add(new Vector3f(-modelBounds.x+(getWheelRadius() * 0.6f), 0.25f, modelBounds.z-(getWheelRadius()*.5f)));
+        ret.add(new Vector3f(modelBounds.x-(getWheelRadius() * 0.6f), 0.25f, 0));
+        ret.add(new Vector3f(-modelBounds.x+(getWheelRadius() * 0.6f), 0.25f, 0));
         return ret;
     }
 
     @Override
     public List<Vector3f> getBackWheels() {
-        float radius = 0.5f;
-        List<Vector3f> ret = new ArrayList<Vector3f>();        
-        ret.add(new Vector3f(getModelBounds().x-(radius * 0.6f), 0.5f, -getModelBounds().z+(radius*2)));
-        ret.add(new Vector3f(-getModelBounds().x+(radius * 0.6f), 0.5f, -getModelBounds().z+(radius*2)));
+        List<Vector3f> ret = new ArrayList<>();        
+        
+        ret.add(new Vector3f(modelBounds.x-(getWheelRadius() * 0.6f), 0.25f, -modelBounds.z+(getWheelRadius()*.5f)));
+        ret.add(new Vector3f(-modelBounds.x+(getWheelRadius() * 0.6f), 0.25f, -modelBounds.z+(getWheelRadius()*.5f)));
         return ret;
+    }
+
+    @Override
+    public Vector3f getModelTranslation() {
+        return new Vector3f(0, -.5f, 0);
+    }
+    
+    
+    
+    @Override
+    public CollisionShape getPhysicsShape() {
+        CompoundCollisionShape compoundShape = new CompoundCollisionShape();
+        BoxCollisionShape chasis = new BoxCollisionShape(new Vector3f(modelBounds.x, modelBounds.y, modelBounds.z));
+        compoundShape.addChildShape(chasis, new Vector3f(0, 1f, 0));
+        BoxCollisionShape turret = new BoxCollisionShape(new Vector3f(modelBounds.x/2, .5f, modelBounds.z/2));
+        compoundShape.addChildShape(turret, new Vector3f(0, 2.5f, 0));
+        BoxCollisionShape barrel = new BoxCollisionShape(new Vector3f(.1f, .1f, 3.4f));
+        compoundShape.addChildShape(barrel, new Vector3f(0, 2.5f, modelBounds.z/2));
+        
+        return compoundShape;
     }
 }

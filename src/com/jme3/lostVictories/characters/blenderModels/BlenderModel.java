@@ -207,9 +207,9 @@ public abstract class BlenderModel {
         return weapon.getName()+"_idleAction";
     }
 
-    public Vector3f getModelBounds() {
-        return new Vector3f(1, 1, 1);
-    }
+//    public Vector3f getModelBounds() {
+//        return new Vector3f(1, 1, 1);
+//    }
   
     public void dropDetachableWeapons(Node geometry) {
         Weapon.rifle().removeUnusedWeapons(geometry);
@@ -217,6 +217,10 @@ public abstract class BlenderModel {
 
     public Vector3f getBustTranslation() {
         return bustTranslation;
+    }
+
+    public Vector3f getModelTranslation() {
+        return Vector3f.ZERO;
     }
 
 }

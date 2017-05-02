@@ -169,7 +169,6 @@ public class CharacterLoader {
     private GameVehicleNode loadPanzer4(UUID id, Vector3f position, Vector3f rotation, Country country, CommandingOfficer commandingOfficer, BehaviorControler behaviorControler) {
         final Panzer4BlenderModel panzer4BlenderModel = new Panzer4BlenderModel("Models/Vehicles/PanzerIV.j3o", 1, Weapon.cannon());
         Node vehicle =  getModel(panzer4BlenderModel);
-        System.out.println("in here loading panzer");
         
         final GameVehicleNode v = new MediumTankNode(id, vehicle, getOperators(), country, commandingOfficer, position, rotation, rootNode, bulletAppState, pf.getCharacterParticleEmitters(), particleManager, pathFinder, assetManager, panzer4BlenderModel, behaviorControler, app.getCamera());
         if(commandingOfficer!=null){

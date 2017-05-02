@@ -238,7 +238,7 @@ public abstract class GameVehicleNode extends AICharacterNode<BetterVehicleContr
     
     public void stop(){
         if(!model.isAboutToFire(channel.getAnimationName())){
-            channel.setAnim("mg42_standByAction", LoopMode.DontLoop);
+            channel.setAnim(model.getIdleAnimation(), LoopMode.DontLoop);
         }
     }
 

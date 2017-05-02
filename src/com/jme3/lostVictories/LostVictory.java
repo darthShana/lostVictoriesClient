@@ -91,7 +91,7 @@ public class LostVictory extends SimpleApplication implements ActionListener {
             serverIP = env.get("server_ip");
             if(playerID==null){
                playerID = "2fbe421f-f701-49c9-a0d4-abb0fa904204"; //german
-               //playerID = "d993932f-a185-4a6f-8d86-4ef6e2c5ff95"; //american 1
+//               playerID = "d993932f-a185-4a6f-8d86-4ef6e2c5ff95"; //american 1
                //playerID = "844fd93d-e65a-438a-82c5-dab9ad58e854"; //american 2
             }
             if(serverIP == null){
@@ -139,7 +139,7 @@ public class LostVictory extends SimpleApplication implements ActionListener {
         bulletAppState = new BulletAppState();
         bulletAppState.setThreadingType(BulletAppState.ThreadingType.PARALLEL);
         stateManager.attach(bulletAppState);
-//        bulletAppState.getPhysicsSpace().enableDebug(assetManager);
+//        bulletAppState.setDebugEnabled(true);
         bulletAppState.getPhysicsSpace().addCollisionGroupListener(new VehicleCOllisionListener(), PhysicsCollisionObject.COLLISION_GROUP_01);
         viewPort.setBackgroundColor(new ColorRGBA(0.7f, 0.8f, 1f, 1f));
         
