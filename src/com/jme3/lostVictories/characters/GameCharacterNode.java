@@ -226,7 +226,7 @@ public abstract class GameCharacterNode<T extends GameCharacterControl> extends 
                 aimingDirections.add(target.subtract(aimingPosition));
             }
         }
-
+        
         if(!model.isAlreadyFiring(channel) && model.isReadyToShoot(channel, getPlayerDirection(), aimingDirections.get(0))){
             model.startFiringSequence(channel);
             fire(aimingPosition, aimingDirections.toArray(new Vector3f[]{}));
@@ -281,7 +281,7 @@ public abstract class GameCharacterNode<T extends GameCharacterControl> extends 
             }catch(Throwable e){}
             
             if(!rays.isEmpty()){
-                model.doPostSetupEffect(smokeTrail, particleManager, getLocalTranslation(), getPlayerDirection(), rays, collitionLifes);
+                model.doPostSetupEffect(smokeTrail, particleManager, this, getPlayerDirection(), rays, collitionLifes);
             }
             if(isControledLocaly()){
                 for(CollisionResult result:results){
@@ -341,7 +341,7 @@ public abstract class GameCharacterNode<T extends GameCharacterControl> extends 
     }
 
     public Set<UUID> doBlastDamage(Vector3f blast) {
-        Set<UUID> kk = new HashSet<UUID>();
+        Set<UUID> kk = new HashSet<>();
         for(GameCharacterNode victim: WorldMap.get().getCharactersInBlastRange(blast)){
             if(victim.takeLightBlast(this)){
                 kk.add(victim.identity);

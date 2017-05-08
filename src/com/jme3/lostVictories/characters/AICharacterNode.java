@@ -7,7 +7,6 @@ package com.jme3.lostVictories.characters;
 
 import com.jme3.lostVictories.characters.blenderModels.BlenderModel;
 import com.jme3.lostVictories.objectives.Objective;
-import com.jme3.ai.navmesh.NavMeshPathfinder;
 import com.jme3.ai.navmesh.NavigationProvider;
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.BulletAppState;

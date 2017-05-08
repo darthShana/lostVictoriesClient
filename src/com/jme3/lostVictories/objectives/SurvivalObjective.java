@@ -109,7 +109,7 @@ class SurvivalObjective extends Objective<AICharacterNode> implements PassiveObj
             if (character.hasProjectileWeapon()) {
                 return new BombardTargetsAction(confirmedTargets);
             } else {
-                return new ShootTargetsAction(character.getPlayerDirection(), confirmedTargets);
+                return new ShootTargetsAction(confirmedTargets);
             }
         }
                 

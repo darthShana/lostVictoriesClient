@@ -98,10 +98,12 @@ public class BetterVehicleControl extends VehicleControl implements GameCharacte
     @Override
     public void update(float tpf) {
         super.update(tpf);
-        if(!gravitybreakOn && isBreaking && getCurrentVehicleSpeedKmHour()<1){
+        
+        if(!gravitybreakOn && isBreaking && Math.abs(getCurrentVehicleSpeedKmHour())<.5){
             gravitybreakOn = true;
             isBreaking = false;
-            setMass(0);            
+            setMass(0); 
+            
         }
     }
     
@@ -177,32 +179,35 @@ public class BetterVehicleControl extends VehicleControl implements GameCharacte
         disengageGravityBreak();
         brake(0);
         accelerate(vehicleNode.getEnginePower());
+        isBreaking = false;
         
     }
     
     public void turboBoost() {
         disengageGravityBreak();
         brake(0);
-        accelerate(vehicleNode.getEnginePower()*2.5f);        
+        accelerate(vehicleNode.getEnginePower()*2.5f);  
+        isBreaking = false;
     }
 
     public void backward() {
         disengageGravityBreak();
         brake(0);
         accelerate(-vehicleNode.getEnginePower());
-        
+        isBreaking = false;
     }
     
     public void neutral() {
         accelerate(0);
+        isBreaking = true;
         brake(50);
     }
 
     void disengageGravityBreak() {
-        isBreaking = false;
         if(gravitybreakOn){
             gravitybreakOn = false;
             setMass(myMass);
+            //System.out.println("disengaging gravity break:"+vehicleNode.getIdentity());
         }
     }
 

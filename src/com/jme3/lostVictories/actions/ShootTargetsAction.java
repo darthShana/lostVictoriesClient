@@ -18,13 +18,11 @@ import java.util.Set;
  * @author dharshanar
  */
 public class ShootTargetsAction implements AIAction<AICharacterNode> {
-    private final Vector3f targetDirection;
     private final Set<GameCharacterNode> targets;
     Vector3f[] shoots = null;
 
-    public ShootTargetsAction(Vector3f target, Set<GameCharacterNode> targets) {
-        this.targetDirection = target;
-        this.targets = targets;   
+    public ShootTargetsAction(Set<GameCharacterNode> targets) {
+        this.targets = targets;
     }
 
 
@@ -34,9 +32,14 @@ public class ShootTargetsAction implements AIAction<AICharacterNode> {
             character.shoot(shoots);
             return false;
         }
+        
+        if(targets.isEmpty()){
+            return true;
+        }
+        final Vector3f initial = targets.iterator().next().getPlayerDirection();
                 
-        Vector3f clock = new Vector3f(character.getShootingLocation().add(targetDirection));
-        Vector3f counterClock = new Vector3f(character.getShootingLocation().add(targetDirection));
+        Vector3f clock = new Vector3f(character.getShootingLocation().add(initial));
+        Vector3f counterClock = new Vector3f(character.getShootingLocation().add(initial));
         
         Vector2f shooter = new Vector2f(character.getLocalTranslation().x, -character.getLocalTranslation().z);
         
