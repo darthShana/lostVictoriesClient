@@ -77,23 +77,28 @@ public class NetworkClientAppState extends AbstractAppState {
         try{
             if(!toUpdate.isEmpty()){
                 networkClient.updateLocalCharacters(toUpdate, (app.avatar!=null)?app.avatar.getIdentity():null, clientStartTime);
+                toUpdate.forEach(cm->lastSent.put(cm.getId(), cm));
             }
         }catch(Throwable e){
             e.printStackTrace();
         }
         
-        toUpdate.forEach(cm->lastSent.put(cm.getId(), cm));
+        
             
     }
 
     Set<CharacterMessage> filterCharactersToSend(Set<GameCharacterNode> charactersInRange) {
         Set<CharacterMessage> toUpdate = charactersInRange.parallelStream()
                 .filter(hc->{
-                    return !lastSent.containsKey(hc.getIdentity()) || lastSent.get(hc.getIdentity()).isOlderVersion(hc.getVersion()) || !lastSent.get(hc.getIdentity()).hasBeenSentRecently(hc.getVersion());
+                    return !lastSent.containsKey(hc.getIdentity()) || 
+                           lastSent.get(hc.getIdentity()).isOlderVersion(hc.getVersion()) || 
+                           !lastSent.get(hc.getIdentity()).hasBeenSentRecently(hc.getVersion());
                 })
                 .map(c->c.toMessage())
                 .filter(m->{
-                    return !lastSent.containsKey(m.getId()) || !m.equals(lastSent.get(m.getId())) || !lastSent.get(m.getId()).hasBeenSentRecently(m.getVersion());
+                    return !lastSent.containsKey(m.getId()) || 
+                           !m.equals(lastSent.get(m.getId())) || 
+                           !lastSent.get(m.getId()).hasBeenSentRecently(m.getVersion());
                 })
                 .collect(Collectors.toSet());
         
