@@ -50,7 +50,6 @@ public class CharacterMessage implements Serializable{
     long version;
     int killCount;
     SquadType squadType;
-    @JsonIgnore
     long creationTime;
     boolean busy;
     boolean attacking;
