@@ -169,8 +169,9 @@ public class CharacterLoader {
     private GameVehicleNode loadPanzer4(UUID id, Vector3f position, Vector3f rotation, Country country, CommandingOfficer commandingOfficer, BehaviorControler behaviorControler) {
         final Panzer4BlenderModel panzer4BlenderModel = new Panzer4BlenderModel("Models/Vehicles/PanzerIV.j3o", 1, Weapon.cannon());
         Node vehicle =  getModel(panzer4BlenderModel);
-        
-        final GameVehicleNode v = new MediumTankNode(id, vehicle, getOperators(), country, commandingOfficer, position, rotation, rootNode, bulletAppState, pf.getCharacterParticleEmitters(), particleManager, pathFinder, assetManager, panzer4BlenderModel, behaviorControler, app.getCamera());
+        Node turret = (Node) assetManager.loadModel("Models/Vehicles/PanzerIV.j3o");
+        turret.setLocalScale(panzer4BlenderModel.getModelScale());
+        final GameVehicleNode v = new MediumTankNode(id, vehicle, turret, getOperators(), country, commandingOfficer, position, rotation, rootNode, bulletAppState, pf.getCharacterParticleEmitters(), particleManager, pathFinder, assetManager, panzer4BlenderModel, behaviorControler, app.getCamera());
         if(commandingOfficer!=null){
             commandingOfficer.addCharactersUnderCommand(new HashSet<Commandable>(){{add(v);}});
         }
@@ -227,7 +228,7 @@ public class CharacterLoader {
     }
 
     protected Node getModel(BlenderModel model) {        
-        final Node clone = loadFromCache(model);
+        final Node clone = load(model);
         
         
         return clone;
@@ -304,7 +305,7 @@ public class CharacterLoader {
         return operatorMap;
     }
 
-    protected Node loadFromCache(BlenderModel model) {
+    protected Node load(BlenderModel model) {
             return (Node) assetManager.loadModel(model.getModelPath());
     }
 

@@ -2,8 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.jme3.lostVictories.characters;
+package com.jme3.lostVictories.characters.physicsControl;
 
+import com.jme3.lostVictories.characters.physicsControl.GameCharacterControl;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.collision.PhysicsRayTestResult;

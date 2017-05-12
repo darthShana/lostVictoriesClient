@@ -5,6 +5,7 @@
 package com.jme3.lostVictories.characters;
 
 
+import com.jme3.lostVictories.characters.physicsControl.GameCharacterControl;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.jme3.lostVictories.characters.blenderModels.BlenderModel;
 import com.jme3.lostVictories.objectives.Objective;

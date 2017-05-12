@@ -24,7 +24,7 @@ import java.util.List;
 public class Panzer4BlenderModel extends VehicleBlenderModel{
     private static Vector3f muzzelLocation = new Vector3f(0f, 2.9f, 1.4f);
     private static Vector3f operatorTranslation = new Vector3f(0, 1.55f, -1f);
-    private static Vector3f modelBounds = new Vector3f(2f, 1f, 3.8f);
+    private static Vector3f modelBounds = new Vector3f(2f, .75f, 3.8f);
     private static Vector3f bustTranslation = new Vector3f(0, -1.5f, -7.5f);
 
     public Panzer4BlenderModel(String modelPath, float walkSpeed, Weapon weapon) {
@@ -105,10 +105,10 @@ public class Panzer4BlenderModel extends VehicleBlenderModel{
     @Override
     public List<Vector3f> getFrontWheels() {
         List<Vector3f> ret = new ArrayList<>();        
-        ret.add(new Vector3f(modelBounds.x-(getWheelRadius() * 0.6f), 0.25f, modelBounds.z-(getWheelRadius()*.5f)));
-        ret.add(new Vector3f(-modelBounds.x+(getWheelRadius() * 0.6f), 0.25f, modelBounds.z-(getWheelRadius()*.5f)));
-        ret.add(new Vector3f(modelBounds.x-(getWheelRadius() * 0.6f), 0.25f, 0));
-        ret.add(new Vector3f(-modelBounds.x+(getWheelRadius() * 0.6f), 0.25f, 0));
+        ret.add(new Vector3f(modelBounds.x-(getWheelRadius() * 0.6f), 0.5f, modelBounds.z-(getWheelRadius()*.5f)));
+        ret.add(new Vector3f(-modelBounds.x+(getWheelRadius() * 0.6f), 0.5f, modelBounds.z-(getWheelRadius()*.5f)));
+        ret.add(new Vector3f(modelBounds.x-(getWheelRadius() * 0.6f), 0.5f, 0));
+        ret.add(new Vector3f(-modelBounds.x+(getWheelRadius() * 0.6f), 0.5f, 0));
         return ret;
     }
 
@@ -116,8 +116,8 @@ public class Panzer4BlenderModel extends VehicleBlenderModel{
     public List<Vector3f> getBackWheels() {
         List<Vector3f> ret = new ArrayList<>();        
         
-        ret.add(new Vector3f(modelBounds.x-(getWheelRadius() * 0.6f), 0.25f, -modelBounds.z+(getWheelRadius()*.5f)));
-        ret.add(new Vector3f(-modelBounds.x+(getWheelRadius() * 0.6f), 0.25f, -modelBounds.z+(getWheelRadius()*.5f)));
+        ret.add(new Vector3f(modelBounds.x-(getWheelRadius() * 0.6f), 0.5f, -modelBounds.z+(getWheelRadius()*.5f)));
+        ret.add(new Vector3f(-modelBounds.x+(getWheelRadius() * 0.6f), 0.5f, -modelBounds.z+(getWheelRadius()*.5f)));
         return ret;
     }
 
@@ -132,12 +132,16 @@ public class Panzer4BlenderModel extends VehicleBlenderModel{
     public CollisionShape getPhysicsShape() {
         CompoundCollisionShape compoundShape = new CompoundCollisionShape();
         BoxCollisionShape chasis = new BoxCollisionShape(new Vector3f(modelBounds.x, modelBounds.y, modelBounds.z));
-        compoundShape.addChildShape(chasis, new Vector3f(0, 1f, 0));
+        compoundShape.addChildShape(chasis, new Vector3f(0, 1f, 0));        
+        return compoundShape;
+    }
+
+    public CollisionShape getTurretShape() {
+        CompoundCollisionShape compoundShape = new CompoundCollisionShape();
         BoxCollisionShape turret = new BoxCollisionShape(new Vector3f(modelBounds.x/2, .5f, modelBounds.z/2));
         compoundShape.addChildShape(turret, new Vector3f(0, 2.5f, 0));
         BoxCollisionShape barrel = new BoxCollisionShape(new Vector3f(.1f, .1f, 3.4f));
         compoundShape.addChildShape(barrel, new Vector3f(0, 2.5f, modelBounds.z/2));
-        
         return compoundShape;
     }
 }

@@ -4,6 +4,7 @@
  */
 package com.jme3.lostVictories.characters;
 
+import com.jme3.lostVictories.characters.physicsControl.BetterVehicleControl;
 import com.jme3.lostVictories.WorldMap;
 import com.jme3.lostVictories.actions.AutoDriveAction;
 import static com.jme3.lostVictories.actions.DriveAction.qLeft;

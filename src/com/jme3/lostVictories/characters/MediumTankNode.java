@@ -5,16 +5,20 @@
  */
 package com.jme3.lostVictories.characters;
 
+import com.jme3.lostVictories.characters.physicsControl.BetterVehicleControl;
 import com.jme3.ai.navmesh.NavigationProvider;
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.lostVictories.CharcterParticleEmitter;
 import com.jme3.lostVictories.Country;
+import com.jme3.lostVictories.characters.blenderModels.Panzer4BlenderModel;
 import com.jme3.lostVictories.characters.blenderModels.VehicleBlenderModel;
+import com.jme3.lostVictories.characters.physicsControl.BetterTankControl;
 import com.jme3.lostVictories.effects.ParticleManager;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 import java.util.Map;
 import java.util.UUID;
 
@@ -24,9 +28,22 @@ import java.util.UUID;
  */
 public class MediumTankNode extends GameVehicleNode{
 
-    public MediumTankNode(UUID id, Node model, Map<Country, Node> operator, Country country, CommandingOfficer commandingOfficer, Vector3f worldCoodinates, Vector3f rotation, Node rootNode, BulletAppState bulletAppState, CharcterParticleEmitter emitter, ParticleManager particleManager, NavigationProvider pathFinder, AssetManager assetManager, VehicleBlenderModel m, BehaviorControler behaviorControler, Camera camera) {
-        super(id, model, operator, country, commandingOfficer, worldCoodinates, rotation, rootNode, bulletAppState, emitter, particleManager, pathFinder, assetManager, m, behaviorControler, camera);
+    private final Node turretModel;
+
+
+    public MediumTankNode(UUID id, Node chassisModel, Node turretModel, Map<Country, Node> operator, Country country, CommandingOfficer commandingOfficer, Vector3f worldCoodinates, Vector3f rotation, Node rootNode, BulletAppState bulletAppState, CharcterParticleEmitter emitter, ParticleManager particleManager, NavigationProvider pathFinder, AssetManager assetManager, VehicleBlenderModel m, BehaviorControler behaviorControler, Camera camera) {
+        super(id, chassisModel, operator, country, commandingOfficer, worldCoodinates, rotation, rootNode, bulletAppState, emitter, particleManager, pathFinder, assetManager, m, behaviorControler, camera);
+        this.turretModel = turretModel;
     }
+
+    @Override
+    public void attachToRootNode() {
+        super.attachToRootNode();
+        ((BetterTankControl)playerControl).addTurret(this, turretModel);
+
+    }
+    
+    
 
     @Override
     public Vector3f getPositionToTarget(GameCharacterNode targetedBy) {
@@ -55,7 +72,7 @@ public class MediumTankNode extends GameVehicleNode{
 
     @Override
     protected BetterVehicleControl createCharacterControl(AssetManager manager) {
-        return new BetterVehicleControl(2000, this, (VehicleBlenderModel)model, manager);
+        return new BetterTankControl(2000, this, (Panzer4BlenderModel)model, manager, bulletAppState);
     }
     
 }

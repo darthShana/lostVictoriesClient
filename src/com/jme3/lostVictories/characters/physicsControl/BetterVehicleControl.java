@@ -3,8 +3,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.jme3.lostVictories.characters;
+package com.jme3.lostVictories.characters.physicsControl;
 
+import com.jme3.lostVictories.characters.physicsControl.GameCharacterControl;
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
@@ -13,6 +14,7 @@ import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.collision.shapes.CompoundCollisionShape;
 import com.jme3.bullet.control.VehicleControl;
 import com.jme3.lostVictories.WorldMap;
+import com.jme3.lostVictories.characters.GameVehicleNode;
 import com.jme3.lostVictories.characters.blenderModels.VehicleBlenderModel;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState;
@@ -33,9 +35,9 @@ public class BetterVehicleControl extends VehicleControl implements GameCharacte
     
     private float steeringValue = 0;
     private final GameVehicleNode vehicleNode;
-    private boolean gravitybreakOn;
-    private boolean isBreaking;
-    private final int myMass;
+    protected boolean gravitybreakOn;
+    protected boolean isBreaking;
+    protected final int myMass;
 
 
     public BetterVehicleControl(int mass, GameVehicleNode vehicleNode, VehicleBlenderModel blenderModel, AssetManager assetManager) {
@@ -203,7 +205,7 @@ public class BetterVehicleControl extends VehicleControl implements GameCharacte
         brake(50);
     }
 
-    void disengageGravityBreak() {
+    public void disengageGravityBreak() {
         if(gravitybreakOn){
             gravitybreakOn = false;
             setMass(myMass);
