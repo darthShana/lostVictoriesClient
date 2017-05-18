@@ -1,14 +1,12 @@
 Material MyMaterial : Common/MatDefs/Light/Lighting.j3md {
     MaterialParameters {
         DiffuseMap : Flip Repeat Models/Vehicles/textures/PanzerChain.jpg
-        Minnaert : false
         Specular : 1.0 1.0 1.0 1.0
         Diffuse : 1.0 1.0 1.0 1.0
         UseMaterialColors : false
         ParallaxHeight : 0.05
         Ambient : 1 1 1 1
-        Shininess : 20.0
-        WardIso : false
+        Shininess : 0.0
     }
     AdditionalRenderState {
       FaceCull Back
