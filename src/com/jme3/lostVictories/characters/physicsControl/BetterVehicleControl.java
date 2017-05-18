@@ -101,7 +101,7 @@ public class BetterVehicleControl extends VehicleControl implements GameCharacte
     public void update(float tpf) {
         super.update(tpf);
         
-        if(!gravitybreakOn && isBreaking && Math.abs(getCurrentVehicleSpeedKmHour())<.5){
+        if(!gravitybreakOn && isBreaking && Math.abs(getCurrentVehicleSpeedKmHour())<.5 && !vehicleOperationInProgress()){
             gravitybreakOn = true;
             isBreaking = false;
             setMass(0); 
@@ -211,6 +211,10 @@ public class BetterVehicleControl extends VehicleControl implements GameCharacte
             setMass(myMass);
             //System.out.println("disengaging gravity break:"+vehicleNode.getIdentity());
         }
+    }
+
+    protected boolean vehicleOperationInProgress() {
+        return false;
     }
 
 

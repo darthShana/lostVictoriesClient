@@ -74,5 +74,17 @@ public class MediumTankNode extends GameVehicleNode{
     protected BetterVehicleControl createCharacterControl(AssetManager manager) {
         return new BetterTankControl(2000, this, (Panzer4BlenderModel)model, manager, bulletAppState);
     }
+
+    public void trretLeft() {
+        ((BetterTankControl)playerControl).turretLeft();
+    }
+
+    public void stopTurret() {
+        ((BetterTankControl)playerControl).turretStop();
+    }
+
+    public void trretRight() {
+        ((BetterTankControl)playerControl).turretRight();
+    }
     
 }
