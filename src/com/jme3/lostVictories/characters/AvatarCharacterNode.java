@@ -5,6 +5,7 @@
 package com.jme3.lostVictories.characters;
 
 
+import com.jme3.lostVictories.characters.physicsControl.BetterSoldierControl;
 import com.jme3.lostVictories.characters.blenderModels.BlenderModel;
 import com.jme3.lostVictories.objectives.Objective;
 import com.jme3.ai.navmesh.DebugInfo;

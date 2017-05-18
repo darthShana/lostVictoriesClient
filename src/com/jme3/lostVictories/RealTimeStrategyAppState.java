@@ -28,6 +28,7 @@ import com.jme3.lostVictories.characters.CadetCorporal;
 import com.jme3.lostVictories.characters.Commandable;
 import com.jme3.lostVictories.characters.GameCharacterNode;
 import com.jme3.lostVictories.characters.GameVehicleNode;
+import com.jme3.lostVictories.characters.MediumTankNode;
 import com.jme3.lostVictories.characters.Private;
 import com.jme3.lostVictories.structures.Pickable;
 import com.jme3.material.Material;
@@ -180,6 +181,10 @@ public class RealTimeStrategyAppState extends AbstractAppState implements Action
         app.getInputManager().addListener(this, "disembark");
         app.getInputManager().addMapping("crouch", new KeyTrigger(KeyInput.KEY_S));
         app.getInputManager().addListener(this, "crouch");
+        app.getInputManager().addMapping("turretLeft", new KeyTrigger(KeyInput.KEY_K));
+        app.getInputManager().addListener(this, "turretLeft");
+        app.getInputManager().addMapping("turretRight", new KeyTrigger(KeyInput.KEY_L));
+        app.getInputManager().addListener(this, "turretRight");
         app.getInputManager().addMapping("action", new MouseButtonTrigger(MouseInput.BUTTON_RIGHT));
         app.getInputManager().addListener(this, "action");
         app.getInputManager().addMapping("pick", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
@@ -218,6 +223,8 @@ public class RealTimeStrategyAppState extends AbstractAppState implements Action
         app.getInputManager().deleteMapping("crouch");
         app.getInputManager().deleteMapping("action");
         app.getInputManager().deleteMapping("pick");
+        app.getInputManager().deleteMapping("turretLeft");
+        app.getInputManager().deleteMapping("turretRight");
         
         app.getInputManager().removeListener(this);
     }
@@ -276,6 +283,22 @@ public class RealTimeStrategyAppState extends AbstractAppState implements Action
                 avatar.crouch(avatar);
             }else{
                 avatar.stand(avatar);
+            }
+        }
+        if (name.equals("turretLeft")) {
+            if(boardedVehicle instanceof MediumTankNode)
+            if(isPressed){
+                ((MediumTankNode)boardedVehicle).trretLeft();
+            }else{
+                ((MediumTankNode)boardedVehicle).stopTurret();
+            }
+        }
+        if (name.equals("turretRight")) {
+           if(boardedVehicle instanceof MediumTankNode)
+            if(isPressed){
+                ((MediumTankNode)boardedVehicle).trretRight();
+            }else{
+                ((MediumTankNode)boardedVehicle).stopTurret();
             }
         }
         

@@ -4,7 +4,7 @@
  */
 package com.jme3.lostVictories.actions;
 
-import com.jme3.lostVictories.characters.BetterVehicleControl;
+import com.jme3.lostVictories.characters.physicsControl.BetterVehicleControl;
 import com.jme3.lostVictories.characters.GameAnimChannel;
 import com.jme3.lostVictories.characters.GameVehicleNode;
 import com.jme3.math.FastMath;

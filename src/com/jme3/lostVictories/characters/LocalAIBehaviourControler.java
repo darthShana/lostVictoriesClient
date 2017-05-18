@@ -5,7 +5,6 @@
 package com.jme3.lostVictories.characters;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.jme3.ai.navmesh.NavMeshPathfinder;
 import com.jme3.ai.navmesh.NavigationProvider;
 import com.jme3.lostVictories.WorldMap;
 import com.jme3.lostVictories.actions.AIAction;
@@ -16,7 +15,9 @@ import com.jme3.scene.Node;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -28,29 +29,34 @@ import java.util.concurrent.PriorityBlockingQueue;
  */
 public class LocalAIBehaviourControler implements BehaviorControler{
 
-    PriorityBlockingQueue<AIAction> aiActions = new PriorityBlockingQueue<AIAction>(1, new ActionComparator());
-    Objectives objectives = new Objectives<Soldier>();
-    private Set<UUID> recivedObjectives = new HashSet<UUID>();
+    PriorityBlockingQueue<AIAction> aiActions = new PriorityBlockingQueue<>(1, new ActionComparator());
+    Objectives objectives = new Objectives<>();
+    private final Set<UUID> recivedObjectives = new HashSet<>();
 
+    @Override
     public void doActions(AICharacterNode character, Node rootNode, GameAnimChannel channel, float tpf) {
         if(character.getBoardedVehicle()!=null){
             return;
         }
-        AIAction action = aiActions.peek();
+        List<AIAction> toReadd = new ArrayList();
+        AIAction action = aiActions.poll();
         if(action!=null){
-            if(action.doAction(character, rootNode, channel, tpf)){
-                aiActions.poll();
-            }
-        }
-        action = aiActions.peek();
-        if(action!=null){
-            if(action.doAction(character, rootNode, channel, tpf)){
-                aiActions.poll();
+            if(!action.doAction(character, rootNode, channel, tpf)){
+                toReadd.add(action);
             }
         }
         
+        action = aiActions.poll();
+        if(action!=null){
+            if(!action.doAction(character, rootNode, channel, tpf)){
+                toReadd.add(action);
+            }
+        }
+        aiActions.addAll(toReadd);
+        
     }
 
+    @Override
     public void planObjectives(GameCharacterNode character, WorldMap worldMap) {
         aiActions.clear();
         aiActions.addAll(objectives.planObjectives(character, worldMap));
