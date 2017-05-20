@@ -10,6 +10,8 @@ import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.collision.shapes.CompoundCollisionShape;
 import com.jme3.lostVictories.characters.GameAnimChannel;
+import com.jme3.lostVictories.characters.GameCharacterNode;
+import com.jme3.lostVictories.characters.MediumTankNode;
 import com.jme3.lostVictories.characters.weapons.Weapon;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
@@ -22,7 +24,7 @@ import java.util.List;
  * @author dharshanar
  */
 public class Panzer4BlenderModel extends VehicleBlenderModel{
-    private static Vector3f muzzelLocation = new Vector3f(0f, 2.9f, 1.4f);
+    private static Vector3f muzzelLocation = new Vector3f(0f, 2.5f, 5.75f);
     private static Vector3f operatorTranslation = new Vector3f(0, 1.55f, -1f);
     private static Vector3f modelBounds = new Vector3f(2f, .75f, 3.8f);
     private static Vector3f bustTranslation = new Vector3f(0, -1.5f, -7.5f);
@@ -37,8 +39,8 @@ public class Panzer4BlenderModel extends VehicleBlenderModel{
     }
     
     @Override
-    public boolean isReadyToShoot(GameAnimChannel channel, Vector3f playerDirection, Vector3f aimingDirection) {
-        return weapon.isWithinFieldOfVision(playerDirection, aimingDirection);
+    public boolean isReadyToShoot(GameAnimChannel channel, Vector3f aimingDirection, Vector3f targetDirection) {
+        return weapon.isWithinFieldOfVision(aimingDirection, targetDirection.normalize());
     }
 
     @Override
@@ -50,11 +52,6 @@ public class Panzer4BlenderModel extends VehicleBlenderModel{
     public Vector3f getOperatorTranslation() {
         return operatorTranslation;
     }    
-
-//    @Override
-//    public Vector3f getModelBounds() {
-//        return modelBounds;
-//    }
     
     @Override
     public Vector3f getBustTranslation() {

@@ -49,11 +49,11 @@ public abstract class BlenderModel {
         return channel!=null && weapon.isInFiringSequence(channel.getAnimationName());
     }
 
-    public boolean isReadyToShoot(GameAnimChannel channel, Vector3f playerDirection, Vector3f aimingDirection) {
+    public boolean isReadyToShoot(GameAnimChannel channel, Vector3f aimingDirection, Vector3f targetDirection) {
         if("embark_vehicle".equals(channel.getAnimationName())){
             return false;
         }
-        return weapon.isReadyToShoot(channel.getAnimationName(), playerDirection, aimingDirection.normalize());
+        return weapon.isReadyToShoot(channel.getAnimationName(), aimingDirection, targetDirection.normalize());
     }
 
     public void startFiringSequence(GameAnimChannel channel) {
@@ -70,9 +70,9 @@ public abstract class BlenderModel {
         channel.setSpeed(1.5f);        
     }
     
-    public void doPostSetupEffect(ParticleEmitter smokeTrail, ParticleManager particleManager, GameCharacterNode player, Vector3f playerDirection, List<Ray> rays, List<Float> fs) {
+    public void doPostSetupEffect(ParticleEmitter smokeTrail, ParticleManager particleManager, GameCharacterNode player, Vector3f firingDirection, List<Ray> rays, List<Float> fs) {
         Quaternion q = new Quaternion();
-        q.lookAt(playerDirection, Vector3f.UNIT_Y);
+        q.lookAt(firingDirection, Vector3f.UNIT_Y);
         if(Weapon.mg42() == weapon){
             particleManager.playTracerBulletEffect(player, q.mult(getMuzzelLocation()), rays, fs);        
         }else if(Weapon.cannon()== weapon){

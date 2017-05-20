@@ -22,6 +22,7 @@ import static com.jme3.lostVictories.characters.RemoteBehaviourControler.MAPPER;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -35,6 +36,7 @@ class SurvivalObjective extends Objective<AICharacterNode> implements PassiveObj
     public SurvivalObjective() {
     }
 
+    @Override
     public AIAction planObjective(AICharacterNode character, WorldMap worldMap) {
         List<GameCharacterNode> inRange = worldMap.getCharactersInAutoAttackRange(character);
         for(GameCharacterNode other: inRange){
@@ -46,15 +48,20 @@ class SurvivalObjective extends Objective<AICharacterNode> implements PassiveObj
         }
         final Vector3f localTranslation = character.getLocalTranslation();
                 
-        Set<Vector3f> boogies = new HashSet<Vector3f>();
-        Set<Vector3f> vehicleBoogies = new HashSet<Vector3f>();
-        Set<Vector3f> shots = ShotsFiredListener.instance().getShootsFiredInRange(localTranslation, (int)character.getMaxRange(), 5);
-        shots.add(localTranslation.add(character.getPlayerDirection()));
+        Set<Vector3f> boogies = new HashSet<>();
+        Set<Vector3f> vehicleBoogies = new HashSet<>();
+        List<Vector3f> directionsToLook = new ArrayList<>();
+        directionsToLook.add(character.getAimingDirection());
+        ShotsFiredListener.instance().getShootsFiredInRange(localTranslation, (int)character.getMaxRange(), 5).forEach(v->directionsToLook.add(v));
         
         ShootTargetAction shootAction = null;
-        for(Vector3f shot:shots){
-            for(GameCharacterNode other:worldMap.getCharactersInDirection(character, shot.subtract(localTranslation), character.getWeapon().getMaxRange())){                  
+        for(Vector3f shot:directionsToLook){
+            for(GameCharacterNode other:worldMap.getCharactersInDirection(character, shot, character.getWeapon().getMaxRange())){                  
+                if("ce0e6166-7299-4222-9f1a-938cdc9b24cb".equals(character.getIdentity().toString())){
+                    System.out.println("in here test1:"+character.getAimingDirection()+" targetDirections:"+other.getLocalTranslation().subtract(character.getLocalTranslation()).normalize());
+                }
                 if(character.hasClearLOSTo(other)){
+                    
                     shootAction = new ShootTargetAction(other);
                 }
                 if(other instanceof GameVehicleNode){
@@ -68,7 +75,7 @@ class SurvivalObjective extends Objective<AICharacterNode> implements PassiveObj
             character.reportEnemyActivity(boogies, vehicleBoogies);                   
         }else{
             character.clearEnemyActivity();
-        }              
+        }           
         if(shootAction!=null && !character.canShootMultipleTargets() && !character.hasProjectileWeapon()){
             if(character.isFirering()){
                 return null;
@@ -78,7 +85,7 @@ class SurvivalObjective extends Objective<AICharacterNode> implements PassiveObj
         }
         
         boolean debug = false;
-        final List<GameCharacterNode> charactersInDirection = worldMap.getCharactersInDirection(character, character.getPlayerDirection(), character.getWeapon().getMaxRange(), debug);
+        final List<GameCharacterNode> charactersInDirection = worldMap.getCharactersInDirection(character, character.getAimingDirection(), character.getWeapon().getMaxRange(), debug);
         Set<GameCharacterNode> confirmedTargets = new HashSet<GameCharacterNode>();
 
 //        if("8c1bda23-33f9-4843-aae5-f1ceb30d70aa".equals(character.getIdentity().toString())){

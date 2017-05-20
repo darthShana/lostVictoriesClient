@@ -43,8 +43,6 @@ public class MediumTankNode extends GameVehicleNode{
 
     }
     
-    
-
     @Override
     public Vector3f getPositionToTarget(GameCharacterNode targetedBy) {
         return getLocalTranslation().add(new Vector3f(0f, .5f, 0f));
@@ -86,5 +84,12 @@ public class MediumTankNode extends GameVehicleNode{
     public void trretRight() {
         ((BetterTankControl)playerControl).turretRight();
     }
+
+    @Override
+    public Vector3f getAimingDirection() {
+        return ((BetterTankControl)playerControl).getTurretDirection();
+    }
+    
+    
     
 }

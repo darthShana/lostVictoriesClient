@@ -36,10 +36,10 @@ public class ShootTargetsAction implements AIAction<AICharacterNode> {
         if(targets.isEmpty()){
             return true;
         }
-        final Vector3f initial = targets.iterator().next().getPlayerDirection();
+        final Vector3f initial = targets.iterator().next().getPositionToTarget(character);
                 
-        Vector3f clock = new Vector3f(character.getShootingLocation().add(initial));
-        Vector3f counterClock = new Vector3f(character.getShootingLocation().add(initial));
+        Vector3f clock = initial.subtract(character.getShootingLocation());
+        Vector3f counterClock = initial.subtract(character.getShootingLocation());
         
         Vector2f shooter = new Vector2f(character.getLocalTranslation().x, -character.getLocalTranslation().z);
         

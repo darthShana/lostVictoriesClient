@@ -70,7 +70,7 @@ public class AvatarCharacterNode extends GameCharacterNode<BetterSoldierControl>
         this.rank = rank;
         this.hud = hud;
     }
-    
+        
     public void simpleUpate(float tpf, WorldMap map, Node rootNode) {
         Vector3f playerDirection = null;
         
@@ -197,7 +197,7 @@ public class AvatarCharacterNode extends GameCharacterNode<BetterSoldierControl>
         final Vector3f subtract = target.subtract(getLocalTranslation());
         playerControl.setViewDirection(new Vector3f(subtract.x, 0, subtract.z).normalizeLocal());
         
-        if(!model.canShootWithoutSetup() && !model.isReadyToShoot(channel, getPlayerDirection(), target.subtract(getLocalTranslation()))){
+        if(!model.canShootWithoutSetup() && !model.isReadyToShoot(channel, getAimingDirection(), target.subtract(getLocalTranslation()))){
             characterAction.stopForwardMovement();
             characterAction.turn(target , 0.016f);
             characterAction.target(spread);

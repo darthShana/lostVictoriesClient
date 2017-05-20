@@ -163,7 +163,7 @@ public class RealTimeStrategyAppState extends AbstractAppState implements Action
         app.getInputManager().addListener(this, "turnLeft");
         app.getInputManager().addMapping("turnRight", new KeyTrigger(KeyInput.KEY_D));
         app.getInputManager().addListener(this, "turnRight");
-        app.getInputManager().addMapping("Reverse", new KeyTrigger(KeyInput.KEY_Z));
+        app.getInputManager().addMapping("Reverse", new KeyTrigger(KeyInput.KEY_S));
         app.getInputManager().addListener(this, "Reverse");
         app.getInputManager().addMapping("selectAvatar", new KeyTrigger(KeyInput.KEY_1));
         app.getInputManager().addListener(this, "selectAvatar");
@@ -179,7 +179,7 @@ public class RealTimeStrategyAppState extends AbstractAppState implements Action
         app.getInputManager().addListener(this, "fireWeapon");
         app.getInputManager().addMapping("disembark", new KeyTrigger(KeyInput.KEY_E));
         app.getInputManager().addListener(this, "disembark");
-        app.getInputManager().addMapping("crouch", new KeyTrigger(KeyInput.KEY_S));
+        app.getInputManager().addMapping("crouch", new KeyTrigger(KeyInput.KEY_M));
         app.getInputManager().addListener(this, "crouch");
         app.getInputManager().addMapping("turretLeft", new KeyTrigger(KeyInput.KEY_K));
         app.getInputManager().addListener(this, "turretLeft");
@@ -311,7 +311,7 @@ public class RealTimeStrategyAppState extends AbstractAppState implements Action
         if(name.equals("fireWeapon")){
             if(isPressed){
                 GameCharacterNode c = (GameCharacterNode)selectedCharacter;
-                c.shoot(c.getLocalTranslation().add(c.getPlayerDirection().mult(c.getMaxRange())));
+                c.shoot(c.getLocalTranslation().add(c.getAimingDirection().mult(c.getMaxRange())));
 
             }
         }

@@ -15,6 +15,7 @@ import com.jme3.bullet.joints.HingeJoint;
 import com.jme3.lostVictories.characters.GameVehicleNode;
 import com.jme3.lostVictories.characters.blenderModels.Panzer4BlenderModel;
 import com.jme3.math.FastMath;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 
@@ -54,20 +55,18 @@ public class BetterTankControl extends BetterVehicleControl {
     public void turretLeft() {
         disengageGravityBreak();
         turretInOpertion = true;
-        turretJoint.setLimit(-FastMath.HALF_PI, FastMath.HALF_PI);
+        turretJoint.setLimit(-FastMath.PI, FastMath.PI);
         turretJoint.enableMotor(true, -.5f, 100f);
     }
 
     public void turretRight() {
         disengageGravityBreak();
         turretInOpertion = true;
-        System.out.println("turretRight");
-        turretJoint.setLimit(-FastMath.HALF_PI, FastMath.HALF_PI);
+        turretJoint.setLimit(-FastMath.PI, FastMath.PI);
         turretJoint.enableMotor(true, .5f, 100f);
     }
     
     public void turretStop() {
-        System.out.println("turretStop");
         turretInOpertion = false;
         turretJoint.enableMotor(false, 0, 0);
         turretJoint.setLimit(turretJoint.getHingeAngle(), turretJoint.getHingeAngle());
@@ -76,6 +75,12 @@ public class BetterTankControl extends BetterVehicleControl {
     @Override
     protected boolean vehicleOperationInProgress() {
         return turretInOpertion;
+    }
+
+    public Vector3f getTurretDirection() {
+        Vector3f v = new Vector3f(getForwardVector(null));
+        Quaternion q = new Quaternion().fromAngleAxis(-turretJoint.getHingeAngle(), Vector3f.UNIT_Y);
+        return q.mult(v);
     }
     
     

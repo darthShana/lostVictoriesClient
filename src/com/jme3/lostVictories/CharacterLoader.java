@@ -143,20 +143,20 @@ public class CharacterLoader {
     }
     
     private AvatarCharacterNode loadAvatar(UUID id, Vector3f position, Vector3f rotation, BlenderModel model, Country country, CommandingOfficer commandingOfficer, HeadsUpDisplayAppState hud, Rank rank) {
-        Node player =  getModel(model);
+        Node player =  load(model);
         AvatarCharacterNode a = new AvatarCharacterNode(id, player, country, commandingOfficer, position, rotation, rootNode, bulletAppState, pf.getCharacterParticleEmitters(), particleManager, pathFinder, assetManager, model, rank, hud, app.getCamera());
         return a;
     }
     
     private GameCharacterNode loadCharacter(UUID id, Vector3f position, Vector3f rotation, BlenderModel model, Country country, CommandingOfficer commandingOfficer, BehaviorControler behaviorControler) {
-        Node player =  getModel(model);
+        Node player =  load(model);
         GameCharacterNode a = new Private(id, player, country, commandingOfficer, position, rotation, rootNode, bulletAppState, pf.getCharacterParticleEmitters(), particleManager, pathFinder, assetManager, model, behaviorControler, app.getCamera());
         return a;
     }
 
     private GameVehicleNode loadHalfTrack(UUID id, Vector3f position, Vector3f rotation, Country country, CommandingOfficer commandingOfficer, BehaviorControler behaviorControler) {
         final HalfTrackBlenderModel halfTrackBlenderModel = new HalfTrackBlenderModel("Models/Vehicles/Armored_Car.j3o", 1, Weapon.mg42());
-        Node vehicle =  getModel(halfTrackBlenderModel);
+        Node vehicle =  load(halfTrackBlenderModel);
         
         
         final GameVehicleNode v = new HalfTrackNode(id, vehicle, getOperators(), country, commandingOfficer, position, rotation, rootNode, bulletAppState, pf.getCharacterParticleEmitters(), particleManager, pathFinder, assetManager, halfTrackBlenderModel, behaviorControler, app.getCamera());
@@ -168,10 +168,13 @@ public class CharacterLoader {
     
     private GameVehicleNode loadPanzer4(UUID id, Vector3f position, Vector3f rotation, Country country, CommandingOfficer commandingOfficer, BehaviorControler behaviorControler) {
         final Panzer4BlenderModel panzer4BlenderModel = new Panzer4BlenderModel("Models/Vehicles/PanzerIV.j3o", 1, Weapon.cannon());
-        Node vehicle =  getModel(panzer4BlenderModel);
+        Node chassis =  load(panzer4BlenderModel);
+        chassis.detachChildNamed("Turrent");
+        
         Node turret = (Node) assetManager.loadModel("Models/Vehicles/PanzerIV.j3o");
+        turret.detachChildNamed("PanzerIV");
         turret.setLocalScale(panzer4BlenderModel.getModelScale());
-        final GameVehicleNode v = new MediumTankNode(id, vehicle, turret, getOperators(), country, commandingOfficer, position, rotation, rootNode, bulletAppState, pf.getCharacterParticleEmitters(), particleManager, pathFinder, assetManager, panzer4BlenderModel, behaviorControler, app.getCamera());
+        final GameVehicleNode v = new MediumTankNode(id, chassis, turret, getOperators(), country, commandingOfficer, position, rotation, rootNode, bulletAppState, pf.getCharacterParticleEmitters(), particleManager, pathFinder, assetManager, panzer4BlenderModel, behaviorControler, app.getCamera());
         if(commandingOfficer!=null){
             commandingOfficer.addCharactersUnderCommand(new HashSet<Commandable>(){{add(v);}});
         }
@@ -180,7 +183,7 @@ public class CharacterLoader {
    
     private GameVehicleNode loadAmoredCar(UUID id, Vector3f position, Vector3f rotation, Country country, CommandingOfficer commandingOfficer, BehaviorControler behaviorControler) {
         final AmoredCarBlenderModel amoredCarBlenderModel = new AmoredCarBlenderModel("Models/Vehicles/M3_Scout.j3o", 1, Weapon.mg42());
-        Node vehicle =  getModel(amoredCarBlenderModel);
+        Node vehicle =  load(amoredCarBlenderModel);
         
         final GameVehicleNode v = new HalfTrackNode(id, vehicle, getOperators(), country, commandingOfficer, position, rotation, rootNode, bulletAppState, pf.getCharacterParticleEmitters(), particleManager, pathFinder, assetManager, amoredCarBlenderModel, behaviorControler, app.getCamera());
         if(commandingOfficer!=null){
@@ -191,7 +194,7 @@ public class CharacterLoader {
     
     private GameVehicleNode loadAntiTankGun(UUID id, Vector3f position, Vector3f rotation, Country country, CommandingOfficer commandingOfficer, BehaviorControler behaviorControler) {
         final AntiTankGunModel antiTankGunModel = new AntiTankGunModel("Models/Vehicles/Anti_Tank_Gun.j3o", 1, Weapon.cannon());
-        Node vehicle =  getModel(antiTankGunModel);
+        Node vehicle =  load(antiTankGunModel);
         
         final GameVehicleNode v = new AntiTankGunNode(id, vehicle, getOperators(), country, commandingOfficer, position, rotation, rootNode, bulletAppState, pf.getCharacterParticleEmitters(), particleManager, pathFinder, assetManager, antiTankGunModel, behaviorControler, app.getCamera());
         if(commandingOfficer!=null){
@@ -201,19 +204,19 @@ public class CharacterLoader {
     }
 
     private Lieutenant loadLieutenant(UUID id, Vector3f position, Vector3f rotation, BlenderModel model, Country country, CommandingOfficer commandingOfficer, BehaviorControler behaviorControler) {
-        Node player =  getModel(model);
+        Node player =  load(model);
         Lieutenant a = new Lieutenant(id, player, country, commandingOfficer, position, rotation, rootNode, bulletAppState, pf.getCharacterParticleEmitters(), particleManager, pathFinder, assetManager, model, behaviorControler, app.getCamera());
         return a;
     }
     
     private CadetCorporal loadCorporal(UUID id, Vector3f position, Vector3f rotation, BlenderModel model, Country country, CommandingOfficer commandingOfficer, BehaviorControler behaviorControler) {
-        Node player =  getModel(model);
+        Node player =  load(model);
         CadetCorporal a = new CadetCorporal(id, player, country, commandingOfficer, position, rotation, rootNode, bulletAppState, pf.getCharacterParticleEmitters(), particleManager, pathFinder, assetManager, model, behaviorControler, app.getCamera());
         return a;
     }
     
     private HeerCaptain loadHeerCaptain(UUID id, Vector3f position, Vector3f rotation, BlenderModel model, Country country, BehaviorControler behaviorControler) {
-        Node player =  getModel(model);
+        Node player =  load(model);
         HeerCaptain a = new HeerCaptain(id, player, country, null, position, rotation, rootNode, bulletAppState, pf.getCharacterParticleEmitters(), particleManager, pathFinder, assetManager, model, behaviorControler, app.getCamera());
         return a;
     }
@@ -225,13 +228,6 @@ public class CharacterLoader {
 
         toDemote.decomposed();
         WorldMap.get().removeCharacter(toDemote);
-    }
-
-    protected Node getModel(BlenderModel model) {        
-        final Node clone = load(model);
-        
-        
-        return clone;
     }
     
     public GameCharacterNode loadCharacter(CharacterMessage c, UUID avatarId) {
@@ -279,7 +275,7 @@ public class CharacterLoader {
     }    
 
     public void laodUnclaimedEquipment(UnClaimedEquipmentMessage eq) {
-        final Node model = getModel(Country.AMERICAN.getModel(Weapon.rifle(), Rank.PRIVATE));
+        final Node model = load(Country.AMERICAN.getModel(Weapon.rifle(), Rank.PRIVATE));
         final Vector3f location = eq.getLocation().toVector();
         pathFinder.warpInside(location);
         UnclaimedEquipmentNode n = new UnclaimedEquipmentNode(eq.getId(), location, eq.getRotation().toVector(), Weapon.get(eq.getWeapon()), model, rootNode, assetManager);
@@ -294,11 +290,11 @@ public class CharacterLoader {
     private Map<Country, Node> getOperators() {
         HashMap<Country, Node> operatorMap = new HashMap<Country, Node>();
         final BlenderModel blenderModel1 = new SoldierBlenderModel("Models/Vehicles/german_operator.j3o", 1, Weapon.mg42());
-        Node gunner = getModel(blenderModel1);
+        Node gunner = load(blenderModel1);
         gunner.setLocalScale(.75f);
         gunner.setName("operator");
         operatorMap.put(Country.GERMAN, gunner);
-        Node gunner2 =  getModel(new SoldierBlenderModel("Models/Vehicles/american_operator.j3o", 1, Weapon.mg42()));
+        Node gunner2 =  load(new SoldierBlenderModel("Models/Vehicles/american_operator.j3o", 1, Weapon.mg42()));
         gunner2.setLocalScale(.25f);
         gunner2.setName("operator");
         operatorMap.put(Country.AMERICAN, gunner2);        

@@ -10,6 +10,7 @@ import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.collision.shapes.CompoundCollisionShape;
 import com.jme3.lostVictories.characters.GameAnimChannel;
+import com.jme3.lostVictories.characters.GameVehicleNode;
 import com.jme3.lostVictories.characters.weapons.Weapon;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
@@ -37,8 +38,8 @@ public class HalfTrackBlenderModel extends VehicleBlenderModel{
     }
     
     @Override
-    public boolean isReadyToShoot(GameAnimChannel channel, Vector3f playerDirection, Vector3f aimingDirection) {
-        return weapon.isWithinFieldOfVision(playerDirection, aimingDirection);
+    public boolean isReadyToShoot(GameAnimChannel channel, Vector3f aimingDirection, Vector3f targetDirection) {
+        return weapon.isWithinFieldOfVision(aimingDirection, targetDirection);
     }
 
     @Override
