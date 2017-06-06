@@ -28,6 +28,7 @@ import com.jme3.lostVictories.characters.CadetCorporal;
 import com.jme3.lostVictories.characters.Commandable;
 import com.jme3.lostVictories.characters.GameCharacterNode;
 import com.jme3.lostVictories.characters.GameVehicleNode;
+import com.jme3.lostVictories.characters.MediumTankNode;
 import com.jme3.lostVictories.characters.Private;
 import com.jme3.lostVictories.structures.Pickable;
 import com.jme3.material.Material;
@@ -162,7 +163,7 @@ public class RealTimeStrategyAppState extends AbstractAppState implements Action
         app.getInputManager().addListener(this, "turnLeft");
         app.getInputManager().addMapping("turnRight", new KeyTrigger(KeyInput.KEY_D));
         app.getInputManager().addListener(this, "turnRight");
-        app.getInputManager().addMapping("Reverse", new KeyTrigger(KeyInput.KEY_Z));
+        app.getInputManager().addMapping("Reverse", new KeyTrigger(KeyInput.KEY_S));
         app.getInputManager().addListener(this, "Reverse");
         app.getInputManager().addMapping("selectAvatar", new KeyTrigger(KeyInput.KEY_1));
         app.getInputManager().addListener(this, "selectAvatar");
@@ -178,8 +179,12 @@ public class RealTimeStrategyAppState extends AbstractAppState implements Action
         app.getInputManager().addListener(this, "fireWeapon");
         app.getInputManager().addMapping("disembark", new KeyTrigger(KeyInput.KEY_E));
         app.getInputManager().addListener(this, "disembark");
-        app.getInputManager().addMapping("crouch", new KeyTrigger(KeyInput.KEY_S));
+        app.getInputManager().addMapping("crouch", new KeyTrigger(KeyInput.KEY_M));
         app.getInputManager().addListener(this, "crouch");
+        app.getInputManager().addMapping("turretLeft", new KeyTrigger(KeyInput.KEY_K));
+        app.getInputManager().addListener(this, "turretLeft");
+        app.getInputManager().addMapping("turretRight", new KeyTrigger(KeyInput.KEY_L));
+        app.getInputManager().addListener(this, "turretRight");
         app.getInputManager().addMapping("action", new MouseButtonTrigger(MouseInput.BUTTON_RIGHT));
         app.getInputManager().addListener(this, "action");
         app.getInputManager().addMapping("pick", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
@@ -218,6 +223,8 @@ public class RealTimeStrategyAppState extends AbstractAppState implements Action
         app.getInputManager().deleteMapping("crouch");
         app.getInputManager().deleteMapping("action");
         app.getInputManager().deleteMapping("pick");
+        app.getInputManager().deleteMapping("turretLeft");
+        app.getInputManager().deleteMapping("turretRight");
         
         app.getInputManager().removeListener(this);
     }
@@ -278,6 +285,22 @@ public class RealTimeStrategyAppState extends AbstractAppState implements Action
                 avatar.stand(avatar);
             }
         }
+        if (name.equals("turretLeft")) {
+            if(boardedVehicle instanceof MediumTankNode)
+            if(isPressed){
+                ((MediumTankNode)boardedVehicle).trretLeft();
+            }else{
+                ((MediumTankNode)boardedVehicle).stopTurret();
+            }
+        }
+        if (name.equals("turretRight")) {
+           if(boardedVehicle instanceof MediumTankNode)
+            if(isPressed){
+                ((MediumTankNode)boardedVehicle).trretRight();
+            }else{
+                ((MediumTankNode)boardedVehicle).stopTurret();
+            }
+        }
         
         if (name.equals("completeBootCamp")) {
            if(isPressed){
@@ -288,7 +311,7 @@ public class RealTimeStrategyAppState extends AbstractAppState implements Action
         if(name.equals("fireWeapon")){
             if(isPressed){
                 GameCharacterNode c = (GameCharacterNode)selectedCharacter;
-                c.shoot(c.getLocalTranslation().add(c.getPlayerDirection().mult(c.getMaxRange())));
+                c.shoot(c.getLocalTranslation().add(c.getAimingDirection().mult(c.getMaxRange())));
 
             }
         }

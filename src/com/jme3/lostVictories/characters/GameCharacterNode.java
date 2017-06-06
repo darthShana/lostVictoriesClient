@@ -5,6 +5,7 @@
 package com.jme3.lostVictories.characters;
 
 
+import com.jme3.lostVictories.characters.physicsControl.GameCharacterControl;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.jme3.lostVictories.characters.blenderModels.BlenderModel;
 import com.jme3.lostVictories.objectives.Objective;
@@ -137,6 +138,7 @@ public abstract class GameCharacterNode<T extends GameCharacterControl> extends 
         }
                 
         geometry.setLocalScale(m.getModelScale());
+        geometry.setLocalTranslation(m.getModelTranslation());
         characterNode.attachChild(geometry);
         Cylinder b= new Cylinder(6, 6, .25f, 1.85f, true);       
         shell = new Geometry("shell", b);
@@ -217,18 +219,18 @@ public abstract class GameCharacterNode<T extends GameCharacterControl> extends 
         }
         
         final Vector3f aimingPosition = getShootingLocation();
-        List<Vector3f> aimingDirections = new ArrayList<>();
+        List<Vector3f> targetDirections = new ArrayList<>();
         for(Vector3f target:targets){
             if(model.isProjectileWeapon()){
-                aimingDirections.add(ProjectilePathPlanner.getAimingDirection(aimingPosition, target));
+                targetDirections.add(ProjectilePathPlanner.getAimingDirection(aimingPosition, target));
             }else{
-                aimingDirections.add(target.subtract(aimingPosition));
+                targetDirections.add(target.subtract(aimingPosition));
             }
         }
-
-        if(!model.isAlreadyFiring(channel) && model.isReadyToShoot(channel, getPlayerDirection(), aimingDirections.get(0))){
+        
+        if(!model.isAlreadyFiring(channel) && model.isReadyToShoot(channel, getAimingDirection(), targetDirections.get(0))){
             model.startFiringSequence(channel);
-            fire(aimingPosition, aimingDirections.toArray(new Vector3f[]{}));
+            fire(aimingPosition, targetDirections.toArray(new Vector3f[]{}));
             return true;
         }
         return false; 
@@ -280,7 +282,7 @@ public abstract class GameCharacterNode<T extends GameCharacterControl> extends 
             }catch(Throwable e){}
             
             if(!rays.isEmpty()){
-                model.doPostSetupEffect(smokeTrail, particleManager, getLocalTranslation(), getPlayerDirection(), rays, collitionLifes);
+                model.doPostSetupEffect(smokeTrail, particleManager, this, getAimingDirection(), rays, collitionLifes);
             }
             if(isControledLocaly()){
                 for(CollisionResult result:results){
@@ -340,7 +342,7 @@ public abstract class GameCharacterNode<T extends GameCharacterControl> extends 
     }
 
     public Set<UUID> doBlastDamage(Vector3f blast) {
-        Set<UUID> kk = new HashSet<UUID>();
+        Set<UUID> kk = new HashSet<>();
         for(GameCharacterNode victim: WorldMap.get().getCharactersInBlastRange(blast)){
             if(victim.takeLightBlast(this)){
                 kk.add(victim.identity);
@@ -384,8 +386,7 @@ public abstract class GameCharacterNode<T extends GameCharacterControl> extends 
     public Vector3f getShootingLocation(){
         final Vector3f muzzelLocation = model.getMuzzelLocation();
         Quaternion q = new Quaternion();
-        final Vector3f playerDirection = new Vector3f(getPlayerDirection());
-        q.lookAt(playerDirection, Vector3f.UNIT_Y);
+        q.lookAt(getAimingDirection(), Vector3f.UNIT_Y);
         return getLocalTranslation().add(q.mult(muzzelLocation));
     }
     
@@ -787,6 +788,10 @@ public abstract class GameCharacterNode<T extends GameCharacterControl> extends 
     public void makeUnAbstracted(Spatial stickFigure) {
         stickFigure.removeFromParent();
         characterNode.attachChild(geometry);
+    }
+
+    public Vector3f getAimingDirection() {
+        return getPlayerDirection();
     }
    
 }

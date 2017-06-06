@@ -7,6 +7,7 @@ package com.jme3.lostVictories.characters.weapons;
 import com.jme3.lostVictories.characters.GameAnimChannel;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
+import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 
@@ -97,10 +98,11 @@ public class Cannon extends Weapon{
         return false;
     }
     
+    @Override
     public boolean isWithinFieldOfVision(Vector3f playerDirection, Vector3f aimingDirection) {
-        Vector3f v1 = new Vector3f(playerDirection.x, 0, playerDirection.z).normalizeLocal();
-        Vector3f v2 = new Vector3f(aimingDirection.x, 0, aimingDirection.z).normalizeLocal();
-        return v1.angleBetween(v2) < (FastMath.QUARTER_PI / 4);
+        Vector2f v1 = new Vector2f(playerDirection.x, playerDirection.z);
+        Vector2f v2 = new Vector2f(aimingDirection.x, aimingDirection.z);
+        return v1.smallestAngleBetween(v2) < (FastMath.QUARTER_PI / 2);
     }
 
     @Override

@@ -12,7 +12,7 @@ import com.jme3.animation.AnimChannel;
 import com.jme3.bullet.control.BetterCharacterControl;
 import com.jme3.lostVictories.WorldMap;
 import com.jme3.lostVictories.actions.AIAction;
-import com.jme3.lostVictories.characters.BetterSoldierControl;
+import com.jme3.lostVictories.characters.physicsControl.BetterSoldierControl;
 import com.jme3.lostVictories.characters.GameAnimChannel;
 import com.jme3.lostVictories.characters.GameCharacterNode;
 import static com.jme3.lostVictories.characters.RemoteBehaviourControler.MAPPER;

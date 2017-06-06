@@ -85,13 +85,12 @@ public class ParticleManager {
 
     }
     
-    public void playTracerBulletEffect(Vector3f position, List<Ray> _rays, List<Float> _lifeSpans){
-        List<Ray> rays = new ArrayList<Ray>(_rays);
-        List<Float> lifeSpans = new ArrayList<Float>(_lifeSpans);
+    public void playTracerBulletEffect(GameCharacterNode shooter, Vector3f relativePosition, List<Ray> _rays, List<Float> _lifeSpans){
+        List<Ray> rays = new ArrayList<>(_rays);
+        List<Float> lifeSpans = new ArrayList<>(_lifeSpans);
         Node switchNode = new Node();
-        switchNode.setLocalTranslation(position);
          
-        switchNode.addControl(new TracerBulletControl(tracerBulletParticle.clone(false), rays, lifeSpans, 20, 40));
+        switchNode.addControl(new TracerBulletControl(shooter, relativePosition, tracerBulletParticle.clone(false), rays, lifeSpans, 20, 40));
         particleNode.attachChild(switchNode);
     }
     
@@ -121,7 +120,7 @@ public class ParticleManager {
     }
 
     private Spatial getTracerBulletSpatial(String tracer, AssetManager assetManager) {
-        Node node = new Node(tracer);
+        //Node node = new Node(tracer);
 
         Cylinder b= new Cylinder(6, 6, .05f, 1);
         Geometry mark = new Geometry(tracer, b);
@@ -130,10 +129,10 @@ public class ParticleManager {
         picMat.getAdditionalRenderState().setBlendMode(BlendMode.Alpha);
         mark.setQueueBucket(RenderQueue.Bucket.Transparent);
         
-        picMat.setColor("Color", new ColorRGBA(0.9f,0.7f,0.1f,.3f));
+        picMat.setColor("Color", new ColorRGBA(0.9f,0.7f,0.1f,.5f));
         mark.setMaterial(picMat);   
-        node.attachChild(mark);
-        return node;
+        //node.attachChild(mark);
+        return mark;
     }
 
 

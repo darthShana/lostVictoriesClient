@@ -6,6 +6,9 @@ package com.jme3.lostVictories.characters.blenderModels;
 
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.LoopMode;
+import com.jme3.bullet.collision.shapes.BoxCollisionShape;
+import com.jme3.bullet.collision.shapes.CollisionShape;
+import com.jme3.bullet.collision.shapes.CompoundCollisionShape;
 import com.jme3.lostVictories.characters.GameAnimChannel;
 import com.jme3.lostVictories.characters.weapons.Weapon;
 import com.jme3.math.Vector3f;
@@ -43,13 +46,15 @@ public class AntiTankGunModel extends VehicleBlenderModel{
     }
 
     @Override
-    public Vector3f getEmbarkationPoint() {
-        return embarkationPoint;
+    public float getWheelRadius() {
+        return .5f;
     }
+    
+    
 
     @Override
-    public Vector3f getModelBounds() {
-        return modelBounds;
+    public Vector3f getEmbarkationPoint() {
+        return embarkationPoint;
     }
     
     @Override
@@ -90,8 +95,8 @@ public class AntiTankGunModel extends VehicleBlenderModel{
     public List<Vector3f> getFrontWheels() {
         float radius = 0.5f;
         List<Vector3f> ret = new ArrayList<Vector3f>();        
-        ret.add(new Vector3f(getModelBounds().x-(radius * 0.7f), 0.5f, getModelBounds().z-(radius*2.5f)));
-        ret.add(new Vector3f(-getModelBounds().x+(radius * 0.7f), 0.5f, getModelBounds().z-(radius*2.5f)));
+        ret.add(new Vector3f(modelBounds.x, 0.5f, modelBounds.z));
+        ret.add(new Vector3f(-modelBounds.x, 0.5f, modelBounds.z));
         return ret;
     }
 
@@ -99,7 +104,7 @@ public class AntiTankGunModel extends VehicleBlenderModel{
     public List<Vector3f> getBackWheels() {
         float radius = 0.5f;
         List<Vector3f> ret = new ArrayList<Vector3f>();        
-        ret.add(new Vector3f(0, 0.5f, -getModelBounds().z+(radius*2)));
+        ret.add(new Vector3f(0, 0.5f, -modelBounds.z));
         return ret;
     }
     
@@ -107,6 +112,13 @@ public class AntiTankGunModel extends VehicleBlenderModel{
     public Vector3f getMuzzelLocation() {
         return weapon.getMuzzelLocation();
     }
-        
+    
+    @Override
+    public CollisionShape getPhysicsShape() {
+        CompoundCollisionShape compoundShape = new CompoundCollisionShape();
+        BoxCollisionShape box = new BoxCollisionShape(new Vector3f(modelBounds.x, modelBounds.y, modelBounds.z));
+        compoundShape.addChildShape(box, new Vector3f(0, 1, 0));
+        return compoundShape;
+    }
     
 }

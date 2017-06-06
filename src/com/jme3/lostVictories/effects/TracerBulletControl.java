@@ -4,6 +4,7 @@
  */
 package com.jme3.lostVictories.effects;
 
+import com.jme3.lostVictories.characters.GameCharacterNode;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
@@ -23,21 +24,25 @@ import java.util.Map.Entry;
  * @author dharshanar
  */
 class TracerBulletControl extends AbstractControl {
-    public static final float GROWTH_FACTOR = 10;
+    public static final float GROWTH_FACTOR = 5;
     private long spawnTime;
-    private final float bulletsPerSecond = 5f;
+    private final float bulletsPerSecond = 1f;
     private final float fullSize;
     private final Iterator<Ray> rays;
     private final Iterator<Float> lifeSpans;
+    private final GameCharacterNode shooter;
+    private final Vector3f relativePos;
     private final Spatial bullet;
     private final Map<Spatial, Ray> usedBullets = new HashMap<Spatial, Ray>();
     private final float speed;
     
 
-    public TracerBulletControl(Spatial bullet, List<Ray> r, List<Float> lifeSpans, float fullSize, float speed) {
+    public TracerBulletControl(GameCharacterNode shooter, Vector3f relativePos, Spatial bullet, List<Ray> r, List<Float> lifeSpans, float fullSize, float speed) {
         spawnTime = System.currentTimeMillis();
         rays = r.iterator();
         this.lifeSpans = lifeSpans.iterator();
+        this.shooter = shooter;
+        this.relativePos = relativePos;
         this.bullet = bullet;
         this.fullSize = fullSize;
         this.speed = speed;
@@ -45,6 +50,7 @@ class TracerBulletControl extends AbstractControl {
 
     @Override
     protected void controlUpdate(float tpf) {
+        spatial.setLocalTranslation(shooter.getLocalTranslation().add(relativePos));
         if(rays.hasNext() && lifeSpans.hasNext() && (usedBullets.isEmpty() || isTimeForAnotherBullet())){
             Ray r = rays.next();
             Spatial newBullet = bullet.clone(true);
@@ -67,7 +73,7 @@ class TracerBulletControl extends AbstractControl {
             float f;
             if(newSize<fullSize){
                 entry.getKey().setLocalScale(new Vector3f(1, 1, newSize));
-                f = GROWTH_FACTOR/2;
+                f = newSize/2;
             }else{
                 f = speed;
             }
