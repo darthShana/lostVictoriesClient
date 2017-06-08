@@ -4,6 +4,7 @@
  */
 package com.jme3.lostVictories.characters.blenderModels;
 
+import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.lostVictories.characters.weapons.Weapon;
 import com.jme3.math.Vector3f;
 import java.util.List;
@@ -30,7 +31,9 @@ public abstract class VehicleBlenderModel extends BlenderModel{
     
     public abstract String getMeshName();
 
-    
+    public abstract float getWheelRadius();
+
+    public abstract CollisionShape getPhysicsShape();
     
     
 }

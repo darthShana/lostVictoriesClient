@@ -6,7 +6,11 @@ package com.jme3.lostVictories.characters.blenderModels;
 
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.LoopMode;
+import com.jme3.bullet.collision.shapes.BoxCollisionShape;
+import com.jme3.bullet.collision.shapes.CollisionShape;
+import com.jme3.bullet.collision.shapes.CompoundCollisionShape;
 import com.jme3.lostVictories.characters.GameAnimChannel;
+import com.jme3.lostVictories.characters.GameVehicleNode;
 import com.jme3.lostVictories.characters.weapons.Weapon;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
@@ -19,9 +23,9 @@ import java.util.List;
  * @author dharshanar
  */
 public class HalfTrackBlenderModel extends VehicleBlenderModel{
-    private static Vector3f muzzelLocation = new Vector3f(0f, 2.9f, 1.4f);
-    private static Vector3f operatorTranslation = new Vector3f(0, 1.55f, -1f);
-    private static Vector3f modelBounds = new Vector3f(1.65f, .75f, 3.5f);
+    private static Vector3f muzzelLocation = new Vector3f(0f, 2f, 1f);
+    private static Vector3f operatorTranslation = new Vector3f(0, .5f, -.7f);
+    private static Vector3f modelBounds = new Vector3f(1.45f, .75f, 3.2f);
     private static Vector3f bustTranslation = new Vector3f(0, -1.5f, -7.5f);
 
     public HalfTrackBlenderModel(String modelPath, float walkSpeed, Weapon weapon) {
@@ -34,8 +38,8 @@ public class HalfTrackBlenderModel extends VehicleBlenderModel{
     }
     
     @Override
-    public boolean isReadyToShoot(GameAnimChannel channel, Vector3f playerDirection, Vector3f aimingDirection) {
-        return weapon.isWithinFieldOfVision(playerDirection, aimingDirection);
+    public boolean isReadyToShoot(GameAnimChannel channel, Vector3f aimingDirection, Vector3f targetDirection) {
+        return weapon.isWithinFieldOfVision(aimingDirection, targetDirection);
     }
 
     @Override
@@ -49,8 +53,8 @@ public class HalfTrackBlenderModel extends VehicleBlenderModel{
     }    
 
     @Override
-    public Vector3f getModelBounds() {
-        return modelBounds;
+    public Vector3f getModelTranslation() {
+        return new Vector3f(0, -.5f, 0);
     }
     
     @Override
@@ -65,9 +69,14 @@ public class HalfTrackBlenderModel extends VehicleBlenderModel{
 
     @Override
     public float getModelScale() {
-        return .5f;
+        return .4f;
     }
 
+    @Override
+    public float getWheelRadius() {
+        return 0.5f;
+    }
+    
     @Override
     public String getOperatorIdleAnimation() {
         return "takeVehicleMGAction";
@@ -75,7 +84,7 @@ public class HalfTrackBlenderModel extends VehicleBlenderModel{
  
     @Override
     public Vector3f getEmbarkationPoint() {
-        return new Vector3f(0, 0, -5f);
+        return new Vector3f(0, 0, -3f);
     }
     
     @Override
@@ -96,8 +105,8 @@ public class HalfTrackBlenderModel extends VehicleBlenderModel{
     public List<Vector3f> getFrontWheels() {
         float radius = 0.5f;
         List<Vector3f> ret = new ArrayList<Vector3f>();        
-        ret.add(new Vector3f(getModelBounds().x-(radius * 0.6f), 0.5f, getModelBounds().z-(radius*2)));
-        ret.add(new Vector3f(-getModelBounds().x+(radius * 0.6f), 0.5f, getModelBounds().z-(radius*2)));
+        ret.add(new Vector3f(modelBounds.x-(radius * 0.6f), 0.25f, modelBounds.z-(radius)));
+        ret.add(new Vector3f(-modelBounds.x+(radius * 0.6f), 0.25f, modelBounds.z-(radius)));
         return ret;
     }
 
@@ -105,8 +114,16 @@ public class HalfTrackBlenderModel extends VehicleBlenderModel{
     public List<Vector3f> getBackWheels() {
         float radius = 0.5f;
         List<Vector3f> ret = new ArrayList<Vector3f>();        
-        ret.add(new Vector3f(getModelBounds().x-(radius * 0.6f), 0.5f, -getModelBounds().z+(radius*2)));
-        ret.add(new Vector3f(-getModelBounds().x+(radius * 0.6f), 0.5f, -getModelBounds().z+(radius*2)));
+        ret.add(new Vector3f(modelBounds.x-(radius * 0.6f), 0.25f, -modelBounds.z+(radius)));
+        ret.add(new Vector3f(-modelBounds.x+(radius * 0.6f), 0.25f, -modelBounds.z+(radius)));
         return ret;
+    }
+    
+    @Override
+    public CollisionShape getPhysicsShape() {
+        CompoundCollisionShape compoundShape = new CompoundCollisionShape();
+        BoxCollisionShape box = new BoxCollisionShape(new Vector3f(modelBounds.x, modelBounds.y, modelBounds.z));
+        compoundShape.addChildShape(box, new Vector3f(0, 1, 0));
+        return compoundShape;
     }
 }

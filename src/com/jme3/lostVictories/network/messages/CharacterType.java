@@ -9,5 +9,5 @@ package com.jme3.lostVictories.network.messages;
  * @author dharshanar
  */
 public enum CharacterType {
-    ARMORED_CAR, ANTI_TANK_GUN, SOLDIER, HALF_TRACK, AVATAR
+    ARMORED_CAR, ANTI_TANK_GUN, SOLDIER, HALF_TRACK, PANZER4, AVATAR
 }

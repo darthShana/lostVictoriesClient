@@ -102,6 +102,7 @@ public class Mg42 extends Weapon{
         return true;
     }
     
+    @Override
     public boolean isWithinFieldOfVision(Vector3f playerDirection, Vector3f aimingDirection) {
         Vector2f v1 = new Vector2f(playerDirection.x, playerDirection.z);
         Vector2f v2 = new Vector2f(aimingDirection.x, aimingDirection.z);

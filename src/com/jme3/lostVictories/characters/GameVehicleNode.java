@@ -4,6 +4,7 @@
  */
 package com.jme3.lostVictories.characters;
 
+import com.jme3.lostVictories.characters.physicsControl.BetterVehicleControl;
 import com.jme3.lostVictories.objectives.StearToTarget;
 import com.jme3.lostVictories.objectives.NavigateObjective;
 import com.jme3.ai.navmesh.NavMeshPathfinder;
@@ -79,9 +80,9 @@ public abstract class GameVehicleNode extends AICharacterNode<BetterVehicleContr
         }
         characterNode.attachChild(operator.get(country));
         
-        try{
-            playerControl.applyBreak();
-        }catch(Exception e){}
+//        try{
+//            playerControl.applyBreak();
+//        }catch(Exception e){}
         setName(getCountry()+":"+getClass());
     }
 
@@ -238,7 +239,7 @@ public abstract class GameVehicleNode extends AICharacterNode<BetterVehicleContr
     
     public void stop(){
         if(!model.isAboutToFire(channel.getAnimationName())){
-            channel.setAnim("mg42_standByAction", LoopMode.DontLoop);
+            channel.setAnim(model.getIdleAnimation(), LoopMode.DontLoop);
         }
     }
 

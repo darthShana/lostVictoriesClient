@@ -9,6 +9,7 @@ import com.jme3.animation.AnimChannel;
 import com.jme3.animation.LoopMode;
 import com.jme3.effect.ParticleEmitter;
 import com.jme3.lostVictories.characters.GameAnimChannel;
+import com.jme3.lostVictories.characters.GameCharacterNode;
 import com.jme3.lostVictories.effects.ParticleManager;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
@@ -48,11 +49,11 @@ public abstract class BlenderModel {
         return channel!=null && weapon.isInFiringSequence(channel.getAnimationName());
     }
 
-    public boolean isReadyToShoot(GameAnimChannel channel, Vector3f playerDirection, Vector3f aimingDirection) {
+    public boolean isReadyToShoot(GameAnimChannel channel, Vector3f aimingDirection, Vector3f targetDirection) {
         if("embark_vehicle".equals(channel.getAnimationName())){
             return false;
         }
-        return weapon.isReadyToShoot(channel.getAnimationName(), playerDirection, aimingDirection.normalize());
+        return weapon.isReadyToShoot(channel.getAnimationName(), aimingDirection, targetDirection.normalize());
     }
 
     public void startFiringSequence(GameAnimChannel channel) {
@@ -69,15 +70,15 @@ public abstract class BlenderModel {
         channel.setSpeed(1.5f);        
     }
     
-    public void doPostSetupEffect(ParticleEmitter smokeTrail, ParticleManager particleManager, Vector3f playerLocation, Vector3f playerDirection, List<Ray> rays, List<Float> fs) {
+    public void doPostSetupEffect(ParticleEmitter smokeTrail, ParticleManager particleManager, GameCharacterNode player, Vector3f firingDirection, List<Ray> rays, List<Float> fs) {
         Quaternion q = new Quaternion();
-        q.lookAt(playerDirection, Vector3f.UNIT_Y);
+        q.lookAt(firingDirection, Vector3f.UNIT_Y);
         if(Weapon.mg42() == weapon){
-            particleManager.playTracerBulletEffect(playerLocation.add(q.mult(getMuzzelLocation())), rays, fs);        
+            particleManager.playTracerBulletEffect(player, q.mult(getMuzzelLocation()), rays, fs);        
         }else if(Weapon.cannon()== weapon){
-            particleManager.playTracerCannonEffect(playerLocation.add(q.mult(getMuzzelLocation())), rays.get(0), 1);
+            particleManager.playTracerCannonEffect(player.getLocalTranslation().add(q.mult(getMuzzelLocation())), rays.get(0), 1);
         }else{
-            smokeTrail.setLocalTranslation(playerLocation.add(q.mult(getMuzzelLocation())));
+            smokeTrail.setLocalTranslation(player.getLocalTranslation().add(q.mult(getMuzzelLocation())));
             smokeTrail.getParticleInfluencer().setInitialVelocity(rays.get(0).getDirection().normalize().mult(300));
             smokeTrail.emitAllParticles();
 //            smokeTrail.getParticles()[0].angle = q.toAngleAxis(Vector3f.UNIT_Y);
@@ -207,9 +208,9 @@ public abstract class BlenderModel {
         return weapon.getName()+"_idleAction";
     }
 
-    public Vector3f getModelBounds() {
-        return new Vector3f(1, 1, 1);
-    }
+//    public Vector3f getModelBounds() {
+//        return new Vector3f(1, 1, 1);
+//    }
   
     public void dropDetachableWeapons(Node geometry) {
         Weapon.rifle().removeUnusedWeapons(geometry);
@@ -217,6 +218,10 @@ public abstract class BlenderModel {
 
     public Vector3f getBustTranslation() {
         return bustTranslation;
+    }
+
+    public Vector3f getModelTranslation() {
+        return Vector3f.ZERO;
     }
 
 }

@@ -5,9 +5,9 @@
 package com.jme3.lostVictories.characters;
 
 
+import com.jme3.lostVictories.characters.physicsControl.GameCharacterControl;
 import com.jme3.lostVictories.characters.blenderModels.BlenderModel;
 import com.jme3.lostVictories.objectives.Objective;
-import com.jme3.ai.navmesh.NavMeshPathfinder;
 import com.jme3.ai.navmesh.NavigationProvider;
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.BulletAppState;
@@ -59,14 +59,14 @@ public abstract class AICharacterNode<T extends GameCharacterControl> extends Ga
             die(this);
         }
             
-//          if("c7a4bf55-d488-4452-9928-832fdeddd479".equals(getIdentity().toString())){
+//          if("ce0e6166-7299-4222-9f1a-938cdc9b24cb".equals(getIdentity().toString())){
 //
 //              for(Geometry g: boxes){
 //                rootNode.detachChild(g);
 //            }
 //            boxes.clear();
 //            Vector3f p = getLocalTranslation();
-//            Vector3f v1 = getPlayerDirection().normalize();
+//            Vector3f v1 = getAimingDirection();
 //            
 //            Vector3f p2 = p.add(v1.mult(5));
 //            rootNode.attachChild(getBox(5, p2.x-2.5f, p2.z-2.5f));
@@ -86,7 +86,7 @@ public abstract class AICharacterNode<T extends GameCharacterControl> extends Ga
 //            Vector3f p7 = p.add(v1.mult(105));
 //            rootNode.attachChild(getBox(35, (int)p7.x-17.5f, (int)p7.z-17.5f));
 //        }
-        
+//        
     }
 
     public abstract  void travel(Vector3f contactPoint, GameCharacterNode issuingCharacter);
@@ -183,8 +183,8 @@ public abstract class AICharacterNode<T extends GameCharacterControl> extends Ga
         return mark;
     }
 
-    public boolean isReadyToShoot(Vector3f aimingDirection) {
-        return model.isReadyToShoot(channel, getPlayerDirection(), aimingDirection);
+    public boolean isReadyToShoot(Vector3f targetDirection) {
+        return model.isReadyToShoot(channel, getAimingDirection(), targetDirection);
     }
 
     public Set<GameVehicleNode> getVehicles() {
