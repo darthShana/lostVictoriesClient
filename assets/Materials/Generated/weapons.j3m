@@ -6,10 +6,10 @@ Material MyMaterial : Common/MatDefs/Light/Lighting.j3md {
         Ambient : 0.8 0.8 0.8 1.0
         GlowColor : 0.0 0.0 0.0 1.0
         BackfaceShadows : false
-        DiffuseMap : Models/Vehicles/textures/US_German_atlas.jpg
-        Specular : 0.0 0.0 0.0 1.0
+        DiffuseMap : Models/Characters/Weapon_Atlas.jpg
+        Specular : 0.5 0.5 0.5 1.0
         Shininess : 12.5
-        NumberOfBones : 30
+        NumberOfBones : 50
     }
     AdditionalRenderState {
       PointSprite On
