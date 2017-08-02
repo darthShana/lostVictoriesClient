@@ -6,20 +6,20 @@ Material MyMaterial : Common/MatDefs/Light/Lighting.j3md {
         Ambient : 0.8 0.8 0.8 1.0
         GlowColor : 0.0 0.0 0.0 1.0
         BackfaceShadows : false
-        DiffuseMap : Models/Characters/SoldierAtlas.png
+        DiffuseMap : WrapRepeat_S WrapRepeat_T "Models/Characters/SoldierAtlas.png"
         Specular : 0.0 0.0 0.0 1.0
         Shininess : 12.5
         NumberOfBones : 50
     }
     AdditionalRenderState {
-      PointSprite On
-      FaceCull Back
-      AlphaTestFalloff 0.0
-      DepthWrite On
-      ColorWrite On
-      PolyOffset 0.0 0.0
-      DepthTest On
-      Blend Off
-      Wireframe Off
+        PointSprite On
+        FaceCull Back
+        AlphaTestFalloff 0.0
+        DepthWrite On
+        ColorWrite On
+        PolyOffset 0.0 0.0
+        DepthTest On
+        Blend Off
+        Wireframe Off
     }
 }
