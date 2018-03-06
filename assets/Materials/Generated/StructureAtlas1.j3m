@@ -1,6 +1,6 @@
 Material MyMaterial : Common/MatDefs/Light/Lighting.j3md {
     MaterialParameters {
-        DiffuseMap : Repeat Textures/cottage-Untitled_0091-1-DiffuseMap.png
+        DiffuseMap : Repeat Models/Structures/textures/StructureAtlas_1.jpg
         Specular : 0.0 0.0 0.0 1.0
         Diffuse : 1.0 1.0 1.0 1.0
         UseMaterialColors : false
