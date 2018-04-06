@@ -1,6 +1,6 @@
 Material MyMaterial : Common/MatDefs/Light/Lighting.j3md {
     MaterialParameters {
-        DiffuseMap : Textures/anti_tank_gun2-gun_body1-1-DiffuseMap.png
+        DiffuseMap : Models/Vehicles/textures/vehicles_Atlas.png
         Specular : 0.0 0.0 0.0 1.0
         Diffuse : 1.0 1.0 1.0 1.0
         UseMaterialColors : true
