@@ -14,8 +14,54 @@ import time
 # blender exe path
 BLENDER = r"""C:\Program Files\Blender Foundation\Blender\blender.exe""" 
 
+# Default Ogre XML export options to use
+DEFAULT_EXPORT_OPTS = {
+    "EX_COPY_SHADER_PROGRAMS" : True,
+    "EX_SWAP_AXIS" : 'xyz',
+    "EX_SEP_MATS" : False,
+    "EX_ONLY_DEFORMABLE_BONES" : False,
+    "EX_ONLY_ANIMATED_BONES" : False,
+    "EX_SCENE" : True,
+    "EX_SELONLY" : False,
+    "EX_FORCE_CAMERA" : True,
+    "EX_FORCE_LAMPS" : True,
+    "EX_MESH" : True,
+    "EX_MESH_OVERWRITE" : True,
+    "EX_ARM_ANIM" : True,
+    "EX_SHAPE_ANIM" : True,
+    "EX_INDEPENDENT_ANIM" : False,
+    "EX_TRIM_BONE_WEIGHTS" : 0.01,
+    "EX_ARRAY" : True,
+    "EX_MATERIALS" : True,
+    "EX_FORCE_IMAGE_FORMAT" : 'NONE',
+    "EX_DDS_MIPS" : 1,
+    "EX_lodLevels" : 0,
+    "EX_lodDistance" : 300,
+    "EX_lodPercent" : 40,
+    "EX_nuextremityPoints" : 0,
+    "EX_generateEdgeLists" : False,
+    "EX_generateTangents" : True,
+    "EX_tangentSemantic" : 'uvw',
+    "EX_tangentUseParity" : 4,
+    "EX_tangentSplitMirrored" : False,
+    "EX_tangentSplitRotated" : False,
+    "EX_reorganiseBuffers" : True,
+    "EX_optimiseAnimations" : True,    
+}
 
-def blenderExport(blendFile, outputDir):
+
+def getExportOptionString(exportOptions):
+    optionsList = []
+    for key, value in exportOptions.items():
+        # Add quote mark around 'value' if its a string
+        if isinstance(value, str):
+            value = "'" + value + "'"
+        optionsList.append('%s=%s' % (key, value))
+    
+    return ", ".join(optionsList)
+
+
+def blenderExport(blendFile, outputDir, opts={}):
     # Get the blender file name without extension
     outFileBase = os.path.splitext(os.path.basename(blendFile))[0]
     outFileBase = os.path.join(outputDir, outFileBase)
@@ -30,14 +76,21 @@ def blenderExport(blendFile, outputDir):
     print("========== Exporting to Ogre XML [start] ==========")
     print()
 
-    BLENDER2OGRE_EXPR = r"""import bpy; bpy.ops.ogre.export(EX_COPY_SHADER_PROGRAMS=True, EX_SWAP_AXIS='xz-y', EX_SEP_MATS=False, EX_ONLY_DEFORMABLE_BONES=False, EX_ONLY_ANIMATED_BONES=False, EX_SCENE=True, EX_SELONLY=False, EX_FORCE_CAMERA=True, EX_FORCE_LAMPS=True, EX_MESH=True, EX_MESH_OVERWRITE=True, EX_ARM_ANIM=True, EX_SHAPE_ANIM=True, EX_INDEPENDENT_ANIM=False, EX_TRIM_BONE_WEIGHTS=0.01, EX_ARRAY=True, EX_MATERIALS=True, EX_FORCE_IMAGE_FORMAT='NONE', EX_DDS_MIPS=1, EX_lodLevels=0, EX_lodDistance=300, EX_lodPercent=40, EX_nuextremityPoints=0, EX_generateEdgeLists=False, EX_generateTangents=True, EX_tangentSemantic='uvw', EX_tangentUseParity=4, EX_tangentSplitMirrored=False, EX_tangentSplitRotated=False, EX_reorganiseBuffers=True, EX_optimiseAnimations=True, filepath='{0}')""".format(exportOutFile.replace('\\', '\\\\'))
+    # Export options - use defaults, override with opts provided
+    exportOptions = dict(DEFAULT_EXPORT_OPTS)
+    exportOptions.update(opts)
+    # Add in the file to export
+    exportOptions["filepath"] = exportOutFile.replace('\\', '\\\\')
+    exportOptionsStr = getExportOptionString(exportOptions)
+
+    BLENDER2OGRE_EXPR = r"""import bpy; bpy.ops.ogre.export({0})""".format(exportOptionsStr)
 
     # Because we are running blender without GUI, this call tends to return exit code 11 even when successful.
     # BKE_icon_get: Internal error, no icon for icon ID
     # Check for pass/fail by looking at artifacts instead, assuming they did not exist before.
     subprocess.call([BLENDER, "--background", blendFile, "--python-expr", BLENDER2OGRE_EXPR])
 
-    requiredArtifactSuffices = [".material", ".mesh", ".mesh.xml", ".skeleton", ".skeleton.xml"]
+    requiredArtifactSuffices = [".material", ".mesh", ".mesh.xml"]
     artifactSuffices = [".scene"].extend(requiredArtifactSuffices)
 
     for aSfx in requiredArtifactSuffices:
@@ -55,11 +108,11 @@ def blenderExport(blendFile, outputDir):
     print()
 
 
-def bulkExport():
+def bulkExportSoldiers():
     """
     For when you want to export multiple files at once.
-    erable program or batch file.
-        python -c "import exporter; exporter.bulkExport()"
+        python -c "import exporter; exporter.bulkExportSoldiers()"
+    @return True if there are no failures
     """
     
     # Specify list of input files
@@ -77,15 +130,41 @@ def bulkExport():
     # Specify output directory
     outDir = "Characters"
 
-    # Actual export work
-    outDir = os.path.abspath(outDir)
+    return bulkExport(blendFiles, outDir, {"EX_SWAP_AXIS" : 'xz-y'})
+
+
+def bulkExportHouses():
+    """
+    For when you want to export multiple files at once.
+        python -c "import exporter; exporter.bulkExportHouses()"
+    @return True if there are no failures
+    """
+    
+    # Specify list of input files
+    blendFiles = [
+        # "Structures/house.blend",
+        "Structures/house_1.blend"
+    ]
+
+    # Specify output directory
+    outDir = "Structures"
+
+    return bulkExport(blendFiles, outDir)
+
+
+def bulkExport(blendFiles, outputDir, opts={}):
+    """
+    Actual export work
+    @return True if there are no failures
+    """
+    outDir = os.path.abspath(outputDir)
     successful = []
     failure = []
 
     for blendFile in blendFiles:
         try:
             blendFilePath = os.path.abspath(blendFile)
-            blenderExport(blendFilePath, outDir)
+            blenderExport(blendFilePath, outDir, opts=opts)
             successful.append(blendFile)
             time.sleep(1)
         except RuntimeError:
@@ -97,6 +176,8 @@ def bulkExport():
     print("========== Failed Conversions ==========")
     print("\n".join(failure))
     print()
+
+    return not failure
 
 
 def main(arguments):
