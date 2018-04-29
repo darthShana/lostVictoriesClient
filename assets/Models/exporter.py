@@ -142,14 +142,37 @@ def bulkExportHouses():
     
     # Specify list of input files
     blendFiles = [
-        # "Structures/house.blend",
-        "Structures/house_1.blend"
+        "Structures/americanFlag.blend",
+        "Structures/bridge_short.blend",
+        "Structures/Bunker.blend",
+        "Structures/casaMedieval.blend",
+        "Structures/Chapel.blend",
+        "Structures/church3.blend",
+        "Structures/cottage.blend",
+        "Structures/fountain1.blend",
+        "Structures/germanFlag.blend",
+        "Structures/house.blend",
+        "Structures/house_1.blend",
+        "Structures/house2.blend",
+        "Structures/lowpolycart.blend",
+        "Structures/market.blend",
+        # "Structures/neutralFlag.blend",
+        "Structures/ponteBridge.blend",
+        "Structures/school.blend",
+        "Structures/shed.blend",
+        "Structures/stable.blend",
+        "Structures/target.blend",
+        "Structures/tavern.blend",
+        "Structures/watchtower.blend",
+        "Structures/WaterPoweredSawmill.blend",
+        "Structures/Well.blend",
+        "Structures/Windmill.blend"
     ]
 
     # Specify output directory
     outDir = "Structures"
 
-    return bulkExport(blendFiles, outDir)
+    return bulkExport(blendFiles, outDir, {"EX_SWAP_AXIS" : 'xz-y'})
 
 
 def bulkExport(blendFiles, outputDir, opts={}):
