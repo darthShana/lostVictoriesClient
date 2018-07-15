@@ -7,7 +7,7 @@ Material MyMaterial : Common/MatDefs/Light/Lighting.j3md {
         BackfaceShadows : false
         DiffuseMap : Repeat Models/Plants/Textures/plants_Atlas.png
         Specular : 0.0 0.0 0.0 1.0
-        Shininess : 50.0
+        Shininess : 0.0
         NumberOfBones : 60
     }
     AdditionalRenderState {
